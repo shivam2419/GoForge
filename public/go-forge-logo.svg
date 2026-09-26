@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" role="img" aria-labelledby="title description">
+  <title id="title">Go-Forge</title>
+  <desc id="description">Go-Forge Ideas, Marketing, Solutions logo in navy, blue, cyan, and orange.</desc>
+  <defs>
+    <linearGradient id="g-blue" x1="223" y1="343" x2="607" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C6F4" />
+      <stop offset=".52" stop-color="#0877F4" />
+      <stop offset="1" stop-color="#174DCA" />
+    </linearGradient>
+    <linearGradient id="g-orange" x1="475" y1="75" x2="708" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F44326" />
+      <stop offset="1" stop-color="#FFAA16" />
+    </linearGradient>
+    <linearGradient id="g-dark" x1="205" y1="112" x2="432" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123D78" />
+      <stop offset=".56" stop-color="#071D38" />
+      <stop offset="1" stop-color="#07182F" />
+    </linearGradient>
+  </defs>
+  <g>
+    <path fill="url(#g-dark)" d="M632 52H392c-109 0-190 72-199 177-9 104 64 181 174 181h61c16 0 26-9 31-25l39-116c5-16-3-28-20-28h-88l27 38c8 11 17 15 30 15h19l-8 25h-75c-52 0-87-35-87-88 0-55 36-91 91-91h130c22 0 37-8 52-25l53-63Z" />
+    <path fill="url(#g-orange)" d="M493 70c10-10 18-15 32-15h190l-47 54c-14 16-27 21-49 21H451l42-50Z" />
+    <path fill="url(#g-blue)" d="M430 151h226l-43 50c-14 16-27 21-49 21h-44l-31 43-69 77 34-127c3-11-2-18-14-18h-48l18-22c6-8 11-15 20-24Z" />
+  </g>
+  <text x="450" y="487" text-anchor="middle" fill="#07182F" font-family="Manrope, Arial, sans-serif" font-size="112" font-weight="800" letter-spacing="-5">Go<tspan fill="#00BCEB">-</tspan>Forge</text>
+  <text x="450" y="541" text-anchor="middle" fill="#40536A" font-family="Arial, sans-serif" font-size="24" font-weight="500" letter-spacing="11">IDEAS  ·  MARKETING  ·  SOLUTIONS</text>
+</svg>
