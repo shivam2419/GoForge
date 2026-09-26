@@ -28,14 +28,17 @@ DEFAULT_DATABASE_PATH = Path(__file__).resolve().parent / "data" / "enquiries.db
 ADMIN_COOKIE_NAME = "goforge_admin_session"
 ADMIN_SESSION_MAX_AGE = 12 * 60 * 60
 
-allowed_origins = [
+default_origins = (
+    "https://goforge-mu.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+)
+configured_origins = [
     origin.strip()
-    for origin in os.getenv(
-        "FRONTEND_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
-    ).split(",")
+    for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
     if origin.strip()
 ]
+allowed_origins = list(dict.fromkeys([*default_origins, *configured_origins]))
 
 app.add_middleware(
     CORSMiddleware,
