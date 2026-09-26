@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/:path*", "destination": "https://goforge-o39u.onrender.com/api/:path*" },
     { "source": "/admin", "destination": "/index.html" }
   ]
 }

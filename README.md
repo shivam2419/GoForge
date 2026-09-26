@@ -38,7 +38,7 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
 Run the frontend commands above in another terminal. Vite proxies `/api` requests to the local FastAPI server. Check the API at `http://127.0.0.1:8000/api/health` or open its interactive docs at `http://127.0.0.1:8000/docs`.
 
-For deployment, set Brevo credentials, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` in the backend host's secret environment configuration. Serve over HTTPS and set `ADMIN_COOKIE_SECURE=true`. Keep `ADMIN_COOKIE_SAMESITE=strict` for same-site frontend/API deployments; if they are on different sites, use `ADMIN_COOKIE_SAMESITE=none` with secure cookies and configure `FRONTEND_ORIGINS` for the frontend origin. Set `VITE_API_BASE_URL` to the deployed API origin when the API is hosted separately, or route `/api` to FastAPI on the same domain. Mount persistent storage for `backend/data/enquiries.db` or set `DATABASE_PATH` to a persistent volume; ephemeral deployment disks will not retain the database across redeploys.
+For deployment, set Brevo credentials, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` in the backend host's secret environment configuration. Serve over HTTPS and set `ADMIN_COOKIE_SECURE=true`. The Vercel rewrite proxies `/api/*` to Render, keeping browser requests and admin cookies same-origin; keep `ADMIN_COOKIE_SAMESITE=strict` and set `FRONTEND_ORIGINS` to include the deployed frontend origin. Mount persistent storage for `backend/data/enquiries.db` or set `DATABASE_PATH` to a persistent volume; ephemeral deployment disks will not retain the database across redeploys.
 
 ## Build for production
 
@@ -52,13 +52,27 @@ The production files are generated in `frontend/dist/`.
 
 ## Deploy to Vercel
 
-Import the repository in Vercel and set the project root directory to `frontend`. Vercel should detect Vite automatically. Use these project settings if prompted:
+Import the repository in Vercel and set the project root directory to `frontend`. Vercel should detect Vite automatically. `frontend/vercel.json` proxies `/api/*` to the Render API at `https://goforge-o39u.onrender.com`; frontend code uses same-origin `/api` paths. Remove any `VITE_API_BASE_URL` override from Vercel's environment settings. Use these project settings if prompted:
 
 - Build command: `npm run build`
 - Output directory: `dist`
 - Install command: `npm install`
 
 Deploy the FastAPI backend separately or route `/api` to it through your hosting provider. Configure the backend environment variables described above and set the frontend's `VITE_API_BASE_URL` when the API is on a separate origin.
+
+### Deploy the backend to Render
+
+The root `render.yaml` configures the FastAPI service with `backend` as its root directory, installs `backend/requirements.txt`, starts Uvicorn, checks `/api/health`, allows the production Vercel origin, and enables secure admin cookies. Create or update the Render web service from this Blueprint. If configuring the existing service manually, use:
+
+- Root Directory: `backend`
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Health Check Path: `/api/health`
+- `FRONTEND_ORIGINS`: include `https://goforge-mu.vercel.app`
+- `ADMIN_COOKIE_SECURE`: `true`
+- `ADMIN_COOKIE_SAMESITE`: `strict`
+
+Do not use `gunicorn your_application.wsgi`; that is a Django/WSGI placeholder, not this FastAPI app. Set the Brevo and admin secrets in Render's environment settings. Set `FRONTEND_ORIGINS` to the deployed frontend origin. For enquiry persistence across deploys, attach a persistent disk and set `DATABASE_PATH` to a file path on its mount.
 
 ## Replace the placeholders
 
