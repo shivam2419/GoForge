@@ -317,15 +317,41 @@ export function CTA() {
 }
 
 export function Contact() {
-  const [submitted, setSubmitted] = useState(false)
+  const [submissionState, setSubmissionState] = useState('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     const form = event.currentTarget
     if (!form.reportValidity()) return
 
-    setSubmitted(true)
-    form.reset()
+    setSubmissionState('sending')
+    setErrorMessage('')
+    setSuccessMessage('')
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+      })
+      const result = await response.json()
+
+      if (!response.ok) throw new Error(result.detail || 'The enquiry could not be sent.')
+
+      const emailStatus = result.notifications?.email
+      const notificationSent = emailStatus === 'sent'
+
+      setSubmissionState(notificationSent ? 'success' : 'saved')
+      setSuccessMessage(notificationSent
+        ? 'Your enquiry is saved and an email notification was sent.'
+        : `Your enquiry is saved. Email notification: ${emailStatus === 'not_configured' ? 'not configured' : 'not delivered'}.`)
+      form.reset()
+    } catch (error) {
+      setSubmissionState('error')
+      setErrorMessage(error.message || 'Please try again or email us directly.')
+    }
   }
 
   return (
@@ -334,7 +360,7 @@ export function Contact() {
         <Reveal className="contact-copy"><SectionHeading eyebrow="Start a conversation" title="Tell us what you have in mind." text="A few details are plenty. We&apos;ll get back to you to learn more and talk through a useful next step." />
           <div className="contact-details">
             <a href={`mailto:${agency.email}`}><span className="contact-detail-icon"><Mail size={17} /></span><span><small>EMAIL</small><strong>{agency.email}</strong></span><ArrowUpRight size={15} /></a>
-            <a href={`tel:${agency.phoneHref}`}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>PHONE</small><strong>{agency.phone}</strong></span><ArrowUpRight size={15} /></a>
+            {agency.phones.map((phone) => <a key={phone.href} href={`tel:${phone.href}`}><span className="contact-detail-icon"><Phone size={17} /></span><span><small>{phone.label}</small><strong>{phone.number}</strong></span><ArrowUpRight size={15} /></a>)}
             <a href={agency.whatsapp} target="_blank" rel="noreferrer"><span className="contact-detail-icon"><MessageCircle size={17} /></span><span><small>WHATSAPP</small><strong>Let&apos;s chat</strong></span><ArrowUpRight size={15} /></a>
             <div className="contact-location"><span className="contact-detail-icon"><MapPin size={17} /></span><span><small>LOCATION</small><strong>{agency.location}</strong></span></div>
           </div>
@@ -350,8 +376,9 @@ export function Contact() {
               <label className="form-full">Service you&apos;re interested in<select name="service" defaultValue="" required><option value="" disabled>Select a service</option>{serviceOptions.map((option) => <option key={option}>{option}</option>)}</select></label>
               <label className="form-full">A little about your project<textarea name="message" rows="4" placeholder="What are you looking to make possible?" required /></label>
             </div>
-            {submitted && <p className="form-success" role="status"><Check size={16} /> This demo form isn&apos;t connected yet. Email <a href={`mailto:${agency.email}`}>{agency.email}</a> to send your enquiry.</p>}
-            <div className="form-submit-row"><span>By sending this, you agree we can reply about your enquiry.</span><button className="button button-dark" type="submit">Send enquiry <Send size={15} /></button></div>
+            {(submissionState === 'success' || submissionState === 'saved') && <p className={submissionState === 'success' ? 'form-success' : 'form-error'} role="status"><Check size={16} /> {successMessage}</p>}
+            {submissionState === 'error' && <p className="form-error" role="alert">{errorMessage} You can also email <a href={`mailto:${agency.email}`}>{agency.email}</a>.</p>}
+            <div className="form-submit-row"><span>By sending this, you agree we can reply about your enquiry.</span><button className="button button-dark" type="submit" disabled={submissionState === 'sending'}>{submissionState === 'sending' ? 'Sending...' : 'Send enquiry'} <Send size={15} /></button></div>
           </form>
         </Reveal>
       </div>

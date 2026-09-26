@@ -1,55 +1,79 @@
 # Go-Forge Agency Website
 
-A responsive, single-page client acquisition website built with React, Vite, Tailwind CSS, and Lucide React. The contact form currently validates in the browser and is ready for a future API connection; it does not send or store enquiries yet.
+A responsive, single-page client acquisition website built with React, Vite, Tailwind CSS, and Lucide React. The FastAPI backend saves enquiries in SQLite and sends email notifications through Brevo.
 
 ## Run locally
 
 Requires Node.js 20.19+ or 22.12+.
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
 
 Vite prints the local URL after the dev server starts.
 
+## Run the contact API
+
+Requires Python 3.10 or newer. In a second terminal, from the project directory:
+
+```powershell
+cd backend
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+Set `BREVO_API_KEY` in the ignored `backend/.env` file. Set `BREVO_SENDER_EMAIL` to an address verified in your Brevo account; enquiries are sent to `CONTACT_TO_EMAIL`. Never commit `.env` or share the API key. Enquiries are saved to `backend/data/enquiries.db` even if Brevo is not configured or email delivery fails.
+
+Set `ADMIN_PASSWORD` in `backend/.env` to a long, unique password before using the admin portal. A random `ADMIN_SESSION_SECRET` is generated in the local `.env`; keep it private. Open `http://localhost:5173/admin` after starting both servers. The dashboard lists saved enquiries, contact details, email status, and project messages. Admin sessions use an HTTP-only signed cookie and expire after 12 hours.
+
+Then start the API:
+
+```powershell
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Run the frontend commands above in another terminal. Vite proxies `/api` requests to the local FastAPI server. Check the API at `http://127.0.0.1:8000/api/health` or open its interactive docs at `http://127.0.0.1:8000/docs`.
+
+For deployment, set Brevo credentials, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` in the backend host's secret environment configuration. Serve over HTTPS and set `ADMIN_COOKIE_SECURE=true`. Keep `ADMIN_COOKIE_SAMESITE=strict` for same-site frontend/API deployments; if they are on different sites, use `ADMIN_COOKIE_SAMESITE=none` with secure cookies and configure `FRONTEND_ORIGINS` for the frontend origin. Set `VITE_API_BASE_URL` to the deployed API origin when the API is hosted separately, or route `/api` to FastAPI on the same domain. Mount persistent storage for `backend/data/enquiries.db` or set `DATABASE_PATH` to a persistent volume; ephemeral deployment disks will not retain the database across redeploys.
+
 ## Build for production
 
 ```bash
+cd frontend
 npm run build
 npm run preview
 ```
 
-The production files are generated in `dist/`.
+The production files are generated in `frontend/dist/`.
 
 ## Deploy to Vercel
 
-Import the repository in Vercel, or install the Vercel CLI and run `vercel` from the project directory. Vercel should detect Vite automatically. Use these project settings if prompted:
+Import the repository in Vercel and set the project root directory to `frontend`. Vercel should detect Vite automatically. Use these project settings if prompted:
 
 - Build command: `npm run build`
 - Output directory: `dist`
 - Install command: `npm install`
 
-No server-side routes or environment variables are required for this version.
+Deploy the FastAPI backend separately or route `/api` to it through your hosting provider. Configure the backend environment variables described above and set the frontend's `VITE_API_BASE_URL` when the API is on a separate origin.
 
 ## Replace the placeholders
 
-- Brand name, email, phone, WhatsApp link, and location: `src/data/site.js` (`agency` object).
-- Page title and search/social descriptions: `<head>` in `index.html`.
+- Brand name, email, phone numbers, WhatsApp link, and location: `frontend/src/data/site.js` (`agency` object).
+- Page title and search/social descriptions: `<head>` in `frontend/index.html`.
 - Services, business capabilities, benefits, process steps, portfolio projects, form options, and footer services: same file.
-- Portfolio images and descriptive alt text: edit each `projects` item in `src/data/site.js`; current remote images are illustrative placeholders and project cards are explicitly labeled as concepts.
-- Logo artwork: `public/go-forge-navbar.svg` is the compact header lockup and `public/go-forge-footer.svg` is the navy-background footer lockup; `public/go-forge-logo.svg` is the light-background version. The `Brand` component selects the navbar/footer assets. Browser icon: `public/favicon.svg`.
-- Typography and all colors/layout styling: CSS variables at the top of `src/index.css`. Fonts are loaded from Google Fonts.
-- Social profile links: `socialLinks` in the `Footer` component in `src/components/SiteSections.jsx`.
-- Open Graph share image: replace the illustrative `og:image` URL in `index.html` with your own publicly accessible brand image.
-
-## Connect the contact form API
-
-Update `handleSubmit` in the `Contact` component in `src/components/SiteSections.jsx`. After browser validation, build a payload with `Object.fromEntries(new FormData(form).entries())` and send it to your endpoint with `fetch`. Handle success and error states, and only show a sent confirmation after the server accepts the enquiry. The current placeholder explicitly says the form is not connected and offers an email fallback; the form field `name` attributes provide the request payload keys.
+- Portfolio images and descriptive alt text: edit each `projects` item in `frontend/src/data/site.js`; current remote images are illustrative placeholders and project cards are explicitly labeled as concepts.
+- Logo artwork: `frontend/public/go-forge-navbar.svg` is the compact header lockup and `frontend/public/go-forge-footer.svg` is the navy-background footer lockup; `frontend/public/go-forge-logo.svg` is the light-background version. The `Brand` component selects the navbar/footer assets. Browser icon: `frontend/public/favicon.svg`.
+- Typography and all colors/layout styling: CSS variables at the top of `frontend/src/index.css`. Fonts are loaded from Google Fonts.
+- Social profile links: `socialLinks` in the `Footer` component in `frontend/src/components/SiteSections.jsx`.
+- Open Graph share image: replace the illustrative `og:image` URL in `frontend/index.html` with your own publicly accessible brand image.
 
 ## Scripts
 
-- `npm run dev` starts the local development server.
-- `npm run build` creates the production bundle.
-- `npm run preview` serves the production bundle locally.
-- `npm run lint` runs Oxlint.
+- `cd frontend; npm run dev` starts the local development server.
+- `cd frontend; npm run build` creates the production bundle.
+- `cd frontend; npm run preview` serves the production bundle locally.
+- `cd frontend; npm run lint` runs Oxlint.

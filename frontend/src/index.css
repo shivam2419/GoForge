@@ -302,6 +302,8 @@ button { color: inherit; }
 .form-grid textarea { min-height: 98px; resize: vertical; line-height: 1.5; }
 .form-full { grid-column: 1 / -1; }
 .form-success { display: flex; align-items: center; gap: 7px; margin: 14px 0 0; color: #54743a; font-size: 10px; }
+.form-error { margin: 14px 0 0; color: #b42318; font-size: 10px; line-height: 1.6; }
+.form-error a { font-weight: 700; text-decoration: underline; }
 .form-submit-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 18px; }
 .form-submit-row > span { max-width: 210px; color: #909990; font-size: 8px; line-height: 1.5; }
 .form-submit-row .button { min-height: 43px; flex: 0 0 auto; font-size: 10px; }

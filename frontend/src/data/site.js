@@ -1,10 +1,12 @@
 export const agency = {
   name: 'Go-Forge',
-  email: 'hello@youragency.com',
-  phone: '+1 (555) 010-2400',
-  phoneHref: '+15550102400',
-  whatsapp: 'https://wa.me/?text=Hello%2C%20I%27d%20like%20to%20talk%20about%20a%20project.',
-  location: 'Working with ambitious teams, everywhere',
+  email: 'officialshivam2419@gmail.com',
+  phones: [
+    { label: 'PHONE', number: '+91-9953214480', href: '+919953214480' },
+    { label: 'PHONE', number: '+91-8447852971', href: '+918447852971' },
+  ],
+  whatsapp: 'https://wa.me/918448852971?text=Hello%2C%20I%27d%20like%20to%20talk%20about%20a%20project.',
+  location: 'Delhi NCR, India',
 }
 
 export const navigation = [
