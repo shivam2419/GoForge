@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
-const { db, DATA_DIR, getSettings, saveSettings } = require('./lib/db');
+const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
 const { SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 
@@ -41,11 +41,11 @@ function generatePassword() {
   for (let i = chars.length - 1; i > 0; i--) { const j = crypto.randomInt(i + 1); [chars[i], chars[j]] = [chars[j], chars[i]]; }
   return chars.join('');
 }
-(function seedAdmin() {
-  const count = db.prepare('SELECT COUNT(*) AS n FROM admins').get().n;
+async function seedAdmin() {
+  const count = (await db.get('SELECT COUNT(*) AS n FROM admins')).n;
   if (count > 0) return;
   const password = process.env.ADMIN_INITIAL_PASSWORD || generatePassword();
-  db.prepare('INSERT INTO admins (email, password_hash) VALUES (?, ?)').run(ADMIN_EMAIL, bcrypt.hashSync(password, BCRYPT_COST));
+  (await db.run('INSERT OR IGNORE INTO admins (email, password_hash) VALUES (?, ?)', ADMIN_EMAIL, bcrypt.hashSync(password, BCRYPT_COST)));
   if (!process.env.ADMIN_INITIAL_PASSWORD) {
     const file = process.env.ADMIN_PASSWORD_FILE || path.join(DATA_DIR, 'ADMIN_INITIAL_PASSWORD.txt');
     try {
@@ -55,7 +55,7 @@ function generatePassword() {
       console.log(`[goforge] Admin account created for ${ADMIN_EMAIL}. Password file was not written (${err.message}). Set ADMIN_INITIAL_PASSWORD to choose it.`);
     }
   }
-})();
+}
 
 // ---------- helpers ----------
 const sha256 = s => crypto.createHash('sha256').update(s).digest('hex');
@@ -145,6 +145,20 @@ function applicationMessage(v) {
 
 // ---------- app ----------
 const app = express();
+
+// Make sure the schema, default settings and first admin exist before any request is handled,
+// and keep the settings cache fresh (it is shared by every render).
+let bootPromise = null;
+function boot() {
+  if (!bootPromise) bootPromise = ready().then(seedAdmin).catch(err => { bootPromise = null; throw err; });
+  return bootPromise;
+}
+app.use(async (req, res, next) => {
+  if (req.path === '/healthz') return next();
+  await boot();
+  await loadSettings();
+  next();
+});
 app.disable('x-powered-by');
 app.set('trust proxy', process.env.VERCEL ? 1 : (process.env.TRUST_PROXY || 'loopback'));
 app.set('view engine', 'ejs');
@@ -359,27 +373,25 @@ app.get('/refund', (req, res) => res.render('legal', pageMeta(req, 'Refunds',
   'Refund template for the Goforge Digital internship and for client deposits. Blank items must be confirmed before you rely on them.',
   { seoTitle: 'Refund policy | Goforge Digital', kind: 'refund' })));
 
-app.post('/contact', formLimiter, (req, res) => {
+app.post('/contact', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.', waUrl(getSettings().whatsapp, ''));
   const { errors, values } = validateContact(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact Goforge Digital'), errors, values });
   }
-  db.prepare('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)')
-    .run(values.name, values.business || null, values.phone, values.service || null, values.message);
+  (await db.run('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)', values.name, values.business || null, values.phone, values.service || null, values.message));
   respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.', waUrl(getSettings().whatsapp, contactMessage(values)));
 });
 
-app.post('/internship', formLimiter, (req, res) => {
+app.post('/internship', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.', waUrl(getSettings().whatsapp, ''));
   const { errors, values } = validateApplication(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('internship', { ...pageMeta(req, 'Internship', 'Internship at Goforge Digital'), errors, values });
   }
-  db.prepare('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note) VALUES (?, ?, ?, ?, ?, ?)')
-    .run(values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null);
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note) VALUES (?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null));
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you on WhatsApp.', waUrl(getSettings().whatsapp, applicationMessage(values)));
 });
 
@@ -406,25 +418,25 @@ app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'public'
 app.get('/healthz', (req, res) => res.type('text').send('ok'));
 
 // ---------- admin ----------
-function clearSession(req, res) {
-  if (req.cookies.gf_sid) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(sha256(req.cookies.gf_sid));
+async function clearSession(req, res) {
+  if (req.cookies.gf_sid) (await db.run('DELETE FROM sessions WHERE token_hash = ?', sha256(req.cookies.gf_sid)));
   res.clearCookie('gf_sid', { path: '/' });
 }
-function loadAdmin(req, res, next) {
+async function loadAdmin(req, res, next) {
   const token = req.cookies.gf_sid;
   if (token) {
-    const row = db.prepare('SELECT a.id, a.email, s.expires_at FROM sessions s JOIN admins a ON a.id = s.admin_id WHERE s.token_hash = ?').get(sha256(token));
+    const row = (await db.get('SELECT a.id, a.email, s.expires_at FROM sessions s JOIN admins a ON a.id = s.admin_id WHERE s.token_hash = ?', sha256(token)));
     if (row && row.expires_at > Date.now()) { req.admin = row; res.locals.admin = row; }
   }
   next();
 }
-function requireAdmin(req, res, next) {
+async function requireAdmin(req, res, next) {
   if (!req.admin) return res.redirect(303, '/admin/login');
   res.set('Cache-Control', 'no-store');
   res.locals.noindex = true;
   res.locals.newCounts = {
-    contacts: db.prepare("SELECT COUNT(*) n FROM contacts WHERE status = 'New'").get().n,
-    applications: db.prepare("SELECT COUNT(*) n FROM applications WHERE status = 'New'").get().n
+    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New'")).n,
+    applications: (await db.get("SELECT COUNT(*) n FROM applications WHERE status = 'New'")).n
   };
   next();
 }
@@ -439,7 +451,7 @@ const DUMMY_HASH = bcrypt.hashSync(crypto.randomBytes(16).toString('hex'), BCRYP
 app.post('/admin/login', loginLimiter, async (req, res) => {
   const email = text(req.body.email).toLowerCase().slice(0, 200);
   const password = String(req.body.password || '').slice(0, 200);
-  const user = db.prepare('SELECT * FROM admins WHERE email = ?').get(email);
+  const user = (await db.get('SELECT * FROM admins WHERE email = ?', email));
   const valid = await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH);
   if (!user || !valid) {
     res.status(401);
@@ -447,13 +459,13 @@ app.post('/admin/login', loginLimiter, async (req, res) => {
   }
   const token = crypto.randomBytes(32).toString('hex');
   const now = Date.now();
-  db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(now);
-  db.prepare('INSERT INTO sessions (token_hash, admin_id, created_at, expires_at) VALUES (?, ?, ?, ?)').run(sha256(token), user.id, now, now + SESSION_DAYS * 864e5);
-  db.prepare("UPDATE admins SET last_login_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?").run(user.id);
+  (await db.run('DELETE FROM sessions WHERE expires_at < ?', now));
+  (await db.run('INSERT INTO sessions (token_hash, admin_id, created_at, expires_at) VALUES (?, ?, ?, ?)', sha256(token), user.id, now, now + SESSION_DAYS * 864e5));
+  (await db.run("UPDATE admins SET last_login_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?", user.id));
   res.cookie('gf_sid', token, { httpOnly: true, sameSite: 'strict', secure: req.secure, path: '/', maxAge: SESSION_DAYS * 864e5 });
   res.redirect(303, '/admin');
 });
-app.post('/admin/logout', (req, res) => { clearSession(req, res); res.redirect(303, '/admin/login'); });
+app.post('/admin/logout', async (req, res) => { await clearSession(req, res); res.redirect(303, '/admin/login'); });
 
 app.get('/admin', requireAdmin, (req, res) => res.redirect(303, '/admin/contacts'));
 
@@ -467,7 +479,7 @@ const INBOXES = {
 };
 const PAGE_SIZE = 25;
 for (const [slug, cfg] of Object.entries(INBOXES)) {
-  app.get(`/admin/${slug}`, requireAdmin, (req, res) => {
+  app.get(`/admin/${slug}`, requireAdmin, async (req, res) => {
     const q = text(req.query.q).slice(0, 100);
     const status = STATUSES.includes(req.query.status) ? req.query.status : '';
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -479,19 +491,19 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
       cfg.search.forEach(() => params.push(like));
     }
     const w = where.length ? 'WHERE ' + where.join(' AND ') : '';
-    const total = db.prepare(`SELECT COUNT(*) n FROM ${cfg.table} ${w}`).get(...params).n;
-    const rows = db.prepare(`SELECT * FROM ${cfg.table} ${w} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`).all(...params, PAGE_SIZE, (page - 1) * PAGE_SIZE);
-    const counts = Object.fromEntries(STATUSES.map(st => [st, db.prepare(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?`).get(st).n]));
+    const total = (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} ${w}`, ...params)).n;
+    const rows = (await db.all(`SELECT * FROM ${cfg.table} ${w} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`, ...params, PAGE_SIZE, (page - 1) * PAGE_SIZE));
+    const counts = Object.fromEntries(await Promise.all(STATUSES.map(async st => [st, (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?`, st)).n])));
     res.render('admin/inbox', {
       ...pageMeta(req, cfg.title, 'Admin'), slug, cfg, rows, q, status, page, total,
       pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved ? 'Status updated.' : null
     });
   });
-  app.post(`/admin/${slug}/:id/status`, requireAdmin, (req, res) => {
+  app.post(`/admin/${slug}/:id/status`, requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id, 10);
     const st = req.body.status;
     if (!STATUSES.includes(st) || !id) return res.status(400).type('text').send('Invalid status.');
-    db.prepare(`UPDATE ${cfg.table} SET status = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?`).run(st, id);
+    (await db.run(`UPDATE ${cfg.table} SET status = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?`, st, id));
     const back = new URLSearchParams();
     if (req.body.q) back.set('q', text(req.body.q).slice(0, 100));
     if (STATUSES.includes(req.body.f)) back.set('status', req.body.f);
@@ -504,7 +516,7 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
 app.get('/admin/settings', requireAdmin, (req, res) => {
   res.render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: getSettings(), errors: {}, flash: req.query.saved ? 'Saved. The public site now shows these details.' : null });
 });
-app.post('/admin/settings', requireAdmin, (req, res) => {
+app.post('/admin/settings', requireAdmin, async (req, res) => {
   const errors = {}, values = {};
   phoneField(errors, values, req.body, 'phone1', 'first phone number');
   phoneField(errors, values, req.body, 'phone2', 'second phone number');
@@ -518,7 +530,7 @@ app.post('/admin/settings', requireAdmin, (req, res) => {
   if (Object.keys(errors).length) {
     return res.status(422).render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: { ...getSettings(), ...values }, errors, flash: null });
   }
-  saveSettings(values);
+  await saveSettings(values);
   res.redirect(303, '/admin/settings?saved=1');
 });
 
@@ -530,14 +542,14 @@ app.post('/admin/password', requireAdmin, async (req, res) => {
   const current = String(req.body.current || '').slice(0, 200);
   const next1 = String(req.body.new_password || '').slice(0, 200);
   const next2 = String(req.body.confirm || '').slice(0, 200);
-  const user = db.prepare('SELECT * FROM admins WHERE id = ?').get(req.admin.id);
+  const user = (await db.get('SELECT * FROM admins WHERE id = ?', req.admin.id));
   if (!(await bcrypt.compare(current, user.password_hash))) errors.current = 'The current password is not correct.';
   if (next1.length < 12) errors.new_password = 'Use at least 12 characters.';
   else if (next1 === current) errors.new_password = 'Choose a password different from the current one.';
   if (next1 !== next2) errors.confirm = 'The two new passwords do not match.';
   if (Object.keys(errors).length) return res.status(422).render('admin/password', { ...pageMeta(req, 'Change password', 'Admin'), errors, flash: null });
-  db.prepare("UPDATE admins SET password_hash = ?, password_changed_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?").run(await bcrypt.hash(next1, BCRYPT_COST), user.id);
-  db.prepare('DELETE FROM sessions WHERE admin_id = ? AND token_hash != ?').run(user.id, sha256(req.cookies.gf_sid));
+  (await db.run("UPDATE admins SET password_hash = ?, password_changed_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?", await bcrypt.hash(next1, BCRYPT_COST), user.id));
+  (await db.run('DELETE FROM sessions WHERE admin_id = ? AND token_hash != ?', user.id, sha256(req.cookies.gf_sid)));
   res.redirect(303, '/admin/password?saved=1');
 });
 
@@ -552,6 +564,7 @@ app.use((err, req, res, _next) => {
 });
 
 if (!process.env.VERCEL) {
+  boot().catch(err => { console.error('[goforge] Database startup failed:', err); process.exit(1); });
   app.listen(PORT, '0.0.0.0', () => console.log(`[goforge] Listening on http://localhost:${PORT}`));
 }
 module.exports = app;

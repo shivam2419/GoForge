@@ -1,33 +1,24 @@
 'use strict';
+// Storage: a hosted Turso (libSQL) database when TURSO_DATABASE_URL is set (production on Vercel),
+// otherwise a local SQLite file in DATA_DIR (local dev). Same SQL dialect in both cases.
 const path = require('path');
 const fs = require('fs');
+const { createClient } = require('@libsql/client');
 
+const DB_URL = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || '';
+const DB_TOKEN = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN || undefined;
 const DATA_DIR = process.env.DATA_DIR || (process.env.VERCEL ? '/tmp/goforge' : path.join(__dirname, '..', 'data'));
 fs.mkdirSync(DATA_DIR, { recursive: true });
-
-function openDatabase(file) {
-  try {
-    const Database = require('better-sqlite3');
-    const db = new Database(file);
-    db.pragma('journal_mode = WAL');
-    db.pragma('foreign_keys = ON');
-    db.pragma('busy_timeout = 5000');
-    return db;
-  } catch (err) {
-    const { DatabaseSync } = require('node:sqlite');
-    const db = new DatabaseSync(file);
-    db.exec('PRAGMA journal_mode = WAL');
-    db.exec('PRAGMA foreign_keys = ON');
-    db.exec('PRAGMA busy_timeout = 5000');
-    db.pragma = () => {};
-    db.transaction = (fn) => () => fn();
-    return db;
-  }
+const IS_REMOTE = !!DB_URL;
+if (process.env.VERCEL && !IS_REMOTE) {
+  console.warn('[goforge] TURSO_DATABASE_URL is not set: using temporary /tmp storage. Data WILL be lost. See README "Database".');
 }
 
-const db = openDatabase(path.join(DATA_DIR, 'goforge.db'));
+const client = createClient(IS_REMOTE
+  ? { url: DB_URL, authToken: DB_TOKEN }
+  : { url: 'file:' + path.join(DATA_DIR, 'goforge.db') });
 
-db.exec(`
+const SCHEMA = `
 CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL,
@@ -73,7 +64,16 @@ CREATE TABLE IF NOT EXISTS applications (
 CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
-`);
+`;
+
+const toArgs = a => a.map(v => (v === undefined ? null : v));
+const db = {
+  async get(sql, ...args) { const r = await client.execute({ sql, args: toArgs(args) }); return r.rows[0]; },
+  async all(sql, ...args) { const r = await client.execute({ sql, args: toArgs(args) }); return r.rows; },
+  async run(sql, ...args) { return client.execute({ sql, args: toArgs(args) }); },
+  async batch(stmts) { return client.batch(stmts.map(([sql, ...args]) => ({ sql, args: toArgs(args) })), 'write'); },
+  client
+};
 
 const DEFAULT_SETTINGS = {
   phone1: '+91 84488 52971',
@@ -89,29 +89,43 @@ const DEFAULT_SETTINGS = {
   intern_fee: 'Confirmed on the call'
 };
 
-const insertDefault = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
-db.transaction(() => {
-  for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) insertDefault.run(k, v);
-})();
-db.prepare("UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'").run();
-
-let cache = null;
-function getSettings() {
-  if (!cache) {
-    cache = { ...DEFAULT_SETTINGS };
-    for (const row of db.prepare('SELECT key, value FROM settings').all()) cache[row.key] = row.value;
+async function init() {
+  if (!IS_REMOTE) {
+    await client.execute('PRAGMA journal_mode = WAL');
+    await client.execute('PRAGMA busy_timeout = 5000');
   }
+  await client.execute('PRAGMA foreign_keys = ON');
+  const stmts = SCHEMA.split(';').map(s => s.trim()).filter(Boolean);
+  await client.batch(stmts, 'write');
+  await db.batch([
+    ...Object.entries(DEFAULT_SETTINGS).map(([k, v]) => ['INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', k, v]),
+    ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"]
+  ]);
+}
+let readyPromise = null;
+function ready() {
+  if (!readyPromise) readyPromise = init().catch(err => { readyPromise = null; throw err; });
+  return readyPromise;
+}
+
+// Settings are cached per instance. Serverless instances refresh every 30 s so a save made on one
+// instance shows on the others shortly after; the instance that saved sees it immediately.
+const SETTINGS_TTL_MS = 30 * 1000;
+let cache = null, cacheAt = 0;
+async function loadSettings(force = false) {
+  if (!force && cache && Date.now() - cacheAt < SETTINGS_TTL_MS) return cache;
+  const next = { ...DEFAULT_SETTINGS };
+  for (const row of await db.all('SELECT key, value FROM settings')) next[row.key] = row.value;
+  cache = next; cacheAt = Date.now();
   return cache;
 }
-function saveSettings(values) {
-  const stmt = db.prepare(`INSERT INTO settings (key, value, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
-    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`);
-  db.transaction(() => {
-    for (const [k, v] of Object.entries(values)) {
-      if (Object.prototype.hasOwnProperty.call(DEFAULT_SETTINGS, k)) stmt.run(k, v);
-    }
-  })();
-  cache = null;
+function getSettings() { return cache || { ...DEFAULT_SETTINGS }; }
+async function saveSettings(values) {
+  const sql = `INSERT INTO settings (key, value, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`;
+  const stmts = Object.entries(values).filter(([k]) => Object.prototype.hasOwnProperty.call(DEFAULT_SETTINGS, k)).map(([k, v]) => [sql, k, v]);
+  if (stmts.length) await db.batch(stmts);
+  await loadSettings(true);
 }
 
-module.exports = { db, DATA_DIR, DEFAULT_SETTINGS, getSettings, saveSettings };
+module.exports = { db, DATA_DIR, IS_REMOTE, DEFAULT_SETTINGS, ready, loadSettings, getSettings, saveSettings };

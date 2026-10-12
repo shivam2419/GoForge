@@ -2,7 +2,7 @@
 
 Server-rendered site and admin panel for Goforge Digital.
 
-- **Stack:** Node.js 20+, Express 5, EJS templates, SQLite (better-sqlite3), bcrypt password hashing, Helmet (strict CSP), rate limiting, compression. No build step and no client framework; one small JS file adds progressive enhancement.
+- **Stack:** Node.js 20+, Express 5, EJS templates, Turso/libSQL in production, local SQLite file in dev (`@libsql/client`), bcrypt password hashing, Helmet (strict CSP), rate limiting, compression. No build step and no client framework; one small JS file adds progressive enhancement.
 - **Pages:** Home, Services (plus one page per service), Work, Internship (plus one page per role and a printable overview), FAQ, About, Contact, Privacy, Terms, Refunds, 404, `/admin`.
 - **Admin:** email + password login (no sign-up), project enquiry inbox, internship inbox, search, status filter (New / Contacted / Closed), site settings (2 phones, WhatsApp, email, 4 service lines, internship lengths and fee line), change password.
 - **SEO:** per-page titles and descriptions, canonical links, Open Graph and Twitter cards, JSON-LD (ProfessionalService), `sitemap.xml`, `robots.txt`, favicons and web manifest.
@@ -14,7 +14,7 @@ npm install
 npm start            # http://localhost:3000 (PORT to change)
 ```
 
-Works the same on Windows (PowerShell or the VS Code terminal) with Node 20, 22 or 24: `npm install` installs only the runtime packages, and better-sqlite3 12 ships prebuilt binaries for those versions, so no compiler is needed. If npm ever falls back to building it from source (an unusual Node/OS combination), install the C++ build tools first (Windows: "Desktop development with C++" from Visual Studio Build Tools; Linux: `build-essential` and `python3`).
+Works the same on Windows (PowerShell or the VS Code terminal) with Node 20, 22 or 24: `npm install` installs only the runtime packages, and `@libsql/client` ships prebuilt binaries, so no compiler is needed. With no `TURSO_DATABASE_URL` set, data is stored in `data/goforge.db` (an ordinary SQLite file; an existing one keeps working).
 
 Templates are cached unless `NODE_ENV=development`. For editing templates with live reload use `NODE_ENV=development npm run dev` (PowerShell: `$env:NODE_ENV="development"; npm run dev`).
 
@@ -29,8 +29,10 @@ See `.env.example`. The important ones:
 | Variable | Purpose |
 | --- | --- |
 | `SITE_URL` | Public URL, e.g. `https://goforgedigital.com` |
-| `DATA_DIR` | Where the SQLite database and session secret live. **Must be a persistent disk.** |
-| `SESSION_SECRET` | 32+ random characters (optional; auto-generated into `DATA_DIR` if missing) |
+| `TURSO_DATABASE_URL` | Hosted database URL (`libsql://...`). **Required on Vercel.** When empty, a local SQLite file in `DATA_DIR` is used. |
+| `TURSO_AUTH_TOKEN` | Token for that database. |
+| `DATA_DIR` | Local-mode SQLite file and fallback session secret. Must be persistent if you use local mode in production. |
+| `SESSION_SECRET` | 32+ random characters. **Required on Vercel** (otherwise each serverless instance generates its own and forms fail with 403). Auto-generated into `DATA_DIR` elsewhere. |
 | `TRUST_PROXY` | `1` when behind Render, Railway, Nginx or Cloudflare |
 | `GA_MEASUREMENT_ID` | Optional. GA4 ID (`G-XXXXXXXX`). Off if empty. |
 | `PLAUSIBLE_DOMAIN` | Optional. Plausible domain. Off if empty. |
@@ -38,7 +40,14 @@ See `.env.example`. The important ones:
 
 ## Deploy
 
-The app is one Node process plus a SQLite file, so any host with a persistent disk works.
+### Vercel (current setup)
+Vercel functions have no persistent disk, so the database must be hosted. Schema and default settings are created automatically on first request.
+1. Vercel dashboard > project > **Storage** (or **Integrations > Marketplace**) > **Turso Cloud** > Create/Connect a database, connect it to this project (Production + Preview). This adds `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`. (Alternatively create a DB at turso.tech and paste both values under Settings > Environment Variables.)
+2. Settings > Environment Variables, add: `SESSION_SECRET` (run `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`), `ADMIN_INITIAL_PASSWORD` (a long password you choose; used only when the admin account is first created), `SITE_URL=https://goforgedigital.com`, `TRUST_PROXY=1`.
+3. Redeploy. Sign in at `/admin/login` with `goforgedigital@gmail.com` and that password, then change it under Admin > Password.
+
+
+Elsewhere the app is one Node process plus either Turso (set the two env vars) or a SQLite file on a persistent disk.
 
 ### Render
 1. Push this folder to a GitHub repo.
@@ -76,7 +85,7 @@ server {
 Then `sudo certbot --nginx -d goforgedigital.com -d www.goforgedigital.com` for HTTPS.
 
 ### Backups
-Copy `DATA_DIR/goforge.db` regularly (for example `sqlite3 goforge.db ".backup backup.db"` from a daily cron).
+Turso: use the dashboard's point-in-time restore, or `turso db shell <db> .dump > backup.sql`. Local mode: Copy `DATA_DIR/goforge.db` regularly (for example `sqlite3 goforge.db ".backup backup.db"` from a daily cron).
 
 ## Editing content
 
