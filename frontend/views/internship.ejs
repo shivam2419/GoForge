@@ -18,6 +18,49 @@
   </div>
 </section>
 
+<section class="section section-tight" aria-labelledby="benefit-h">
+  <div class="wrap">
+    <h2 id="benefit-h" class="h2" data-reveal>What you <em>actually get.</em></h2>
+    <ol class="benefit-path cols-4">
+      <li data-reveal>
+        <span class="benefit-orb orb-a"><%- include('partials/icon', { name: 'browser' }) %></span>
+        <h3>Live classes</h3>
+        <p>You learn the role on a call, then do the task. Not a folder of old videos.</p>
+      </li>
+      <li data-reveal>
+        <span class="benefit-orb orb-b"><%- include('partials/icon', { name: 'user' }) %></span>
+        <h3>The founder teaches</h3>
+        <p>Rohit Sharma is on the training. There is no bench of stand-in instructors.</p>
+      </li>
+      <li data-reveal>
+        <span class="benefit-orb orb-c"><%- include('partials/icon', { name: 'check' }) %></span>
+        <h3>One real project</h3>
+        <p>A piece of studio work, or a practice project of the same shape if no client task fits.</p>
+      </li>
+      <li data-reveal>
+        <span class="benefit-orb orb-d"><%- include('partials/icon', { name: 'tag' }) %></span>
+        <h3>A letter after the work</h3>
+        <p>Issued only when the project is finished. It names the dates and the work. It is not a job offer.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="who-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Who we are</p>
+      <h2 id="who-h" class="h2" data-reveal>A small studio, <em>not a certificate shop.</em></h2>
+    </div>
+    <ul class="values" data-reveal-group>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'code' }) %></span><h3>The studio</h3><p>Goforge Digital builds software, CRM, ERP and marketing for businesses in Faridabad. The internship sits inside that work.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Who teaches</h3><p>Rohit Sharma, Founder and Director. You are not passed to a different trainer after you pay.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'megaphone' }) %></span><h3>How you learn</h3><p><%= s.intern_training %> of live online training in the role you chose, then <%= s.intern_work %> of supervised work.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'eye' }) %></span><h3>What is different</h3><p>The letter describes work you did. We do not invent a client, a placement percentage, or a job at the end.</p></li>
+    </ul>
+  </div>
+</section>
+
 <section class="section section-alt" id="roles" aria-labelledby="roles-h">
   <div class="wrap">
     <div class="section-head split-head">
@@ -50,24 +93,42 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="structure-h">
+<section class="section" aria-labelledby="road-h">
   <div class="wrap">
     <div class="section-head center">
-      <p class="eyebrow" data-reveal>How it runs</p>
-      <h2 id="structure-h" class="h2" data-reveal>Two stages, <em>one after the other.</em></h2>
+      <p class="eyebrow" data-reveal>Internship journey</p>
+      <h2 id="road-h" class="h2" data-reveal>Five steps, <em>in this order.</em></h2>
     </div>
-    <ol class="stages" data-reveal-group>
+    <ol class="timeline-h roadmap-5" data-reveal-group data-line>
       <li data-reveal>
-        <span class="stage-num">01</span>
-        <h3>Training</h3>
-        <p class="stage-len"><%= s.intern_training %> &middot; live online</p>
-        <p>Live sessions on your chosen role. You build as you learn, with questions answered in the session.</p>
+        <span class="th-num">01</span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3>Demo class</h3>
+        <p>One free live session. You see how training feels. It does not reserve a seat.</p>
       </li>
       <li data-reveal>
-        <span class="stage-num">02</span>
-        <h3>Internship</h3>
-        <p class="stage-len"><%= s.intern_work %> &middot; supervised</p>
-        <p>After training, you work on tasks under Goforge Digital, with review from the team.</p>
+        <span class="th-num">02</span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3>Choose a role</h3>
+        <p>Software, AI, data, web or marketing. The fee and the batch dates are confirmed on a call.</p>
+      </li>
+      <li data-reveal>
+        <span class="th-num">03</span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3>Live training</h3>
+        <p><%= s.intern_training %>, online. You build during the class, and questions are answered there.</p>
+      </li>
+      <li data-reveal>
+        <span class="th-num">04</span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3>Supervised work</h3>
+        <p><%= s.intern_work %> under Goforge Digital. Tasks are reviewed. This is the internship, not the classes.</p>
+      </li>
+      <li data-reveal>
+        <span class="th-num">05</span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3>The letter</h3>
+        <p>Only after the project is finished. Your college still decides whether it counts.</p>
       </li>
     </ol>
   </div>
@@ -96,6 +157,23 @@
           <li><%- include('partials/icon', { name: 'cross' }) %><span>A job guarantee</span></li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="faq-h">
+  <div class="wrap faq-wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Questions students ask</p>
+      <h2 id="faq-h" class="h2" data-reveal>Read this <em>before you pay.</em></h2>
+    </div>
+    <div class="faq-list" data-reveal>
+      <% FAQ.find(group => group.id === 'students').items.forEach(item => { %>
+      <details>
+        <summary><%= item.q %></summary>
+        <p><%= item.a %></p>
+      </details>
+      <% }) %>
     </div>
   </div>
 </section>

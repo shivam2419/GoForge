@@ -708,3 +708,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .map-frame iframe { width: 100%; height: 360px; border: 0; }
 @media (min-width: 900px) { .visit-grid { grid-template-columns: 1fr 1.2fr; } }
 
+.benefit-path.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.roadmap-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.faq-wrap { max-width: 860px; }
+.faq-list details { border-bottom: 1px solid var(--line-2); }
+.faq-list summary {
+  cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: center;
+  padding: 20px 0; font-weight: 750; font-size: 17px; letter-spacing: -.01em;
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after { content: "+"; font-family: var(--serif); font-size: 28px; font-weight: 500; color: var(--gold-deep); line-height: 1; }
+.faq-list details[open] summary::after { content: "–"; }
+.faq-list details[open] summary { color: var(--gold-deep); }
+.faq-list details p { margin: 0 0 20px; color: var(--ink-2); max-width: 68ch; }
+@media (max-width: 980px) {
+  .benefit-path.cols-4, .roadmap-5 { grid-template-columns: 1fr 1fr; }
+  .roadmap-5::before, .roadmap-5::after { display: none; }
+}
+@media (max-width: 640px) {
+  .benefit-path.cols-4, .roadmap-5 { grid-template-columns: 1fr; }
+}
+
