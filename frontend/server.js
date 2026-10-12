@@ -73,6 +73,8 @@ function assetVersion() {
   for (const f of ['public/css/site.css', 'public/css/admin.css', 'public/js/site.js']) {
     try { h.update(fs.readFileSync(path.join(__dirname, f))); } catch (_) { /* optional */ }
   }
+  // Include the deploy's commit so cached HTML/JS from an older deploy is never paired with a newer server.
+  h.update(process.env.VERCEL_GIT_COMMIT_SHA || process.env.VERCEL_DEPLOYMENT_ID || '');
   return h.digest('hex').slice(0, 10);
 }
 const ASSET_V = assetVersion();
@@ -183,6 +185,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 app.use(express.json({ limit: '20kb' }));
 
+// Old cached copies of site.js (before WhatsApp was removed) navigated a new tab to data.whatsappUrl,
+// which newer servers no longer send, giving /undefined. Send such tabs home instead of a 404.
+app.get(['/undefined', '/null'], (req, res) => res.redirect(302, '/'));
 app.use(express.static(path.join(__dirname, 'public'), {
   index: false,
   setHeaders(res, file) {
