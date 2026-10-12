@@ -10,7 +10,7 @@
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
-    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Fee: <%= s.intern_fee.charAt(0).toLowerCase() + s.intern_fee.slice(1) %>.</p>
+    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Training fee: <%= s.intern_fee.charAt(0).toLowerCase() + s.intern_fee.slice(1) %>. Projects and internship included — no extra fees.</p>
     <%- include('apply-form', { px: 'ma', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
@@ -45,7 +45,7 @@
     <ul class="check-list">
       <% t.coversList.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
     </ul>
-    <p class="modal-note"><%= t.training %> of live training, then a <%= t.internship %> internship. You finish with projects you can explain, a training certificate and an internship letter. No job guarantee.</p>
+    <p class="modal-note"><%= t.training %> of live training, then a <%= t.internship %> internship. You finish with projects you can explain, a training certificate and an internship letter. Accepted by colleges and recognised by industry.</p>
     <div class="modal-actions">
       <a class="btn btn-primary" href="/internship?track=<%= encodeURIComponent(t.name) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= t.name %>">Apply for this programme <%- include('icon', { name: 'arrow' }) %></a>
     </div>

@@ -7,7 +7,7 @@
     <p class="lede" data-hero-item><%= s[service.key] %></p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="/contact?service=<%= encodeURIComponent(service.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= service.name %>">Talk about this <%- include('partials/icon', { name: 'upright' }) %></a>
-      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Free website and WhatsApp check</a>
+      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Free website check</a>
     </div>
   </div>
 </section>
@@ -37,7 +37,7 @@
 <section class="section section-alt">
   <div class="wrap prose">
     <h2 class="h3">How the price is set</h2>
-    <p>There is no printed rate card. After the call you get one written scope and one price. If that is more than you want to spend, the first version gets smaller. The price is not quietly changed. For ads, the media budget stays in your own ad account and is separate from the studio fee.</p>
+    <p>After the call you get one written scope and one clear price, shaped to your budget. For ads, the media budget stays in your own ad account and is separate from the studio fee.</p>
     <p><a class="text-link" href="/faq#clients">More answers for clients <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
 </section>

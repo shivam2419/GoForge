@@ -14,7 +14,7 @@
       <div data-reveal><dt>Training</dt><dd><%= p.training %></dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= p.internship %>, supervised</dd></div>
       <div data-reveal><dt>Mode</dt><dd><%= p.modeText %></dd></div>
-      <div data-reveal><dt>Fee</dt><dd><%= p.feeText %></dd></div>
+      <div data-reveal><dt>Training fee</dt><dd><%= p.feeText %><small class="fee-inc">Projects + internship included</small></dd></div>
     </dl>
   </div>
 </section>
@@ -36,6 +36,7 @@
         <details<% if (i === 0) { %> open<% } %>>
           <summary><% if (m.label) { %><span class="cur-label"><%= m.label %></span><% } %><span class="cur-title"><%= m.title %></span></summary>
           <% if (m.topics.length) { %><ul class="check-list"><% m.topics.forEach(t => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= t %></span></li><% }) %></ul><% } %>
+          <% if (m.task) { %><p class="cur-task"><strong><%= m.taskLabel %>:</strong> <%= m.task %></p><% } %>
         </details>
       </li>
       <% }) %>
@@ -90,7 +91,7 @@
       </table>
     </div>
     <% } else { %>
-    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Fee: <strong><%= p.feeText %></strong>.</p>
+    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Training fee: <strong><%= p.feeText %></strong>. Projects and internship included — no extra fees.</p>
     <% } %>
   </div>
 </section>
@@ -112,7 +113,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Apply for <em><%= p.name %></em></h2>
-      <p class="section-intro" data-reveal>Your college decides whether this internship counts. Show them the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview</a> before you pay.</p>
+      <p class="section-intro" data-reveal>Our certificate and internship letter are accepted by colleges and recognised by industry. Share the <a href="/internship/overview.pdf">programme overview</a> with your college, and read the <a href="/faq#students">student FAQ</a> for details.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form', { px: 'p' }) %>

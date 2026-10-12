@@ -19,6 +19,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Goforge Digital: gold GF monogram on cream, Digital Solutions &amp; Growth">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="Goforge Digital: software development and IT training in Faridabad">
 <meta name="twitter:title" content="<%= pageTitle %>">
 <meta name="twitter:description" content="<%= pageDesc %>">
 <meta name="twitter:image" content="<%= siteUrl %>/img/og.png">
@@ -32,6 +33,7 @@
 <% if (locals.adminCss) { %><link rel="stylesheet" href="/css/admin.css?v=<%= assetV %>"><% } %>
 <script src="/js/site.js?v=<%= assetV %>" defer></script>
 <% if (locals.jsonld) { %><script type="application/ld+json"><%- jsonld %></script><% } %>
+<% if (locals.breadcrumbLd) { %><script type="application/ld+json"><%- breadcrumbLd %></script><% } %>
 <% if (analytics && analytics.ga) { %>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<%= analytics.ga %>"></script>
 <script src="/js/analytics.js" defer></script>

@@ -23,7 +23,7 @@ const ENTITIES = {
       { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Empty shows "Contact for fees".' },
       { name: 'eligibility', label: 'Who can apply', type: 'text', max: 160 },
       { name: 'covers', label: 'What you learn', type: 'lines', max: 2000, hint: 'One point per line.' },
-      { name: 'curriculum', label: 'Curriculum', type: 'lines', max: 4000, hint: 'One module per line: Week 1: Title | topic, topic, topic' },
+      { name: 'curriculum', label: 'Curriculum', type: 'lines', max: 16000, hint: 'One module per line: Module 1: Title | topic; topic; topic | Hands-on: assignment. Use Capstone: for the final project.' },
       { name: 'tools', label: 'Tools', type: 'lines', max: 1000, hint: 'One per line.' },
       { name: 'project', label: 'Typical project', type: 'textarea', rows: 3, max: 800 },
       { name: 'suits', label: 'Who it suits', type: 'textarea', rows: 2, max: 500 },
@@ -100,7 +100,9 @@ function schemaSql() {
   });
 }
 
-const DEFAULT_CURRICULUM = {
+const { CURRICULUM } = require('./curriculum');
+// Short starter syllabi shipped earlier; rows still holding these exact values are upgraded to CURRICULUM.
+const OLD_CURRICULUM = {
   'software-engineering': ['Week 1: Foundations | Git and GitHub, the command line, how a codebase is laid out', 'Week 2: Back end | Routes, APIs, a relational database and SQL', 'Week 3: Front end | Forms, lists and filters that talk to the API', 'Week 4: Quality | Debugging, simple tests, code review', 'Week 5: Mini project | One feature end to end, with a written test note', 'Week 6: Capstone prep | Breaking down the internship task and reporting progress'],
   'ai-ml-engineer': ['Week 1: Python for data | Lists, files, Pandas tables', 'Week 2: Cleaning data | Missing values, joins, simple checks', 'Week 3: Models in practice | Calling AI APIs, prompts that are written down', 'Week 4: Small tools | A script or app that drafts or sorts records', 'Week 5: Checking output | A check sheet of where the model is wrong', 'Week 6: Capstone prep | Planning the internship tool and its test cases'],
   'data-analyst': ['Week 1: Spreadsheets | Formulas, pivots, clean tables', 'Week 2: SQL | Select, filter, join, group', 'Week 3: Cleaning | Joining sources, checks before a chart is trusted', 'Week 4: Dashboards | Power BI or a similar tool', 'Week 5: Writing findings | A one-page note in plain language', 'Week 6: Capstone prep | Scoping the internship dataset'],
@@ -117,7 +119,7 @@ async function seed() {
     TRACK_DETAILS.forEach((t, i) => stmts.push([
       `INSERT OR IGNORE INTO programs (name, slug, icon, summary, mode, eligibility, covers, curriculum, tools, project, suits, sort_order, published)
        VALUES (?, ?, ?, ?, 'Live online', 'BTech, BCA, MCA and similar students', ?, ?, ?, ?, ?, ?, 1)`,
-      t.name, t.slug, t.icon, t.summary, t.covers.join('\n'), (DEFAULT_CURRICULUM[t.slug] || []).join('\n'), t.tools.join('\n'), t.project, t.suits, (i + 1) * 10
+      t.name, t.slug, t.icon, t.summary, t.covers.join('\n'), (CURRICULUM[t.slug] || []).join('\n'), t.tools.join('\n'), t.project, t.suits, (i + 1) * 10
     ]));
   }
   if (!statCount) {
@@ -131,6 +133,11 @@ async function seed() {
   if (!credCount) {
     stmts.push(['INSERT INTO credentials (title, issuer, sort_order, published) VALUES (?, ?, 10, 1)', 'MSME Registered', 'Ministry of MSME, Government of India (Udyam)']);
   }
+  for (const [slug, old] of Object.entries(OLD_CURRICULUM)) {
+    if (!CURRICULUM[slug]) continue;
+    stmts.push([`UPDATE programs SET curriculum = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+      WHERE slug = ? AND (curriculum IS NULL OR curriculum = '' OR curriculum = ?)`, CURRICULUM[slug].join('\n'), slug, old.join('\n')]);
+  }
   if (stmts.length) await db.batch(stmts);
 }
 
@@ -141,6 +148,9 @@ async function migrate() {
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
   const add = Object.entries(APPLICATION_COLUMNS).filter(([c]) => !have.has(c)).map(([c, t]) => [`ALTER TABLE applications ADD COLUMN ${c} ${t}`]);
   if (add.length) await db.batch(add);
+  const contactCols = new Set((await db.all('PRAGMA table_info(contacts)')).map(r => r.name));
+  if (!contactCols.has('kind')) await db.run("ALTER TABLE contacts ADD COLUMN kind TEXT NOT NULL DEFAULT 'client'");
+  if (!contactCols.has('email')) await db.run('ALTER TABLE contacts ADD COLUMN email TEXT');
   await seed();
 }
 
@@ -157,9 +167,12 @@ function shapeProgram(p, s) {
     coversList: lines(p.covers),
     toolsList: lines(p.tools),
     curriculumList: lines(p.curriculum).map(l => {
-      const [head, topics = ''] = l.split('|');
+      const [head, topics = '', task = ''] = l.split('|');
       const m = head.match(/^\s*([^:]+):\s*(.*)$/);
-      return { label: m ? m[1].trim() : '', title: (m ? m[2] : head).trim(), topics: topics.split(',').map(x => x.trim()).filter(Boolean) };
+      const sep = topics.includes(';') ? ';' : ',';
+      const t = task.trim().match(/^([^:]{2,24}):\s*(.+)$/);
+      return { label: m ? m[1].trim() : '', title: (m ? m[2] : head).trim(), topics: topics.split(sep).map(x => x.trim()).filter(Boolean),
+        taskLabel: t ? t[1].trim() : (task.trim() ? 'Hands-on' : ''), task: t ? t[2].trim() : task.trim() };
     }),
     batchesList: lines(p.batches).map(l => { const [start = '', timing = '', seats = ''] = l.split('|').map(x => x.trim()); return { start, timing, seats }; }),
     training: p.duration_training || s.intern_training,

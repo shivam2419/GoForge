@@ -62,7 +62,7 @@
       <li data-reveal>
         <span class="fit-icon"><%- include('partials/icon', { name: 'code' }) %></span>
         <h3>Custom software</h3>
-        <p>A site or an internal tool for one job your team does every day. Booking, orders, or a dashboard. Not a template with your logo pasted on.</p>
+        <p>A site or an internal tool for one job your team does every day. Booking, orders, or a dashboard. Designed and built for how your team works.</p>
       </li>
       <li data-reveal>
         <span class="fit-icon"><%- include('partials/icon', { name: 'database' }) %></span>
@@ -161,26 +161,7 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="process-h">
-  <div class="wrap">
-    <div class="section-head center">
-      <p class="eyebrow" data-reveal>How a project works</p>
-      <h2 id="process-h" class="h2" data-reveal>Four steps, <em>in this order.</em></h2>
-      <p class="section-intro" data-reveal>Clear steps, open conversations, progress you can see.</p>
-    </div>
-    <ol class="timeline-h" data-reveal-group data-line>
-      <% PROCESS.forEach((step, i) => { %>
-      <li data-reveal>
-        <span class="th-num">0<%= i + 1 %></span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3><%= step.name %></h3>
-        <p><%= step.text %></p>
-      </li>
-      <% }) %>
-    </ol>
-    <p class="pricing-note" data-reveal>Fees are discussed on a call, once the scope is clear. We do not publish a price list.</p>
-  </div>
-</section>
+<%- include('partials/how-we-work') %>
 
 <section class="section" aria-labelledby="scenes-h">
   <div class="wrap">

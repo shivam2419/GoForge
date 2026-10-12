@@ -915,3 +915,38 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .carousel-track { scroll-behavior: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .ticker-light .ticker-group + .ticker-group { display: none; } }
+
+.cur-task { margin: 14px 0 4px; padding: 12px 16px; border-left: 3px solid var(--gold); background: rgba(201,162,39,.08); border-radius: 0 10px 10px 0; font-size: 15px; }
+.curriculum .check-list { columns: 2; column-gap: 28px; }
+.curriculum .check-list li { break-inside: avoid; }
+@media (max-width: 700px) { .curriculum .check-list { columns: 1; } }
+
+.fee-inc { display: block; font-size: 12px; font-weight: 600; color: var(--gold-deep, #9a7a14); margin-top: 2px; }
+
+/* How we work */
+.hww li { text-align: left; background: var(--paper, #fff); border: 1px solid var(--line, #e6dfd2); border-radius: 16px; padding: 18px 16px 16px; }
+.steps7.hww::before { display: none; }
+.hww .step-num { margin: 0 0 10px; }
+.hww h3 { font-size: 17px; margin: 0 0 6px; }
+.hww p { font-size: 14px; margin: 0; }
+.hww .hww-out { display: flex; gap: 6px; align-items: flex-start; margin-top: 10px; font-weight: 600; color: var(--ink-2, #33415c); font-size: 13px; }
+.hww .hww-out .icon { width: 16px; height: 16px; flex: none; color: var(--gold-deep, #9a7a14); margin-top: 1px; }
+.hww-cta { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; }
+.hww-cta .pricing-note { margin: 0; }
+@media (max-width: 1100px) { .steps7.hww { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .steps7.hww { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .steps7.hww { grid-template-columns: 1fr; } }
+.steps7.hww { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.steps7.hww li { display: block; }
+@media (max-width: 760px) { .steps7.hww { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .steps7.hww { grid-template-columns: 1fr; } }
+/* For colleges */
+.check-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.check-grid li { display: flex; gap: 12px; align-items: flex-start; background: var(--paper, #fff); border: 1px solid var(--line, #e6dfd2); border-radius: 16px; padding: 18px; }
+.check-grid .icon { width: 22px; height: 22px; flex: none; color: var(--gold-deep, #9a7a14); margin-top: 2px; }
+.check-grid h3 { font-size: 16.5px; margin: 0 0 4px; }
+.check-grid p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+.steps7.steps6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.contact-mini { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 6px; font-weight: 700; }
+@media (max-width: 1000px) { .check-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .steps7.steps6 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .check-grid { grid-template-columns: 1fr; } .steps7.steps6 { grid-template-columns: 1fr; } }
