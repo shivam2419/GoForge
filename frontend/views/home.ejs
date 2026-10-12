@@ -15,7 +15,7 @@
       <p class="lede" data-hero-item>Goforge Digital is a new studio. We take on a small number of projects, agree a clear scope and price, and hand over something your team can run.</p>
       <div class="hero-actions" data-hero-item>
         <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
-        <a class="btn btn-ghost btn-lg" href="/internship">Internship <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-ghost btn-lg" href="#services">See the services <%- include('partials/icon', { name: 'arrow' }) %></a>
       </div>
       <p class="hero-pillars" data-hero-item><span>Software</span><span>Systems</span><span>Automation</span><span>Marketing</span></p>
     </div>
@@ -41,32 +41,34 @@
   </div>
 </section>
 
-<section class="section section-tight first-look" aria-labelledby="benefit-h">
+<section class="section section-tight" aria-labelledby="fit-h">
   <div class="wrap">
-    <dl class="kpi-row">
-      <div data-reveal><dt>6</dt><dd>Services, from software to ads</dd></div>
-      <div data-reveal><dt>5</dt><dd>Internship roles</dd></div>
-      <div data-reveal><dt>1</dt><dd>Founder on the work</dd></div>
-      <div data-reveal><dt>Free</dt><dd>Demo class before any fee</dd></div>
-    </dl>
-    <h2 id="benefit-h" class="h2" data-reveal>What you <em>actually get.</em></h2>
-    <ol class="benefit-path">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>For business owners</p>
+      <h2 id="fit-h" class="h2" data-reveal>The work a company <em>actually pays for.</em></h2>
+    </div>
+    <ul class="fit-grid" data-reveal-group>
       <li data-reveal>
-        <span class="benefit-orb orb-a"><%- include('partials/icon', { name: 'browser' }) %></span>
-        <h3>Live classes</h3>
-        <p>A written task in the role you chose. Not a folder of recorded videos.</p>
+        <span class="fit-icon"><%- include('partials/icon', { name: 'code' }) %></span>
+        <h3>Custom software</h3>
+        <p>A site or an internal tool for one job your team does every day. Booking, orders, or a dashboard. Not a template with your logo pasted on.</p>
       </li>
       <li data-reveal>
-        <span class="benefit-orb orb-b"><%- include('partials/icon', { name: 'user' }) %></span>
-        <h3>The founder teaches</h3>
-        <p>Rohit Sharma is on the call. There is no separate instructor bench.</p>
+        <span class="fit-icon"><%- include('partials/icon', { name: 'database' }) %></span>
+        <h3>CRM and ERP</h3>
+        <p>Leads, customers, stock and follow-ups in one place, named in your words. WhatsApp and spreadsheets stop being the system.</p>
       </li>
       <li data-reveal>
-        <span class="benefit-orb orb-c"><%- include('partials/icon', { name: 'check' }) %></span>
-        <h3>A letter after the work</h3>
-        <p>Issued only when the project is finished. It is not a job offer.</p>
+        <span class="fit-icon"><%- include('partials/icon', { name: 'megaphone' }) %></span>
+        <h3>Marketing and ads</h3>
+        <p>A page people can find, a Google profile that is finished, and ads only after the budget is agreed and sits in your own account.</p>
       </li>
-    </ol>
+      <li data-reveal>
+        <span class="fit-icon"><%- include('partials/icon', { name: 'gear' }) %></span>
+        <h3>Automation</h3>
+        <p>The message you send every day, sent on time. A person on your team still approves what goes out.</p>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -76,12 +78,12 @@
   </div>
 </div>
 
-<section class="section" aria-labelledby="services-h">
+<section class="section" id="services" aria-labelledby="services-h">
   <div class="wrap">
     <div class="section-head split-head">
       <div>
         <p class="eyebrow" data-reveal>What we do</p>
-        <h2 id="services-h" class="h2" data-reveal>Four services, <em>one studio.</em></h2>
+        <h2 id="services-h" class="h2" data-reveal>Four ways we <em>build the business.</em></h2>
       </div>
       <p class="section-intro" data-reveal>Each project starts small. Pick one area, or tell us the problem and we will say which one fits. Select a service for the details.</p>
     </div>
@@ -169,65 +171,47 @@
   </div>
 </section>
 
-<section class="section section-alt intern-home" aria-labelledby="intern-h">
-  <div class="wrap intern-grid">
-    <div>
-      <p class="eyebrow" data-reveal>Internship program</p>
-      <h2 id="intern-h" class="h2" data-reveal>Train first, <em>then do real work.</em></h2>
-      <p class="section-intro" data-reveal>For BTech, BCA and similar students who still need an internship: <%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work under Goforge Digital.</p>
-      <div class="hero-actions" data-reveal>
-        <a class="btn btn-primary" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply for internship <%- include('partials/icon', { name: 'upright' }) %></a>
-        <a class="btn btn-ghost" href="/internship">See the program</a>
-      </div>
-    </div>
-    <div>
-      <p class="mini-h" data-reveal>Roles you can apply for</p>
-      <ul class="role-list" data-reveal-group>
-        <% TRACK_DETAILS.forEach(t => { %>
-        <li data-reveal><a href="/internship/roles/<%= t.slug %>" data-dialog="dlg-role-<%= t.slug %>"><span class="role-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="role-name"><%= t.name %></span><%- include('partials/icon', { name: 'arrow', cls: 'role-arrow' }) %></a></li>
-        <% }) %>
-        <li data-reveal class="role-similar">and similar roles</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="work" aria-labelledby="work-h">
+<section class="section" aria-labelledby="scenes-h">
   <div class="wrap">
     <div class="section-head split-head">
       <div>
-        <p class="eyebrow" data-reveal>Work</p>
-        <h2 id="work-h" class="h2" data-reveal>Portfolio</h2>
+        <p class="eyebrow" data-reveal>Where projects start</p>
+        <h2 id="scenes-h" class="h2" data-reveal>The problems we <em>take on first.</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Only finished work we are allowed to show goes here.</p>
+      <p class="section-intro" data-reveal>Finished client work is shown only when we are allowed to show it. Until then, this is the shape of a first project.</p>
     </div>
-    <div class="work-frame" data-reveal>
-      <%- include('partials/corners') %>
-      <p class="work-line">Selected work will be added here.</p>
-    </div>
+    <ol class="scene-grid" data-reveal-group>
+      <li class="scene-card" data-reveal>
+        <span class="scene-num">01</span>
+        <h3>Enquiries die in WhatsApp</h3>
+        <p>A shop or clinic gets messages, then loses them. We build a form that saves the lead and a follow-up the team can see.</p>
+      </li>
+      <li class="scene-card" data-reveal>
+        <span class="scene-num">02</span>
+        <h3>Five lists, no customer record</h3>
+        <p>Names live in a sheet, a notebook and a phone. A small CRM puts the next step on one screen.</p>
+      </li>
+      <li class="scene-card" data-reveal>
+        <span class="scene-num">03</span>
+        <h3>The business cannot be found</h3>
+        <p>No proper site, a half-done Google profile, ads with no landing page. We fix the page first, then spend on ads.</p>
+      </li>
+    </ol>
   </div>
 </section>
 
-<section class="section" aria-labelledby="start-h">
+<section class="section section-alt" aria-labelledby="start-h">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Two ways to start</p>
-      <h2 id="start-h" class="h2" data-reveal>A free look, <em>before any fee.</em></h2>
+      <h2 id="start-h" class="h2" data-reveal>A free check, <em>before any fee.</em></h2>
     </div>
-    <div class="offer-grid" data-reveal-group>
-      <article class="offer-card" data-reveal>
-        <p class="mini-h">For a business</p>
-        <h3><%= OFFERS.check.name %></h3>
-        <p><%= OFFERS.check.text %></p>
-        <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Ask for the check</a>
-      </article>
-      <article class="offer-card" data-reveal>
-        <p class="mini-h">For a student</p>
-        <h3><%= OFFERS.demo.name %></h3>
-        <p><%= OFFERS.demo.text %></p>
-        <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
-      </article>
-    </div>
+    <article class="offer-card offer-solo" data-reveal>
+      <p class="mini-h">For a business</p>
+      <h3><%= OFFERS.check.name %></h3>
+      <p><%= OFFERS.check.text %></p>
+      <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Ask for the check <%- include('partials/icon', { name: 'upright' }) %></a>
+    </article>
   </div>
 </section>
 

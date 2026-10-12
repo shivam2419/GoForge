@@ -295,7 +295,7 @@ const loginLimiter = rateLimit({
 
 // ---------- public pages ----------
 app.get('/', (req, res) => res.render('home', pageMeta(req, 'Home',
-  'Goforge Digital is a studio in Faridabad. Custom software, CRM and ERP, AI automation, and digital marketing for small businesses. Online internship after live training.', { jsonld: jsonLd() })));
+  'Goforge Digital builds custom software, CRM and ERP, automation, and digital marketing for businesses in Faridabad. Scope and price agreed before the work starts.', { jsonld: jsonLd() })));
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
   'Custom software, CRM, ERP, AI automation, and digital marketing from a studio in Faridabad. See what each service includes and what you get at handover.',
