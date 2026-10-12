@@ -77,7 +77,7 @@ const SERVICES = [
 ];
 
 const CONTACT_SERVICES = SERVICES.map(s => s.name).concat([
-  'Free website and WhatsApp check',
+  'Free website check',
   'Free demo class',
   'Not sure yet'
 ]);
@@ -212,8 +212,8 @@ const FAQ = [
         a: 'Every project is priced to its written scope, because a website, a CRM and an ad campaign are different jobs. If you want to start smaller, we plan a focused first step that fits your budget. The price you accept is the price you pay. For ads, the money spent on the ads themselves sits in your own ad account and is separate from our fee.'
       },
       {
-        q: 'What is the free website and WhatsApp check?',
-        a: 'It is a short look at whether your site (if you have one) can be found and used on a phone, and whether a WhatsApp enquiry has a next step. You get a clear note of quick wins and next steps, free of charge.'
+        q: 'What is the free website check?',
+        a: 'It is a short look at whether your site (if you have one) can be found on Google, works well on a phone, and turns visitors into enquiries. You get a clear note of quick wins and next steps, free of charge.'
       },
       {
         q: 'Who do I deal with?',
@@ -225,8 +225,8 @@ const FAQ = [
 
 const OFFERS = {
   check: {
-    name: 'Free website and WhatsApp check',
-    text: 'A short look at your site and how WhatsApp enquiries are handled. You get a clear note of quick wins and next steps.'
+    name: 'Free website check',
+    text: 'A short review of your website, search visibility and enquiry flow. You get a clear note of quick wins and next steps.'
   },
   demo: {
     name: 'Free demo class',
