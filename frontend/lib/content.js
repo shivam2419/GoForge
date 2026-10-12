@@ -150,7 +150,7 @@ const BRAND = {
     ['Monday to Saturday', '10:00 to 18:30'],
     ['Sunday', 'Closed']
   ],
-  hoursNote: 'Call or WhatsApp before you visit.'
+  hoursNote: 'Call before you visit.'
 };
 
 const WHY_SMALL = [

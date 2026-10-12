@@ -4,7 +4,7 @@
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Contact</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Tell us what you</span></span> <span class="line"><span><em>have in mind.</em></span></span></h1>
-    <p class="lede" data-hero-item>Call, WhatsApp or email. Or send a few lines below and we will get back to you.</p>
+    <p class="lede" data-hero-item>Call or email. Or send a few lines below and we will get back to you.</p>
   </div>
 </section>
 <section class="section section-tight">
@@ -14,10 +14,6 @@
         <li data-reveal>
           <span class="detail-icon"><%- include('partials/icon', { name: 'phone' }) %></span>
           <span><small>Phone</small><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a><a href="<%= telHref(s.phone2) %>"><%= s.phone2 %></a></span>
-        </li>
-        <li data-reveal>
-          <span class="detail-icon"><%- include('partials/icon', { name: 'whatsapp' }) %></span>
-          <span><small>WhatsApp</small><a href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><%= s.whatsapp %></a></span>
         </li>
         <li data-reveal>
           <span class="detail-icon"><%- include('partials/icon', { name: 'mail' }) %></span>

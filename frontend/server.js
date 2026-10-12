@@ -66,10 +66,6 @@ const sha256 = s => crypto.createHash('sha256').update(s).digest('hex');
 const hmac = s => crypto.createHmac('sha256', SECRET).update(s).digest('hex');
 const digits = s => String(s || '').replace(/\D/g, '');
 const telHref = p => 'tel:+' + digits(p);
-function waUrl(number, text) {
-  const n = digits(number);
-  return 'https://wa.me/' + n + (text ? '?text=' + encodeURIComponent(text) : '');
-}
 const fmtTime = iso => new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' IST';
 
 function assetVersion() {
@@ -112,13 +108,13 @@ function validateContact(body) {
   return { errors, values };
 }
 const MODES = ['Live online', 'Either is fine'];
-const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'WhatsApp', 'Other'];
+const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'Other'];
 function validateApplication(body, TRACKS) {
   const errors = {}, values = {};
   field(errors, values, body, 'full_name', 'your full name', { required: true, min: 2, max: 80 });
   field(errors, values, body, 'college', 'your college', { required: true, min: 2, max: 120 });
   field(errors, values, body, 'course_year', 'your course and year', { required: true, min: 2, max: 60 });
-  phoneField(errors, values, body, 'whatsapp', 'WhatsApp number');
+  phoneField(errors, values, body, 'whatsapp', 'phone number');
   values.track = text(body.track);
   if (!values.track) errors.track = 'Please choose a role.';
   else if (!TRACKS.includes(values.track)) errors.track = 'Please choose a role from the list.';
@@ -136,29 +132,6 @@ function validateApplication(body, TRACKS) {
   return { errors, values };
 }
 
-function contactMessage(v) {
-  return [
-    'Hello Goforge Digital, I sent this from your website.',
-    `Name: ${v.name}`,
-    v.business ? `Business: ${v.business}` : null,
-    `Phone: ${v.phone}`,
-    v.service ? `Service: ${v.service}` : null,
-    `Message: ${v.message}`
-  ].filter(Boolean).join('\n');
-}
-function applicationMessage(v) {
-  return [
-    'Hello Goforge Digital, I applied for the internship on your website.',
-    `Name: ${v.full_name}`,
-    `College: ${v.college}`,
-    `Course and year: ${v.course_year}`,
-    `WhatsApp: ${v.whatsapp}`,
-    v.email ? `Email: ${v.email}` : null,
-    v.city ? `City: ${v.city}` : null,
-    `Programme: ${v.track}`,
-    v.note ? `Note: ${v.note}` : null
-  ].filter(Boolean).join('\n');
-}
 
 // ---------- app ----------
 const app = express();
@@ -230,7 +203,7 @@ app.use(async (req, res, next) => {
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
-    telHref, waUrl, digits, fmtTime, errors: {}, values: {}
+    telHref, digits, fmtTime, errors: {}, values: {}
   });
   next();
 });
@@ -342,7 +315,7 @@ function faqJsonLd() {
 const formLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, limit: 8, standardHeaders: 'draft-7', legacyHeaders: false,
   handler: (req, res) => {
-    const msg = 'Too many messages from this connection. Please try again in an hour, or message us on WhatsApp.';
+    const msg = 'Too many messages from this connection. Please try again in an hour. You can also call us.';
     if (wantsJson(req)) return res.status(429).json({ ok: false, message: msg });
     res.status(429).render('error', { ...pageMeta(req, 'Please wait', msg), code: 429, heading: 'Please wait a little', body: msg });
   }
@@ -427,7 +400,7 @@ app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
   { seoTitle: 'About Goforge Digital, a studio in Faridabad' })));
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
-  'Call, WhatsApp or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
+  'Call, email or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
   { seoTitle: 'Contact Goforge Digital in Faridabad' }) }));
 
 app.get('/privacy', (req, res) => res.render('legal', pageMeta(req, 'Privacy',
@@ -443,30 +416,30 @@ app.get('/refund', (req, res) => res.render('legal', pageMeta(req, 'Refunds',
   { seoTitle: 'Refund policy | Goforge Digital', kind: 'refund' })));
 
 app.post('/contact', formLimiter, async (req, res) => {
-  if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.', waUrl(getSettings().whatsapp, ''));
+  if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.');
   const { errors, values } = validateContact(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact Goforge Digital'), errors, values });
   }
   (await db.run('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)', values.name, values.business || null, values.phone, values.service || null, values.message));
-  respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.', waUrl(getSettings().whatsapp, contactMessage(values)));
+  respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.');
 });
 
 app.post('/internship', formLimiter, async (req, res) => {
-  if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.', waUrl(getSettings().whatsapp, ''));
+  if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.');
   const { errors, values } = validateApplication(req.body, res.locals.TRACKS);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
   (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1));
-  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you on WhatsApp.', waUrl(getSettings().whatsapp, applicationMessage(values)));
+  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.');
 });
 
-function respondOk(req, res, kind, message, whatsappUrl) {
-  if (wantsJson(req)) return res.json({ ok: true, message, whatsappUrl });
-  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message, whatsappUrl });
+function respondOk(req, res, kind, message) {
+  if (wantsJson(req)) return res.json({ ok: true, message });
+  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message });
 }
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
@@ -592,7 +565,6 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   const errors = {}, values = {};
   phoneField(errors, values, req.body, 'phone1', 'first phone number');
   phoneField(errors, values, req.body, 'phone2', 'second phone number');
-  phoneField(errors, values, req.body, 'whatsapp', 'WhatsApp number');
   values.email = text(req.body.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120) errors.email = 'Please enter a valid email address.';
   for (const k of ['blurb1', 'blurb2', 'blurb3', 'blurb4']) field(errors, values, req.body, k, 'the service line', { required: true, min: 10, max: 220 });

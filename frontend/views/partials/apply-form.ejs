@@ -7,7 +7,7 @@
     <%- include('field', { f: { id: px + '-name', name: 'full_name', label: 'Full name', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
     <%- include('field', { f: { id: px + '-college', name: 'college', label: 'College', required: true, min: 2, max: 120 } }) %>
     <%- include('field', { f: { id: px + '-course', name: 'course_year', label: 'Course and year', required: true, min: 2, max: 60, hint: 'For example: BTech CSE, 3rd year' } }) %>
-    <%- include('field', { f: { id: px + '-wa', name: 'whatsapp', label: 'WhatsApp number', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
+    <%- include('field', { f: { id: px + '-wa', name: 'whatsapp', label: 'Phone number', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
     <%- include('field', { f: { id: px + '-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email' } }) %>
     <%- include('field', { f: { id: px + '-city', name: 'city', label: 'City', max: 80, autocomplete: 'address-level2' } }) %>
     <%- include('field', { f: { id: px + '-track', name: 'track', label: 'Programme', as: 'select', required: true, options: TRACKS, placeholder: 'Choose a programme', wide: true } }) %>
@@ -15,13 +15,13 @@
     <%- include('field', { f: { id: px + '-source', name: 'source', label: 'How did you hear about us?', as: 'select', options: SOURCES, placeholder: 'Choose one' } }) %>
     <%- include('field', { f: { id: px + '-note', name: 'note', label: 'Short note', as: 'textarea', rows: 4, max: 1000, wide: true, hint: 'Why this programme, and anything you have already built or learned. If you chose a similar role, name it here.' } }) %>
     <div class="field field-wide field-check<%= errors.consent ? ' has-error' : '' %>">
-      <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required<% if (values.consent) { %> checked<% } %> aria-describedby="<%= px %>-consent-err"> I agree that Goforge Digital may contact me on WhatsApp, phone or email about this application. <span class="req" aria-hidden="true">*</span></label>
+      <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required<% if (values.consent) { %> checked<% } %> aria-describedby="<%= px %>-consent-err"> I agree that Goforge Digital may contact me by phone or email about this application. <span class="req" aria-hidden="true">*</span></label>
       <p class="field-error" id="<%= px %>-consent-err" data-error-for="consent"><%= errors.consent || '' %></p>
     </div>
   </div>
   <div class="form-foot">
     <button class="btn btn-primary" type="submit" data-submit>Send application <%- include('icon', { name: 'arrow' }) %></button>
-    <p class="form-note">We save your application and open WhatsApp to <%= s.whatsapp %> with the same details. We use these details only to consider your application. <a href="/privacy">Privacy notice</a>.</p>
+    <p class="form-note">We save your application and contact you by phone or email. We use these details only to consider your application. <a href="/privacy">Privacy notice</a>.</p>
   </div>
   <%- include('form-success') %>
 </form>

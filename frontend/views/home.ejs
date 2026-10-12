@@ -303,14 +303,12 @@
       <p class="navy-text" data-reveal>Tell us what you are trying to do and what is in the way. A short call is usually enough to know whether we are the right fit.</p>
       <div class="hero-actions" data-reveal>
         <a class="btn btn-gold btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
-        <a class="btn btn-outline-light btn-lg" href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'whatsapp' }) %> WhatsApp us</a>
       </div>
     </div>
     <ul class="cta-contacts" data-reveal-group>
       <li data-reveal><a href="<%= telHref(s.phone1) %>"><span class="cc-k">Phone</span><span class="cc-v"><%= s.phone1 %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
       <li data-reveal><a href="<%= telHref(s.phone2) %>"><span class="cc-k">Phone</span><span class="cc-v"><%= s.phone2 %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
       <li data-reveal><a href="mailto:<%= s.email %>"><span class="cc-k">Email</span><span class="cc-v break"><%= s.email %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
-      <li data-reveal><a href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><span class="cc-k">WhatsApp</span><span class="cc-v"><%= s.whatsapp %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
     </ul>
   </div>
 </section>
