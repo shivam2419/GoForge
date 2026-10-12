@@ -318,9 +318,9 @@ function jsonLd() {
     telephone: [s.phone1, s.phone2].map(p => '+' + digits(p)),
     address: {
       '@type': 'PostalAddress',
-      streetAddress: BRAND.address.line1 + ', Sector-8',
+      streetAddress: BRAND.address.line1 + ', Sector-81',
       addressLocality: BRAND.address.locality,
-      postalCode: '121006',
+      postalCode: '121004',
       addressRegion: BRAND.address.region,
       addressCountry: BRAND.address.country
     },
@@ -462,12 +462,12 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd() })));
 
 app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
-  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 8, Faridabad, led by Rohit Sharma, Founder and Director.',
+  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder and Director.',
   { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() })));
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
-  'Call, email or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
-  { seoTitle: 'Contact Goforge Digital | Sector 8, Faridabad, Haryana', jsonld: jsonLd() }) }));
+  'Call, email or visit Goforge Digital at Puri Highstreet, Sector 81, Faridabad. Office hours Monday to Saturday.',
+  { seoTitle: 'Contact Goforge Digital | Sector 81, Faridabad, Haryana', jsonld: jsonLd() }) }));
 
 app.get('/privacy', (req, res) => res.render('legal', pageMeta(req, 'Privacy',
   'Privacy notice for Goforge Digital: what the enquiry and internship forms collect, why, and how to ask for a correction or deletion.',

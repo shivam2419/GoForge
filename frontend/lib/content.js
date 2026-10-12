@@ -145,10 +145,10 @@ const BRAND = {
   founder: 'Rohit Sharma',
   founderRole: 'Founder & Director',
   website: 'goforgedigital.com',
-  address: { line1: 'D125b, 1st floor, Puri Highstreet', line2: 'Sector-8, Faridabad', locality: 'Faridabad', region: 'Haryana', country: 'IN' },
+  address: { line1: 'D125b, 1st floor, Puri Highstreet', line2: 'Sector-81, Faridabad', locality: 'Faridabad', region: 'Haryana', country: 'IN' },
   instagram: 'https://www.instagram.com/goforgedigital/',
   linkedin: 'https://www.linkedin.com/in/rohit-sharma-bb9983258/',
-  mapQuery: 'Puri Highstreet, Sector 8, Faridabad, Haryana',
+  mapQuery: 'Puri Highstreet, Sector 81, Faridabad, Haryana',
   hours: [
     ['Monday to Saturday', '10:00 to 18:30'],
     ['Sunday', 'Closed']
