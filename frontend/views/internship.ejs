@@ -20,6 +20,12 @@
 
 <section class="section section-tight" aria-labelledby="benefit-h">
   <div class="wrap">
+    <dl class="kpi-pills" data-reveal-group>
+      <div data-reveal><dt>5</dt><dd>Roles you can train in</dd></div>
+      <div data-reveal><dt>1</dt><dd>Project you finish</dd></div>
+      <div data-reveal><dt>2</dt><dd>Stages: train, then work</dd></div>
+      <div data-reveal><dt>Free</dt><dd>Demo class before any fee</dd></div>
+    </dl>
     <h2 id="benefit-h" class="h2" data-reveal>What you <em>actually get.</em></h2>
     <ol class="benefit-path cols-4">
       <li data-reveal>
@@ -94,43 +100,33 @@
 </section>
 
 <section class="section" aria-labelledby="road-h">
-  <div class="wrap">
-    <div class="section-head center">
-      <p class="eyebrow" data-reveal>Internship journey</p>
-      <h2 id="road-h" class="h2" data-reveal>Five steps, <em>in this order.</em></h2>
+  <div class="wrap road-layout">
+    <div class="road-card" data-reveal>
+      <p class="road-banner">Road map of the internship</p>
+      <svg class="road-svg" viewBox="0 0 640 210" role="img" aria-hidden="true">
+        <path d="M36 150 C 90 150 110 58 176 62 C 250 66 230 168 310 156 C 390 144 378 48 458 58 C 530 67 520 150 604 118" fill="none" stroke="#d5d8e0" stroke-width="26" stroke-linecap="round"/>
+        <path d="M36 150 C 90 150 110 58 176 62 C 250 66 230 168 310 156 C 390 144 378 48 458 58 C 530 67 520 150 604 118" fill="none" stroke="#fff" stroke-width="2.4" stroke-dasharray="7 9" stroke-linecap="round"/>
+        <g font-family="Manrope, sans-serif" font-size="16" font-weight="800" text-anchor="middle">
+          <circle cx="78" cy="132" r="18" fill="#e25b8a"/><text x="78" y="138" fill="#fff">1</text>
+          <circle cx="176" cy="62" r="18" fill="#2f9e74"/><text x="176" y="68" fill="#fff">2</text>
+          <circle cx="310" cy="156" r="18" fill="#7a5af5"/><text x="310" y="162" fill="#fff">3</text>
+          <circle cx="458" cy="58" r="18" fill="#e07a2f"/><text x="458" y="64" fill="#fff">4</text>
+          <circle cx="584" cy="112" r="18" fill="#3b82f6"/><text x="584" y="118" fill="#fff">5</text>
+        </g>
+      </svg>
+      <ol class="road-captions">
+        <li><strong>Apply</strong><span>Send the form. We reply on WhatsApp.</span></li>
+        <li><strong>Demo class</strong><span>One free live class before any fee.</span></li>
+        <li><strong>Live training</strong><span><%= s.intern_training %>, in the role you chose.</span></li>
+        <li><strong>The project</strong><span><%= s.intern_work %> of supervised work.</span></li>
+        <li><strong>The letter</strong><span>Only after the project is finished.</span></li>
+      </ol>
     </div>
-    <ol class="timeline-h roadmap-5" data-reveal-group data-line>
-      <li data-reveal>
-        <span class="th-num">01</span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3>Demo class</h3>
-        <p>One free live session. You see how training feels. It does not reserve a seat.</p>
-      </li>
-      <li data-reveal>
-        <span class="th-num">02</span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3>Choose a role</h3>
-        <p>Software, AI, data, web or marketing. The fee and the batch dates are confirmed on a call.</p>
-      </li>
-      <li data-reveal>
-        <span class="th-num">03</span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3>Live training</h3>
-        <p><%= s.intern_training %>, online. You build during the class, and questions are answered there.</p>
-      </li>
-      <li data-reveal>
-        <span class="th-num">04</span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3>Supervised work</h3>
-        <p><%= s.intern_work %> under Goforge Digital. Tasks are reviewed. This is the internship, not the classes.</p>
-      </li>
-      <li data-reveal>
-        <span class="th-num">05</span>
-        <span class="th-dot" aria-hidden="true"></span>
-        <h3>The letter</h3>
-        <p>Only after the project is finished. Your college still decides whether it counts.</p>
-      </li>
-    </ol>
+    <div class="road-copy">
+      <h2 id="road-h" class="h2" data-reveal>Train first. <em>Then the project.</em></h2>
+      <p data-reveal>You do not start with a certificate. You apply, sit one free class, train live, then do the project under Goforge Digital. The letter names that work. Your college still decides if it counts.</p>
+      <a class="btn btn-primary" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-reveal>Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+    </div>
   </div>
 </section>
 
