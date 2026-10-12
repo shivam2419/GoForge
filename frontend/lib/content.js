@@ -150,14 +150,14 @@ const BRAND = {
     ['Monday to Saturday', '10:00 to 18:30'],
     ['Sunday', 'Closed']
   ],
-  hoursNote: 'Call or WhatsApp before you visit.'
+  hoursNote: 'Call before you visit.'
 };
 
 const WHY_SMALL = [
-  { title: 'You speak to the person doing the work', text: 'Rohit Sharma, Founder & Director, is on the call. There is no account manager passing a brief down a corridor.' },
-  { title: 'A small number of projects', text: 'The studio is new and takes on less at once, so a project is not lost inside a large roster.' },
+  { title: 'You speak to the people doing the work', text: 'Rohit Sharma, Founder & Director, and the team who will build it are on the call. There is no account manager passing a brief down a corridor.' },
+  { title: 'Proven, not crowded', text: '150+ projects delivered, and we still limit how much we take on at once, so your project is not lost inside a large roster.' },
   { title: 'Scope and price in writing', text: 'Work starts after one written scope and one price. If the budget is smaller, the scope gets smaller. The price is not hidden.' },
-  { title: 'Honest about being early', text: 'There is no invented client list. Finished work is shown only when we are allowed to show it.' }
+  { title: 'Honest numbers', text: 'There is no invented client list, and every figure we quote comes with a plain definition. Finished work is shown only when we are allowed to show it.' }
 ];
 
 const FAQ = [
@@ -167,15 +167,27 @@ const FAQ = [
     items: [
       {
         q: 'How does the programme work?',
-        a: 'There are two stages, in this order. First, live online training in the role you chose. Then a supervised internship under Goforge Digital. The lengths and the fee line on the internship page are the current ones. Batch dates are confirmed on the call, not guessed on this page.'
+        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you pay the training fee and get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths and fees on each programme page are the current ones. Batch dates are confirmed on the call.'
       },
       {
         q: 'Will my college accept this?',
-        a: 'Your college decides that. Goforge Digital cannot promise that a training and placement cell, a department, or a university will count this internship. Before you pay anything, show this page to your college and ask them. If they need a different format, an NOC, or a minimum number of hours, tell us on the call. If they say no, do not join only for the letter.'
+        a: 'Your college decides that. Goforge Digital is MSME registered, and we can share the registration details with your college. Goforge Digital cannot promise that a training and placement cell, a department, or a university will count this internship. Before you pay anything, show this page to your college and ask them. If they need a different format, an NOC, or a minimum number of hours, tell us on the call. If they say no, do not join only for the letter.'
       },
       {
         q: 'What does the letter include?',
         a: 'After the work is actually finished, the internship letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, two or three lines on what you did, and a signatory: Rohit Sharma, Founder & Director, with a phone number and email so the college can check it. It can include hours if your college counts credit in hours. It does not include a fake client, a job offer, or praise we cannot stand behind. A training note is separate from the internship letter. Neither is issued if the work was not done.'
+      },
+      {
+        q: 'Who teaches the classes?',
+        a: 'Our team of 10+ instructors and mentors, led by Rohit Sharma, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
+      },
+      {
+        q: 'What does the fee include, and is the training paid?',
+        a: 'Yes, the training is paid. The fee covers the live classes, study material, assignments with reviews, projects, doubt sessions and the training certificate. Each programme page shows the fee, or says "Contact for fees" if it is confirmed on the call. The internship offer comes after you finish the training.'
+      },
+      {
+        q: 'What does the 98% success rate mean?',
+        a: 'It is the share of students who finished the training and then went on to complete their internship project with us. It is not a placement or job rate.'
       },
       {
         q: 'How is my project chosen?',
@@ -209,7 +221,7 @@ const FAQ = [
       },
       {
         q: 'Who do I deal with?',
-        a: 'Rohit Sharma, Founder & Director. The studio is in Faridabad and also works remotely. You are not passed between a sales desk and a delivery desk.'
+        a: 'Rohit Sharma, Founder & Director, and the team who will build your project. We are in Faridabad and also work remotely. You are not passed between a sales desk and a delivery desk.'
       }
     ]
   }
@@ -226,7 +238,9 @@ const OFFERS = {
   }
 };
 
+const TECH_STACK = ['Python', 'JavaScript', 'HTML & CSS', 'Node.js', 'React', 'SQL', 'Git & GitHub', 'REST APIs', 'Pandas', 'Jupyter', 'Excel & Google Sheets', 'Power BI', 'AI APIs', 'Google Business Profile', 'Search Console', 'Google Ads', 'Meta Ads'];
+
 module.exports = {
-  SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND,
+  TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND,
   WHY_SMALL, FAQ, OFFERS
 };

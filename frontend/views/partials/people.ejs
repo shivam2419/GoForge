@@ -1,0 +1,52 @@
+<% const ins = locals.instructors || [], tes = locals.testimonials || []; %>
+<% if (ins.length) { %>
+<section class="section section-alt" aria-labelledby="ins-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Instructors</p>
+      <h2 id="ins-h" class="h2" data-reveal>The people who <em>teach and review.</em></h2>
+    </div>
+    <ul class="people-grid" data-reveal-group>
+      <% ins.forEach(p => { %>
+      <li class="person-card" data-reveal>
+        <% if (p.photo_url) { %><img class="person-photo" src="<%= p.photo_url %>" alt="<%= p.name %>" loading="lazy" width="96" height="96"><% } else { %><span class="person-photo person-initials" aria-hidden="true"><%= p.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() %></span><% } %>
+        <h3><%= p.name %></h3>
+        <% if (p.title) { %><p class="person-title"><%= p.title %></p><% } %>
+        <% if (p.bio) { %><p><%= p.bio %></p><% } %>
+        <% if (p.skills) { %><ul class="chips"><% p.skills.split(',').map(x => x.trim()).filter(Boolean).forEach(k => { %><li><%= k %></li><% }) %></ul><% } %>
+        <% if (p.linkedin) { %><a class="person-link" href="<%= p.linkedin %>" target="_blank" rel="noopener"><%- include('icon', { name: 'linkedin' }) %> LinkedIn</a><% } %>
+      </li>
+      <% }) %>
+    </ul>
+    </div>
+  </div>
+</section>
+<% } %>
+<% if (tes.length) { %>
+<section class="section" aria-labelledby="tes-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal><%= locals.tesEyebrow || 'Students' %></p>
+      <h2 id="tes-h" class="h2" data-reveal>In their <em>own words.</em></h2>
+    </div>
+    <div class="carousel" data-carousel>
+    <div class="carousel-nav">
+      <button type="button" class="carousel-btn" data-carousel-prev aria-label="Previous testimonials"><%- include('icon', { name: 'arrow', cls: 'flip' }) %></button>
+      <button type="button" class="carousel-btn" data-carousel-next aria-label="Next testimonials"><%- include('icon', { name: 'arrow' }) %></button>
+    </div>
+    <ul class="quote-grid carousel-track" data-carousel-track tabindex="0" aria-label="Testimonials">
+      <% tes.forEach(t => { %>
+      <li class="quote-card">
+        <% if (t.rating) { %><p class="stars" aria-label="<%= t.rating %> out of 5"><%= '★'.repeat(t.rating) %><span aria-hidden="true"><%= '★'.repeat(5 - t.rating) %></span></p><% } %>
+        <blockquote><p><%= t.quote %></p></blockquote>
+        <p class="quote-by">
+          <% if (t.photo_url) { %><img src="<%= t.photo_url %>" alt="" loading="lazy" width="40" height="40"><% } %>
+          <span><strong><%= t.name %></strong><% if (t.role) { %><span><%= t.role %></span><% } %></span>
+        </p>
+      </li>
+      <% }) %>
+    </ul>
+    </div>
+  </div>
+</section>
+<% } %>

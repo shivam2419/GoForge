@@ -10,8 +10,12 @@ const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
-const { SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
+const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
 const { programmePdf, programmeLines } = require('./lib/pdf');
+const cms = require('./lib/cms');
+const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 8 * 1024 } });
 
 const PORT = Number(process.env.PORT) || 3000;
 const SITE_URL = (process.env.SITE_URL || 'https://goforgedigital.com').replace(/\/+$/, '');
@@ -62,10 +66,6 @@ const sha256 = s => crypto.createHash('sha256').update(s).digest('hex');
 const hmac = s => crypto.createHmac('sha256', SECRET).update(s).digest('hex');
 const digits = s => String(s || '').replace(/\D/g, '');
 const telHref = p => 'tel:+' + digits(p);
-function waUrl(number, text) {
-  const n = digits(number);
-  return 'https://wa.me/' + n + (text ? '?text=' + encodeURIComponent(text) : '');
-}
 const fmtTime = iso => new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' IST';
 
 function assetVersion() {
@@ -73,6 +73,8 @@ function assetVersion() {
   for (const f of ['public/css/site.css', 'public/css/admin.css', 'public/js/site.js']) {
     try { h.update(fs.readFileSync(path.join(__dirname, f))); } catch (_) { /* optional */ }
   }
+  // Include the deploy's commit so cached HTML/JS from an older deploy is never paired with a newer server.
+  h.update(process.env.VERCEL_GIT_COMMIT_SHA || process.env.VERCEL_DEPLOYMENT_ID || '');
   return h.digest('hex').slice(0, 10);
 }
 const ASSET_V = assetVersion();
@@ -107,41 +109,31 @@ function validateContact(body) {
   field(errors, values, body, 'message', 'a short message', { required: true, min: 10, max: 2000 });
   return { errors, values };
 }
-function validateApplication(body) {
+const MODES = ['Live online', 'Either is fine'];
+const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'Other'];
+function validateApplication(body, TRACKS) {
   const errors = {}, values = {};
   field(errors, values, body, 'full_name', 'your full name', { required: true, min: 2, max: 80 });
   field(errors, values, body, 'college', 'your college', { required: true, min: 2, max: 120 });
   field(errors, values, body, 'course_year', 'your course and year', { required: true, min: 2, max: 60 });
-  phoneField(errors, values, body, 'whatsapp', 'WhatsApp number');
+  phoneField(errors, values, body, 'whatsapp', 'phone number');
   values.track = text(body.track);
   if (!values.track) errors.track = 'Please choose a role.';
   else if (!TRACKS.includes(values.track)) errors.track = 'Please choose a role from the list.';
   field(errors, values, body, 'note', 'the note', { max: 1000 });
   if (values.track === SIMILAR_ROLE && !errors.note && (values.note || '').length < 5) errors.note = 'Please name the role you want in the note.';
+  values.email = text(body.email).slice(0, 200);
+  if (values.email && (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120)) errors.email = 'Please enter a valid email address.';
+  field(errors, values, body, 'city', 'your city', { max: 80 });
+  values.mode = text(body.mode);
+  if (values.mode && !MODES.includes(values.mode)) errors.mode = 'Please choose from the list.';
+  values.source = text(body.source);
+  if (values.source && !SOURCES.includes(values.source)) errors.source = 'Please choose from the list.';
+  values.consent = body.consent ? 'yes' : '';
+  if (!values.consent) errors.consent = 'Please agree so we can contact you about your application.';
   return { errors, values };
 }
 
-function contactMessage(v) {
-  return [
-    'Hello Goforge Digital, I sent this from your website.',
-    `Name: ${v.name}`,
-    v.business ? `Business: ${v.business}` : null,
-    `Phone: ${v.phone}`,
-    v.service ? `Service: ${v.service}` : null,
-    `Message: ${v.message}`
-  ].filter(Boolean).join('\n');
-}
-function applicationMessage(v) {
-  return [
-    'Hello Goforge Digital, I applied for the internship on your website.',
-    `Name: ${v.full_name}`,
-    `College: ${v.college}`,
-    `Course and year: ${v.course_year}`,
-    `WhatsApp: ${v.whatsapp}`,
-    `Role: ${v.track}`,
-    v.note ? `Note: ${v.note}` : null
-  ].filter(Boolean).join('\n');
-}
 
 // ---------- app ----------
 const app = express();
@@ -150,7 +142,7 @@ const app = express();
 // and keep the settings cache fresh (it is shared by every render).
 let bootPromise = null;
 function boot() {
-  if (!bootPromise) bootPromise = ready().then(seedAdmin).catch(err => { bootPromise = null; throw err; });
+  if (!bootPromise) bootPromise = ready().then(cms.migrate).then(seedAdmin).catch(err => { bootPromise = null; throw err; });
   return bootPromise;
 }
 app.use(async (req, res, next) => {
@@ -172,7 +164,7 @@ app.use(helmet({
       'default-src': ["'self'"],
       'script-src': ["'self'"].concat(GA_ID ? ['https://www.googletagmanager.com'] : [], PLAUSIBLE_DOMAIN ? [PLAUSIBLE_SRC] : []),
       'style-src': ["'self'"],
-      'img-src': ["'self'", 'data:'].concat(GA_ID ? ['https://www.google-analytics.com'] : []),
+      'img-src': ["'self'", 'data:', 'https:'].concat(GA_ID ? ['https://www.google-analytics.com'] : []),
       'font-src': ["'self'"],
       'connect-src': ["'self'"].concat(
         GA_ID ? ['https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://region1.google-analytics.com'] : [],
@@ -193,6 +185,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 app.use(express.json({ limit: '20kb' }));
 
+// Old cached copies of site.js (before WhatsApp was removed) navigated a new tab to data.whatsappUrl,
+// which newer servers no longer send, giving /undefined. Send such tabs home instead of a 404.
+app.get(['/undefined', '/null'], (req, res) => res.redirect(302, '/'));
 app.use(express.static(path.join(__dirname, 'public'), {
   index: false,
   setHeaders(res, file) {
@@ -202,15 +197,18 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Shared locals
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   const s = getSettings();
+  const PROGRAMS = await cms.publishedPrograms(s);
+  const TRACKS = PROGRAMS.map(p => p.name).concat([SIMILAR_ROLE]);
   Object.assign(res.locals, {
-    s, BRAND, SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
-    WHY_SMALL, FAQ, OFFERS,
+    PROGRAMS, TRACKS, MODES, SOURCES,
+    s, BRAND, SERVICES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
+    WHY_SMALL, FAQ, OFFERS, TECH_STACK,
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
-    telHref, waUrl, digits, fmtTime, errors: {}, values: {}
+    telHref, digits, fmtTime, errors: {}, values: {}
   });
   next();
 });
@@ -223,6 +221,11 @@ app.use((req, res, next) => {
     res.cookie('gf_csrf', id, { httpOnly: true, sameSite: 'lax', secure: req.secure, path: '/' });
   }
   res.locals.csrf = hmac('csrf:' + id);
+  if (req.method === 'POST' && req.is('multipart/form-data')) {
+    // Body is parsed later by multer on the admin content routes, which then call csrfAfterUpload.
+    if (!/^\/admin\/(programs|instructors|stats|testimonials|credentials)\/(new|\d+)$/.test(req.path)) return res.status(415).type('text').send('Unsupported form type.');
+    return next();
+  }
   if (req.method === 'POST') {
     const origin = req.get('origin');
     if (origin && origin !== 'null') {
@@ -242,6 +245,19 @@ app.use((req, res, next) => {
   next();
 });
 
+function csrfAfterUpload(req, res, next) {
+  const origin = req.get('origin');
+  if (origin && origin !== 'null') {
+    let host = '';
+    try { host = new URL(origin).host; } catch (_) { /* invalid */ }
+    if (![req.get('host'), req.get('x-forwarded-host')].filter(Boolean).includes(host)) return res.status(403).type('text').send('Cross-site request refused.');
+  }
+  const sent = String((req.body && req.body._csrf) || '');
+  const ok = req.cookies.gf_csrf && sent.length === 64 &&
+    crypto.timingSafeEqual(Buffer.from(sent), Buffer.from(hmac('csrf:' + req.cookies.gf_csrf)));
+  if (!ok) return res.status(403).render('error', { ...pageMeta(req, 'Session expired', 'Session expired'), code: 403, heading: 'This form has expired', body: 'Please go back, reload the page, and send it again.' });
+  next();
+}
 function wantsJson(req) { return (req.get('accept') || '').includes('application/json'); }
 
 function pageMeta(req, title, desc, extra = {}) {
@@ -284,6 +300,13 @@ function jsonLd() {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
+function courseJsonLd(p) {
+  return JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Course', name: p.name, description: p.summary,
+    provider: { '@type': 'Organization', name: BRAND.name, sameAs: SITE_URL + '/' },
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: p.training }
+  }).replace(/</g, '\\u003c');
+}
 function faqJsonLd() {
   const entities = FAQ.flatMap(group => group.items.map(item => ({
     '@type': 'Question',
@@ -297,7 +320,7 @@ function faqJsonLd() {
 const formLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, limit: 8, standardHeaders: 'draft-7', legacyHeaders: false,
   handler: (req, res) => {
-    const msg = 'Too many messages from this connection. Please try again in an hour, or message us on WhatsApp.';
+    const msg = 'Too many messages from this connection. Please try again in an hour. You can also call us.';
     if (wantsJson(req)) return res.status(429).json({ ok: false, message: msg });
     res.status(429).render('error', { ...pageMeta(req, 'Please wait', msg), code: 429, heading: 'Please wait a little', body: msg });
   }
@@ -308,8 +331,16 @@ const loginLimiter = rateLimit({
 });
 
 // ---------- public pages ----------
-app.get('/', (req, res) => res.render('home', pageMeta(req, 'Home',
-  'Goforge Digital builds custom software, CRM and ERP, automation, and digital marketing for businesses in Faridabad. Scope and price agreed before the work starts.', { jsonld: jsonLd() })));
+app.get('/', async (req, res) => {
+  const t = await trustData();
+  res.render('home', { ...t, allTestimonials: t.clientTestimonials.concat(t.testimonials), ...pageMeta(req, 'Home',
+    'Goforge Digital is an MSME-registered software company and training institute in Faridabad: custom software, CRM, ERP, websites and marketing for businesses, and paid training with an internship for students.', { jsonld: jsonLd() }) });
+});
+app.get('/verify', async (req, res) => {
+  const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
+  res.render('verify', { certId: id, ...pageMeta(req, 'Verify a certificate',
+    'Check a Goforge Digital training certificate or internship letter.', { seoTitle: 'Verify a certificate | Goforge Digital' }) });
+});
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
   'Custom software, CRM, ERP, AI automation, and digital marketing from a studio in Faridabad. See what each service includes and what you get at handover.',
@@ -327,17 +358,33 @@ app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
   'Portfolio of Goforge Digital, a studio in Faridabad. Only finished work we are allowed to show is listed here.',
   { seoTitle: 'Portfolio | Goforge Digital, Faridabad' })));
 
-app.get('/internship', (req, res) => res.render('internship', { values: { track: TRACKS.includes(req.query.track) ? req.query.track : '' }, ...pageMeta(req, 'Internship',
-  'Live online training, then a supervised internship with Goforge Digital in Faridabad. For BTech, BCA and similar students. The college decides whether it counts.',
-  { seoTitle: 'Online internship after live training | Goforge Digital, Faridabad' }) }));
+async function trustData() {
+  const [stats, credentials, instructors, testimonials] = await Promise.all([
+    cms.listPublished('stats'), cms.listPublished('credentials'), cms.listPublished('instructors'), cms.listPublished('testimonials')
+  ]);
+  return { stats, credentials, instructors, testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
+}
+const INTERNSHIP_DESC = 'Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. Programmes in software, AI/ML, data, web and digital marketing.';
+app.get('/internship', async (req, res) => res.render('internship', {
+  values: { track: res.locals.TRACKS.includes(req.query.track) ? req.query.track : '' },
+  ...(await trustData()),
+  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Paid training + internship programme | Goforge Digital, Faridabad' })
+}));
 
-app.get('/internship/roles/:slug', (req, res, next) => {
-  const role = TRACK_DETAILS.find(item => item.slug === req.params.slug);
-  if (!role) return next();
-  res.render('role', pageMeta(req, role.name + ' internship',
-    role.name + ' internship at Goforge Digital: tools such as ' + role.tools.slice(0, 3).join(', ') + ', a typical project, and who the role suits.',
-    { seoTitle: role.name + ' internship | Goforge Digital, Faridabad', role }));
+app.get('/internship/programs/:slug', async (req, res, next) => {
+  const program = await cms.programBySlug(req.params.slug, getSettings());
+  if (!program) return next();
+  const { instructors, credentials } = await trustData();
+  res.render('program', {
+    program, instructors, credentials,
+    values: { track: program.name },
+    ...pageMeta(req, program.name + ' training + internship',
+      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects, batches and fees.',
+      { seoTitle: program.name + ' training & internship | Goforge Digital', jsonld: courseJsonLd(program) })
+  });
 });
+// Old role pages moved to programme pages.
+app.get('/internship/roles/:slug', (req, res) => res.redirect(301, '/internship/programs/' + encodeURIComponent(req.params.slug)));
 
 app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(req, 'Programme overview',
   'Printable overview of the Goforge Digital internship: stages, roles, letter, and what a college should check.',
@@ -346,7 +393,7 @@ app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(re
 app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
   res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
-  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, tracks: TRACK_DETAILS })));
+  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
@@ -354,11 +401,11 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   { seoTitle: 'FAQ for students and clients | Goforge Digital, Faridabad', jsonld: faqJsonLd() })));
 
 app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
-  'Goforge Digital is an early studio in Sector 8, Faridabad, led by Rohit Sharma, Founder and Director.',
+  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 8, Faridabad, led by Rohit Sharma, Founder and Director.',
   { seoTitle: 'About Goforge Digital, a studio in Faridabad' })));
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
-  'Call, WhatsApp or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
+  'Call, email or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
   { seoTitle: 'Contact Goforge Digital in Faridabad' }) }));
 
 app.get('/privacy', (req, res) => res.render('legal', pageMeta(req, 'Privacy',
@@ -374,37 +421,37 @@ app.get('/refund', (req, res) => res.render('legal', pageMeta(req, 'Refunds',
   { seoTitle: 'Refund policy | Goforge Digital', kind: 'refund' })));
 
 app.post('/contact', formLimiter, async (req, res) => {
-  if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.', waUrl(getSettings().whatsapp, ''));
+  if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.');
   const { errors, values } = validateContact(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact Goforge Digital'), errors, values });
   }
   (await db.run('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)', values.name, values.business || null, values.phone, values.service || null, values.message));
-  respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.', waUrl(getSettings().whatsapp, contactMessage(values)));
+  respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.');
 });
 
 app.post('/internship', formLimiter, async (req, res) => {
-  if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.', waUrl(getSettings().whatsapp, ''));
-  const { errors, values } = validateApplication(req.body);
+  if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.');
+  const { errors, values } = validateApplication(req.body, res.locals.TRACKS);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
-    return res.status(422).render('internship', { ...pageMeta(req, 'Internship', 'Internship at Goforge Digital'), errors, values });
+    return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note) VALUES (?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null));
-  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you on WhatsApp.', waUrl(getSettings().whatsapp, applicationMessage(values)));
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1));
+  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.');
 });
 
-function respondOk(req, res, kind, message, whatsappUrl) {
-  if (wantsJson(req)) return res.json({ ok: true, message, whatsappUrl });
-  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message, whatsappUrl });
+function respondOk(req, res, kind, message) {
+  if (wantsJson(req)) return res.json({ ok: true, message });
+  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message });
 }
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
-  const pages = ['/', '/services', '/work', '/internship', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
+  const pages = ['/', '/services', '/work', '/internship', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
     .concat(SERVICES.map(item => '/services/' + item.slug))
-    .concat(TRACK_DETAILS.map(item => '/internship/roles/' + item.slug));
+    .concat(res.locals.PROGRAMS.map(item => '/internship/programs/' + item.slug));
   const today = new Date().toISOString().slice(0, 10);
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 });
@@ -415,6 +462,9 @@ app.get('/js/analytics.js', (req, res) => {
   );
 });
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'public', 'favicon-32.png')));
+if (uploadMode === 'local') {
+  app.use('/uploads', express.static(UPLOAD_DIR, { index: false, maxAge: '30d', setHeaders(res) { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
+}
 app.get('/healthz', (req, res) => res.type('text').send('ok'));
 
 // ---------- admin ----------
@@ -474,7 +524,7 @@ const INBOXES = {
     table: 'contacts', title: 'Project enquiries', search: ['name', 'business', 'phone', 'service', 'message']
   },
   applications: {
-    table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note']
+    table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city']
   }
 };
 const PAGE_SIZE = 25;
@@ -520,7 +570,6 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   const errors = {}, values = {};
   phoneField(errors, values, req.body, 'phone1', 'first phone number');
   phoneField(errors, values, req.body, 'phone2', 'second phone number');
-  phoneField(errors, values, req.body, 'whatsapp', 'WhatsApp number');
   values.email = text(req.body.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120) errors.email = 'Please enter a valid email address.';
   for (const k of ['blurb1', 'blurb2', 'blurb3', 'blurb4']) field(errors, values, req.body, k, 'the service line', { required: true, min: 10, max: 220 });
@@ -552,6 +601,74 @@ app.post('/admin/password', requireAdmin, async (req, res) => {
   (await db.run('DELETE FROM sessions WHERE admin_id = ? AND token_hash != ?', user.id, sha256(req.cookies.gf_sid)));
   res.redirect(303, '/admin/password?saved=1');
 });
+
+// ---------- admin: content (programmes, instructors, stats, testimonials, badges) ----------
+function entityOf(req, res, next) {
+  const cfg = cms.ENTITIES[req.params.entity];
+  if (!cfg) return next('route');
+  req.entity = req.params.entity; req.cfg = cfg;
+  next();
+}
+const imageFields = cfg => cfg.fields.filter(f => f.type === 'image');
+function renderEdit(req, res, { item, values, errors = {}, status = 200 }) {
+  res.status(status).render('admin/cms-edit', {
+    ...pageMeta(req, (item ? 'Edit ' : 'New ') + req.cfg.singular, 'Admin'),
+    entity: req.entity, cfg: req.cfg, item, values, errors, uploadMode,
+    flash: req.query.saved ? 'Saved.' : null
+  });
+}
+app.get('/admin/:entity', requireAdmin, entityOf, async (req, res) => {
+  res.render('admin/cms-list', {
+    ...pageMeta(req, req.cfg.title, 'Admin'), entity: req.entity, cfg: req.cfg, rows: await cms.listAll(req.entity),
+    flash: req.query.deleted ? 'Deleted.' : (req.query.saved ? 'Saved.' : null)
+  });
+});
+app.get('/admin/:entity/new', requireAdmin, entityOf, (req, res) => {
+  const values = { published: 1, sort_order: 100 };
+  renderEdit(req, res, { item: null, values });
+});
+app.get('/admin/:entity/:id', requireAdmin, entityOf, async (req, res, next) => {
+  const item = await cms.getById(req.entity, parseInt(req.params.id, 10) || 0);
+  if (!item) return next();
+  renderEdit(req, res, { item, values: item });
+});
+const uploadFields = upload.fields(['photo_url', 'image_url'].map(name => ({ name: name + '_file', maxCount: 1 })));
+function runUpload(req, res, next) {
+  uploadFields(req, res, err => {
+    if (err) { req.uploadError = err.code === 'LIMIT_FILE_SIZE' ? 'Please use an image under 2 MB.' : 'The upload could not be read.'; req.body = req.body || {}; }
+    next();
+  });
+}
+async function saveEntity(req, res, id) {
+  const item = id ? await cms.getById(req.entity, id) : null;
+  if (id && !item) return res.status(404).type('text').send('Not found.');
+  const { errors, values } = cms.validate(req.entity, req.body || {}, text);
+  for (const f of imageFields(req.cfg)) {
+    if (req.uploadError) { errors[f.name] = req.uploadError; continue; }
+    const file = req.files && req.files[f.name + '_file'] && req.files[f.name + '_file'][0];
+    if (file) {
+      try {
+        const out = await storeImage(file, req.entity);
+        if (out.error) errors[f.name] = out.error; else if (out.url) { values[f.name] = out.url; delete errors[f.name]; }
+      } catch (e) { console.error('[goforge] upload failed', e); errors[f.name] = 'The upload failed. Try again, or paste an image link.'; }
+    }
+    if (req.body[f.name + '_remove']) values[f.name] = '';
+  }
+  if (Object.keys(errors).length) return renderEdit(req, res, { item, values, errors, status: 422 });
+  try {
+    const newId = await cms.save(req.entity, id, values);
+    res.redirect(303, `/admin/${req.entity}/${newId}?saved=1`);
+  } catch (e) {
+    if (/UNIQUE/i.test(String(e.message))) return renderEdit(req, res, { item, values, errors: { slug: 'Another programme already uses this slug.' }, status: 422 });
+    throw e;
+  }
+}
+app.post('/admin/:entity/new', requireAdmin, entityOf, runUpload, csrfAfterUpload, (req, res) => saveEntity(req, res, 0));
+app.post('/admin/:entity/:id/delete', requireAdmin, entityOf, async (req, res) => {
+  await cms.remove(req.entity, parseInt(req.params.id, 10) || 0);
+  res.redirect(303, `/admin/${req.entity}?deleted=1`);
+});
+app.post('/admin/:entity/:id', requireAdmin, entityOf, runUpload, csrfAfterUpload, (req, res) => saveEntity(req, res, parseInt(req.params.id, 10) || 0));
 
 // ---------- 404 / errors ----------
 app.use((req, res) => {

@@ -86,7 +86,7 @@ const DEFAULT_SETTINGS = {
   blurb4: 'A clear presence, search basics, and ads with a budget the client can see.',
   intern_training: '6 weeks',
   intern_work: '12 weeks',
-  intern_fee: 'Confirmed on the call'
+  intern_fee: 'Contact for fees'
 };
 
 async function init() {
@@ -99,7 +99,8 @@ async function init() {
   await client.batch(stmts, 'write');
   await db.batch([
     ...Object.entries(DEFAULT_SETTINGS).map(([k, v]) => ['INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', k, v]),
-    ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"]
+    ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"],
+    ["UPDATE settings SET value = 'Contact for fees' WHERE key = 'intern_fee' AND value = 'Confirmed on the call'"]
   ]);
 }
 let readyPromise = null;

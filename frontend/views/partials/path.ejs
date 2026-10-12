@@ -1,0 +1,14 @@
+<% const steps = [
+  ['Apply + free demo class', 'Send the form. Sit one free live class before you pay anything.'],
+  ['Counselling call', 'We confirm the programme, batch, fee and what your college needs.'],
+  ['Enrol', 'Pay the training fee. You get the study material and the class schedule.'],
+  ['Live training', 'Live online classes with notes and doubt sessions.'],
+  ['Assignments + projects', 'Weekly assignments and mini projects, reviewed by an instructor.'],
+  ['Internship offer', 'Finish the training and the assessment, and you are offered a supervised internship.'],
+  ['Certificate + letter', 'A training certificate, and an internship letter naming the dates and the work.']
+]; %>
+<ol class="steps7" data-reveal-group>
+  <% steps.forEach((st, i) => { %>
+  <li data-reveal><span class="step-num"><%= i + 1 %></span><h3><%= st[0] %></h3><p><%= st[1] %></p></li>
+  <% }) %>
+</ol>

@@ -22,6 +22,22 @@ On first start the app creates the admin account `goforgedigital@gmail.com`, gen
 
 Forgot the password? On the server: `npm run reset-admin-password` (prints a new one) or `npm run reset-admin-password -- 'your new password'`.
 
+## Content admin (training + internship)
+
+Signed-in admins manage, under `/admin`:
+
+| Section | What it controls |
+| --- | --- |
+| Programmes | Cards on `/internship` and pages at `/internship/programs/<slug>`: summary, curriculum (`Week 1: Title \| topic, topic`), tools, project, fee (empty = "Contact for fees"), batches (`Start \| Timing \| Seats`), show/hide, order. Names also fill the application form's programme list. |
+| Instructors | Instructors section (hidden until one is published). Photo by upload or link. |
+| Stats | Trust-strip counters with a one-line definition each. |
+| Testimonials | Student/client quotes (hidden until one is published). |
+| Badges | Certificates and registrations, e.g. MSME (Udyam) number, scan and verification link. |
+
+Tables are created and seeded automatically on first start (5 programmes from the old roles, 4 stats, an MSME badge). Old `/internship/roles/<slug>` links redirect to the programme pages.
+
+**Image uploads:** with `BLOB_READ_WRITE_TOKEN` set (Vercel → Storage → Blob → connect to the project), uploads go to Vercel Blob. Running locally or on a server with a disk, they are saved in `DATA_DIR/uploads`. On Vercel without Blob, the upload box is hidden and you paste an image link instead. JPG, PNG or WebP under 2 MB.
+
 ## Configuration
 
 See `.env.example`. The important ones:
@@ -33,6 +49,7 @@ See `.env.example`. The important ones:
 | `TURSO_AUTH_TOKEN` | Token for that database. |
 | `DATA_DIR` | Local-mode SQLite file and fallback session secret. Must be persistent if you use local mode in production. |
 | `SESSION_SECRET` | 32+ random characters. **Required on Vercel** (otherwise each serverless instance generates its own and forms fail with 403). Auto-generated into `DATA_DIR` elsewhere. |
+| `BLOB_READ_WRITE_TOKEN` | Optional. Vercel Blob token for admin image uploads (added automatically when you connect a Blob store). |
 | `TRUST_PROXY` | `1` when behind Render, Railway, Nginx or Cloudflare |
 | `GA_MEASUREMENT_ID` | Optional. GA4 ID (`G-XXXXXXXX`). Off if empty. |
 | `PLAUSIBLE_DOMAIN` | Optional. Plausible domain. Off if empty. |

@@ -78,11 +78,10 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await page.fill('#mc-business', 'E2E Modal Shop');
   await page.fill('#mc-phone', '+91 98765 43211');
   await page.fill('#mc-message', 'Automated modal test message. Please mark Closed.');
-  const [mpop] = await Promise.all([ctx.waitForEvent('page'), page.click('#dlg-contact [data-submit]')]);
+  const pagesBefore = ctx.pages().length;
+  await page.click('#dlg-contact [data-submit]');
   await page.waitForSelector('#dlg-contact [data-form-success]:not([hidden])');
-  await mpop.waitForURL(/wa\.me|whatsapp\.com/, { timeout: 15000 }).catch(() => {});
-  check('contact modal saves + opens WhatsApp with same text', waUrl(mpop).includes('918448852971') && waUrl(mpop).includes('E2E Modal Shop'), waUrl(mpop).slice(0, 120));
-  await mpop.close();
+  check('contact modal saves, no WhatsApp popup', ctx.pages().length === pagesBefore);
   await page.keyboard.press('Escape'); await page.waitForTimeout(400);
 
   // home role -> role modal -> Apply -> apply modal with role preselected
@@ -111,13 +110,9 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await page.fill('#c-phone', '+91 98765 43210');
   await page.selectOption('#c-service', 'CRM, ERP & Integrations');
   await page.fill('#c-message', 'Automated end-to-end test message. Please mark Closed.');
-  const [popup] = await Promise.all([ctx.waitForEvent('page'), page.click('[data-submit]')]);
+  await page.click('[data-submit]');
   await page.waitForSelector('[data-form-success]:not([hidden])');
-  await popup.waitForURL(/wa\.me|whatsapp\.com/, { timeout: 15000 }).catch(() => {});
-  const popupUrl = decodeURIComponent(popup.url().replace(/\+/g, ' '));
   check('contact success confirmation shown', (await page.textContent('[data-success-text]')).includes('Test'));
-  check('WhatsApp opened to 918448852971 with same text', /918448852971|phone=918448852971/.test(popupUrl) && popupUrl.includes('E2E Test Shop'), popupUrl.slice(0, 140));
-  await popup.close();
 
   // Internship form
   await page.goto(BASE + '/internship', { waitUntil: 'networkidle' });
@@ -154,11 +149,9 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await page.fill('#a-wa', '9876543210');
   await page.selectOption('#a-track', 'AI/ML Engineer');
   await page.fill('#a-note', 'Automated test application.');
-  const [popup2] = await Promise.all([ctx.waitForEvent('page'), page.click('[data-submit]')]);
+  await page.click('[data-submit]');
   await page.waitForSelector('[data-form-success]:not([hidden])');
-  await popup2.waitForURL(/wa\.me|whatsapp\.com/, { timeout: 15000 }).catch(() => {});
-  check('internship success + WhatsApp popup', decodeURIComponent(popup2.url().replace(/\+/g, ' ')).includes('E2E College of Engineering') && waUrl(popup2).includes('Role: AI/ML Engineer'), waUrl(popup2).slice(0, 160));
-  await popup2.close();
+  check('internship success shown', /saved/i.test(await page.textContent('[data-success-text]')));
   await page.goto(BASE + '/services', { waitUntil: 'networkidle' });
   await revealAll(page);
   await page.screenshot({ path: path.join(SHOTS, 'services.png') });

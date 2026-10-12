@@ -1,0 +1,38 @@
+<%- include('top') %>
+<div class="admin-head admin-head-row">
+  <div>
+    <h1 class="admin-title"><%= cfg.title %></h1>
+    <p class="admin-sub"><%= cfg.intro %></p>
+  </div>
+  <a class="btn btn-primary" href="/admin/<%= entity %>/new">Add <%= cfg.singular %></a>
+</div>
+<% if (flash) { %><div class="flash" role="status"><%= flash %></div><% } %>
+<% if (!rows.length) { %>
+  <div class="empty"><p>Nothing here yet. <a href="/admin/<%= entity %>/new">Add the first <%= cfg.singular %></a>.</p></div>
+<% } else { %>
+<ul class="items">
+  <% rows.forEach(r => { const img = r.photo_url || r.image_url; %>
+  <li class="item cms-item<%= r.published ? '' : ' status-closed' %>">
+    <div class="item-head">
+      <div class="cms-item-main">
+        <% if (img) { %><img class="cms-thumb" src="<%= img %>" alt="" width="48" height="48"><% } %>
+        <div>
+          <h2 class="item-name"><% if (entity === 'stats') { %><%= r.value %><%= r.suffix || '' %> · <% } %><%= r[cfg.nameField] %></h2>
+          <p class="item-meta"><%= r.summary || r.title || r.role || r.note || r.issuer || '' %></p>
+        </div>
+      </div>
+      <span class="pill <%= r.published ? 'pill-contacted' : 'pill-closed' %>"><%= r.published ? 'Shown' : 'Hidden' %></span>
+    </div>
+    <div class="status-form">
+      <span class="item-meta">Order <%= r.sort_order %><% if (entity === 'programs') { %> · <a href="/internship/programs/<%= r.slug %>" target="_blank" rel="noopener">/internship/programs/<%= r.slug %></a><% } %></span>
+      <a class="btn btn-ghost btn-sm" href="/admin/<%= entity %>/<%= r.id %>">Edit</a>
+      <form method="post" action="/admin/<%= entity %>/<%= r.id %>/delete" class="inline-form" data-confirm="Delete this <%= cfg.singular %>? This cannot be undone.">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="btn btn-ghost btn-sm btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
+  </li>
+  <% }) %>
+</ul>
+<% } %>
+<%- include('bottom') %>

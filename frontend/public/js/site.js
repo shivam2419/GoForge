@@ -194,7 +194,7 @@
     sel.addEventListener('change', function () { sel.form.requestSubmit ? sel.form.requestSubmit() : sel.form.submit(); });
   });
 
-  /* ---------- forms: validate, save, confirm, WhatsApp ---------- */
+  /* ---------- forms: validate, save, confirm ---------- */
   function phoneOk(v) { var d = v.replace(/\D/g, ''); return /^[+\d\s\-().]+$/.test(v) && d.length >= 10 && d.length <= 15; }
   function setError(form, name, msg) {
     var el = form.elements[name];
@@ -209,7 +209,7 @@
     var errors = {};
     Array.prototype.forEach.call(form.querySelectorAll('input, select, textarea'), function (el) {
       if (!el.name || el.type === 'hidden' || el.closest('.hp')) return;
-      var v = (el.value || '').trim(), msg = '';
+      var v = el.type === 'checkbox' ? (el.checked ? 'yes' : '') : (el.value || '').trim(), msg = '';
       if (el.required && !v) msg = 'This field is required.';
       else if (v && el.minLength > 0 && v.length < el.minLength) msg = 'This looks too short.';
       else if (v && el.maxLength > 0 && v.length > el.maxLength) msg = 'This is too long.';
@@ -236,8 +236,6 @@
       var names = Object.keys(errors);
       if (names.length) { alertBox.textContent = 'Please check the highlighted fields.'; alertBox.hidden = false; form.elements[names[0]].focus(); return; }
       alertBox.hidden = true;
-      var waWin = null;
-      try { waWin = window.open('', '_blank'); } catch (_) { waWin = null; } // opened inside the click so pop-up blockers allow it
       submit.disabled = true;
       var label = submit.innerHTML;
       submit.textContent = 'Sending…';
@@ -251,7 +249,6 @@
       }).then(function (data) {
         submit.disabled = false; submit.innerHTML = label;
         if (!data.ok) {
-          if (waWin) waWin.close();
           if (data.errors) Object.keys(data.errors).forEach(function (n) { setError(form, n, data.errors[n]); });
           alertBox.textContent = data.message || 'Please check the highlighted fields.';
           alertBox.hidden = false;
@@ -260,18 +257,49 @@
           return;
         }
         success.querySelector('[data-success-text]').textContent = data.message;
-        success.querySelector('[data-success-wa]').href = data.whatsappUrl;
         success.hidden = false;
         form.classList.add('is-sent');
         form.reset();
         success.focus();
-        if (waWin && !waWin.closed) { try { waWin.opener = null; waWin.location.href = data.whatsappUrl; } catch (_) { /* ignore */ } }
       }).catch(function () {
-        if (waWin) waWin.close();
         submit.disabled = false; submit.innerHTML = label;
-        alertBox.textContent = 'Could not reach the server. Check your connection, or message us on WhatsApp.';
+        alertBox.textContent = 'Could not reach the server. Check your connection, or call us.';
         alertBox.hidden = false;
       });
     });
+  });
+  /* ---------- admin: confirm destructive actions ---------- */
+  document.addEventListener('submit', function (e) {
+    var msg = e.target && e.target.getAttribute && e.target.getAttribute('data-confirm');
+    if (msg && !window.confirm(msg)) e.preventDefault();
+  });
+  /* ---------- testimonial carousel (user-driven, no autoplay) ---------- */
+  doc.querySelectorAll('[data-carousel]').forEach(function (c) {
+    var track = c.querySelector('[data-carousel-track]');
+    var prev = c.querySelector('[data-carousel-prev]'), next = c.querySelector('[data-carousel-next]');
+    function step() { var item = track.querySelector('li'); return item ? item.getBoundingClientRect().width + 16 : track.clientWidth; }
+    function sync() {
+      var max = track.scrollWidth - track.clientWidth - 2;
+      c.classList.toggle('is-static', max <= 0);
+      prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+    }
+    prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+    track.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  });
+
+  /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
+  var mt = doc.querySelector('[data-motion-toggle]');
+  function setMotion(paused) {
+    doc.documentElement.classList.toggle('motion-paused', paused);
+    if (mt) { mt.setAttribute('aria-pressed', String(paused)); mt.textContent = paused ? 'Play animations' : 'Pause animations'; }
+  }
+  var saved = null; try { saved = localStorage.getItem('gf-motion'); } catch (_) {}
+  setMotion(saved === 'paused');
+  if (mt) mt.addEventListener('click', function () {
+    var p = !doc.documentElement.classList.contains('motion-paused');
+    setMotion(p); try { localStorage.setItem('gf-motion', p ? 'paused' : 'on'); } catch (_) {}
   });
 })();

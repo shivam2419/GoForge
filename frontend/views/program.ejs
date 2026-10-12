@@ -1,0 +1,123 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<% const p = program; %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item><a class="crumb" href="/internship">Training + internship</a></p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span><%= p.name %></span></span></h1>
+    <p class="lede" data-hero-item><%= p.summary %></p>
+    <div class="hero-actions" data-hero-item>
+      <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= p.name %>">Apply for this programme <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
+    </div>
+    <dl class="facts" data-reveal-group>
+      <div data-reveal><dt>Training</dt><dd><%= p.training %></dd></div>
+      <div data-reveal><dt>Internship</dt><dd><%= p.internship %>, supervised</dd></div>
+      <div data-reveal><dt>Mode</dt><dd><%= p.modeText %></dd></div>
+      <div data-reveal><dt>Fee</dt><dd><%= p.feeText %></dd></div>
+    </dl>
+  </div>
+</section>
+
+<% if (p.overview) { %>
+<section class="section section-tight"><div class="wrap prose"><p class="prose-lead" data-reveal><%= p.overview %></p></div></section>
+<% } %>
+
+<% if (p.curriculumList.length) { %>
+<section class="section section-tight" aria-labelledby="cur-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Curriculum</p>
+      <h2 id="cur-h" class="h2" data-reveal>Module by <em>module.</em></h2>
+    </div>
+    <ol class="curriculum" data-reveal>
+      <% p.curriculumList.forEach((m, i) => { %>
+      <li>
+        <details<% if (i === 0) { %> open<% } %>>
+          <summary><% if (m.label) { %><span class="cur-label"><%= m.label %></span><% } %><span class="cur-title"><%= m.title %></span></summary>
+          <% if (m.topics.length) { %><ul class="check-list"><% m.topics.forEach(t => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= t %></span></li><% }) %></ul><% } %>
+        </details>
+      </li>
+      <% }) %>
+    </ol>
+  </div>
+</section>
+<% } %>
+
+<section class="section section-alt">
+  <div class="wrap detail-grid">
+    <% if (p.coversList.length) { %>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">What you learn</p>
+      <ul class="check-list"><% p.coversList.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %></ul>
+    </article>
+    <% } %>
+    <% if (p.toolsList.length) { %>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">Tools</p>
+      <ul class="check-list"><% p.toolsList.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %></ul>
+      <p class="row-start">Tools follow the project. Not every batch uses every tool.</p>
+    </article>
+    <% } %>
+    <% if (p.project) { %>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">A typical project</p>
+      <p><%= p.project %></p>
+      <p class="row-start">During the internship you work on a piece of studio work of this shape, or a practice project if no client task fits. The letter describes what you did.</p>
+    </article>
+    <% } %>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">Who it suits</p>
+      <% if (p.suits) { %><p><%= p.suits %></p><% } %>
+      <% if (p.eligibility) { %><p class="row-start"><strong>Who can apply:</strong> <%= p.eligibility %></p><% } %>
+    </article>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="bat-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Batches and fee</p>
+      <h2 id="bat-h" class="h2" data-reveal>When it <em>starts.</em></h2>
+    </div>
+    <% if (p.batchesList.length) { %>
+    <div class="table-wrap" data-reveal>
+      <table class="batches">
+        <thead><tr><th scope="col">Starts</th><th scope="col">Timing</th><th scope="col">Seats</th><th scope="col">Fee</th></tr></thead>
+        <tbody>
+          <% p.batchesList.forEach(b => { %><tr><td><%= b.start %></td><td><%= b.timing || 'On the call' %></td><td><%= b.seats || 'Limited' %></td><td><%= p.feeText %></td></tr><% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } else { %>
+    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Fee: <strong><%= p.feeText %></strong>.</p>
+    <% } %>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="path-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>How it works</p>
+      <h2 id="path-h" class="h2" data-reveal>From training <em>to internship.</em></h2>
+    </div>
+    <%- include('partials/path') %>
+  </div>
+</section>
+
+<%- include('partials/people', { instructors, testimonials: [] }) %>
+
+<section class="section" id="apply" aria-labelledby="apply-h">
+  <div class="wrap split split-form">
+    <div>
+      <p class="eyebrow" data-reveal>Apply</p>
+      <h2 id="apply-h" class="h2" data-reveal>Apply for <em><%= p.name %></em></h2>
+      <p class="section-intro" data-reveal>Your college decides whether this internship counts. Show them the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview</a> before you pay.</p>
+    </div>
+    <div class="form-card" data-reveal>
+      <%- include('partials/apply-form', { px: 'p' }) %>
+    </div>
+  </div>
+</section>
+<%- include('partials/sticky-cta', { track: p.name }) %>
+<%- include('partials/footer') %>
