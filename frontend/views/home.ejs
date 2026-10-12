@@ -5,14 +5,13 @@
   <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow" data-hero-item>Software company + training institute &middot; Faridabad</p>
+      <p class="eyebrow" data-hero-item>Software development company &middot; Faridabad</p>
       <h1 class="hero-title">
         <span class="line"><span>We build software</span></span>
-        <span class="line"><span>for businesses,</span></span>
-        <span class="line"><span>and train the people</span></span>
-        <span class="line"><span><em class="hl">who build it.</em></span></span>
+        <span class="line"><span>that runs</span></span>
+        <span class="line"><span><em class="hl">your business.</em></span></span>
       </h1>
-      <p class="lede" data-hero-item>An MSME-registered team that builds software, CRM, ERP, websites and marketing for businesses, and trains students through paid live programmes that lead to an internship.</p>
+      <p class="lede" data-hero-item>An MSME-registered team building custom software, CRM, ERP, websites and digital marketing for businesses in Faridabad, Delhi NCR and across India.</p>
       <div class="audience" data-hero-item>
         <a class="audience-card" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">
           <span class="audience-k">For businesses</span>
@@ -207,36 +206,8 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="train-h">
-  <div class="wrap">
-    <div class="section-head split-head">
-      <div>
-        <p class="eyebrow" data-reveal>For students</p>
-        <h2 id="train-h" class="h2" data-reveal>Paid training that ends in <em>an internship offer.</em></h2>
-      </div>
-      <p class="section-intro" data-reveal>Live classes, study material, assignments and projects, taught by our instructor team. Finish the training and you are offered a supervised internship with Goforge Digital.</p>
-    </div>
-    <ul class="role-grid" data-reveal-group>
-      <% PROGRAMS.slice(0, 3).forEach((t, i) => { %>
-      <li data-reveal>
-        <a class="role-card" href="/internship/programs/<%= t.slug %>">
-          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num"><%= String(i + 1).padStart(2, '0') %></span></span>
-          <h3 class="service-name"><%= t.name %></h3>
-          <p class="service-blurb"><%= t.summary %></p>
-          <ul class="program-meta"><li><%= t.training %> training</li><li><%= t.internship %> internship</li><li><%= t.feeText %></li></ul>
-          <span class="service-more">Curriculum and fees <%- include('partials/icon', { name: 'upright' }) %></span>
-        </a>
-      </li>
-      <% }) %>
-    </ul>
-    <div class="hero-actions section-cta" data-reveal>
-      <a class="btn btn-primary" href="/internship">All programmes and the 7-step path <%- include('partials/icon', { name: 'arrow' }) %></a>
-      <a class="btn btn-ghost" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now</a>
-    </div>
-  </div>
-</section>
 
-<%- include('partials/people', { instructors: [], testimonials: allTestimonials, tesEyebrow: 'Clients and students' }) %>
+<%- include('partials/people', { instructors: [], testimonials: clientTestimonials, tesEyebrow: 'What clients say' }) %>
 
 <section class="section section-alt" aria-labelledby="why-h">
   <div class="wrap">
@@ -265,10 +236,10 @@
     <div>
       <p class="eyebrow" data-reveal>A little about us</p>
       <h2 id="about-h" class="h2" data-reveal>A focused team, <em>led by its founder.</em></h2>
-      <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director: 150+ projects delivered and 100+ students trained. When you work with us, you speak with the people doing the work.</p>
+      <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director, with 150+ projects delivered. When you work with us, you speak with the people doing the work.</p>
       <dl class="about-facts" data-reveal-group>
         <div data-reveal><dt>Who you talk to</dt><dd>Rohit Sharma, Founder &amp; Director</dd></div>
-        <div data-reveal><dt>Who we work with</dt><dd>Businesses and students</dd></div>
+        <div data-reveal><dt>Who we work with</dt><dd>Startups, shops, clinics, institutes and growing businesses</dd></div>
       </dl>
       <a class="text-link" href="/about" data-reveal>Get to know us <%- include('partials/icon', { name: 'arrow' }) %></a>
     </div>

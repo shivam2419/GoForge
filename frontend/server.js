@@ -374,8 +374,10 @@ const loginLimiter = rateLimit({
 // ---------- public pages ----------
 app.get('/', async (req, res) => {
   const t = await trustData();
-  res.render('home', { ...t, allTestimonials: t.clientTestimonials.concat(t.testimonials), ...pageMeta(req, 'Home',
-    'Software development company in Faridabad, Haryana: custom software, CRM and ERP development, websites and digital marketing. Plus IT training with an included internship for students.', { jsonld: jsonLd(), seoTitle: 'Software Company in Faridabad: CRM, ERP & IT Training | Goforge' }) });
+  // Home is business-only: keep project/business metrics, leave student metrics to /internship.
+  const stats = t.stats.filter(x => /project|client|business|year/i.test(x.label));
+  res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
+    'Software development company in Faridabad, Haryana: custom software, CRM and ERP development, AI automation, websites and digital marketing for growing businesses.', { jsonld: jsonLd(), seoTitle: 'Software Development Company in Faridabad | CRM & ERP | Goforge' }) });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
