@@ -20,6 +20,14 @@
 </section>
 
 <%- include('partials/trust', { stats, credentials }) %>
+<% const tools = TECH_STACK; %>
+<% if (tools.length) { %>
+<div class="ticker ticker-light" aria-label="Tools and technologies taught">
+  <div class="ticker-track">
+    <% for (let r = 0; r < 2; r++) { %><div class="ticker-group"<% if (r) { %> aria-hidden="true"<% } %>><% tools.forEach(t => { %><span><%= t %></span><i aria-hidden="true">&#10022;</i><% }) %></div><% } %>
+  </div>
+</div>
+<% } %>
 
 <section class="section section-alt" aria-labelledby="inc-h">
   <div class="wrap">
@@ -100,6 +108,7 @@
           <li><%- include('partials/icon', { name: 'check' }) %><span>Projects you can explain in an interview</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>A training certificate when you finish the training</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>An internship offer, and a letter that names the dates and the work once it is done</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>A certificate ID that anyone can <a href="/verify">check with us</a></span></li>
         </ul>
       </div>
       <div class="rules-col rules-no" data-reveal>
@@ -143,4 +152,5 @@
     </div>
   </div>
 </section>
+<%- include('partials/sticky-cta') %>
 <%- include('partials/footer') %>

@@ -18,6 +18,7 @@
       </li>
       <% }) %>
     </ul>
+    </div>
   </div>
 </section>
 <% } %>
@@ -28,9 +29,14 @@
       <p class="eyebrow" data-reveal><%= locals.tesEyebrow || 'Students' %></p>
       <h2 id="tes-h" class="h2" data-reveal>In their <em>own words.</em></h2>
     </div>
-    <ul class="quote-grid" data-reveal-group>
+    <div class="carousel" data-carousel>
+    <div class="carousel-nav">
+      <button type="button" class="carousel-btn" data-carousel-prev aria-label="Previous testimonials"><%- include('icon', { name: 'arrow', cls: 'flip' }) %></button>
+      <button type="button" class="carousel-btn" data-carousel-next aria-label="Next testimonials"><%- include('icon', { name: 'arrow' }) %></button>
+    </div>
+    <ul class="quote-grid carousel-track" data-carousel-track tabindex="0" aria-label="Testimonials">
       <% tes.forEach(t => { %>
-      <li class="quote-card" data-reveal>
+      <li class="quote-card">
         <% if (t.rating) { %><p class="stars" aria-label="<%= t.rating %> out of 5"><%= '★'.repeat(t.rating) %><span aria-hidden="true"><%= '★'.repeat(5 - t.rating) %></span></p><% } %>
         <blockquote><p><%= t.quote %></p></blockquote>
         <p class="quote-by">
@@ -40,6 +46,7 @@
       </li>
       <% }) %>
     </ul>
+    </div>
   </div>
 </section>
 <% } %>

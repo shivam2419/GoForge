@@ -22,6 +22,7 @@
       <h2 class="footer-h">Policies</h2>
       <ul class="footer-list">
         <li><a href="/faq">FAQ</a></li>
+        <li><a href="/verify">Verify a certificate</a></li>
         <li><a href="/privacy">Privacy</a></li>
         <li><a href="/terms">Terms</a></li>
         <li><a href="/refund">Refunds</a></li>
@@ -45,10 +46,11 @@
   <div class="wrap footer-bottom">
     <span>&copy; <%= year %> Goforge Digital</span>
     <span><%= BRAND.address.line2 %>, <%= BRAND.address.region %></span>
+    <button type="button" class="motion-toggle" data-motion-toggle aria-pressed="false">Pause animations</button>
     <a class="to-top" href="#main">Back to top <%- include('icon', { name: 'up' }) %></a>
   </div>
 </footer>
-<a class="float-wa" href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><%- include('icon', { name: 'whatsapp' }) %><span>Let's talk</span></a>
+<a class="float-wa" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact" aria-label="Enquire now"><%- include('icon', { name: 'mail' }) %><span>Enquire</span></a>
 <%- include('modals') %>
 </body>
 </html>

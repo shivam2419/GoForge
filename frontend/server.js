@@ -10,7 +10,7 @@ const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
-const { SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
+const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
 const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
@@ -226,7 +226,7 @@ app.use(async (req, res, next) => {
   Object.assign(res.locals, {
     PROGRAMS, TRACKS, MODES, SOURCES,
     s, BRAND, SERVICES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
-    WHY_SMALL, FAQ, OFFERS,
+    WHY_SMALL, FAQ, OFFERS, TECH_STACK,
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
@@ -353,8 +353,16 @@ const loginLimiter = rateLimit({
 });
 
 // ---------- public pages ----------
-app.get('/', (req, res) => res.render('home', pageMeta(req, 'Home',
-  'Goforge Digital builds custom software, CRM and ERP, automation, and digital marketing for businesses in Faridabad. Scope and price agreed before the work starts.', { jsonld: jsonLd() })));
+app.get('/', async (req, res) => {
+  const t = await trustData();
+  res.render('home', { ...t, allTestimonials: t.clientTestimonials.concat(t.testimonials), ...pageMeta(req, 'Home',
+    'Goforge Digital is an MSME-registered software company and training institute in Faridabad: custom software, CRM, ERP, websites and marketing for businesses, and paid training with an internship for students.', { jsonld: jsonLd() }) });
+});
+app.get('/verify', async (req, res) => {
+  const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
+  res.render('verify', { certId: id, ...pageMeta(req, 'Verify a certificate',
+    'Check a Goforge Digital training certificate or internship letter.', { seoTitle: 'Verify a certificate | Goforge Digital' }) });
+});
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
   'Custom software, CRM, ERP, AI automation, and digital marketing from a studio in Faridabad. See what each service includes and what you get at handover.',
@@ -463,7 +471,7 @@ function respondOk(req, res, kind, message, whatsappUrl) {
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
-  const pages = ['/', '/services', '/work', '/internship', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
+  const pages = ['/', '/services', '/work', '/internship', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
     .concat(SERVICES.map(item => '/services/' + item.slug))
     .concat(res.locals.PROGRAMS.map(item => '/internship/programs/' + item.slug));
   const today = new Date().toISOString().slice(0, 10);

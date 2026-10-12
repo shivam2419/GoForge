@@ -5,19 +5,28 @@
   <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow" data-hero-item>A digital studio in Faridabad</p>
+      <p class="eyebrow" data-hero-item>Software company + training institute &middot; Faridabad</p>
       <h1 class="hero-title">
-        <span class="line"><span>Software, systems</span></span>
-        <span class="line"><span>and marketing,</span></span>
-        <span class="line"><span>built around</span></span>
-        <span class="line"><span><em class="hl">your business.</em></span></span>
+        <span class="line"><span>We build software</span></span>
+        <span class="line"><span>for businesses,</span></span>
+        <span class="line"><span>and train the people</span></span>
+        <span class="line"><span><em class="hl">who build it.</em></span></span>
       </h1>
-      <p class="lede" data-hero-item>Goforge Digital is a new studio. We take on a small number of projects, agree a clear scope and price, and hand over something your team can run.</p>
-      <div class="hero-actions" data-hero-item>
-        <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
-        <a class="btn btn-ghost btn-lg" href="#services">See the services <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <p class="lede" data-hero-item>An MSME-registered team that builds software, CRM, ERP, websites and marketing for businesses, and trains students through paid live programmes that lead to an internship.</p>
+      <div class="audience" data-hero-item>
+        <a class="audience-card" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">
+          <span class="audience-k">For businesses</span>
+          <span class="audience-t">Get a free consultation</span>
+          <span class="audience-d">Software, CRM/ERP, websites, social media and ads. Scope and price agreed first.</span>
+          <span class="audience-go"><%- include('partials/icon', { name: 'upright' }) %></span>
+        </a>
+        <a class="audience-card audience-card-gold" href="/internship">
+          <span class="audience-k">For students</span>
+          <span class="audience-t">Explore training + internship</span>
+          <span class="audience-d">Live classes, study material, assignments and projects, then an internship offer.</span>
+          <span class="audience-go"><%- include('partials/icon', { name: 'arrow' }) %></span>
+        </a>
       </div>
-      <p class="hero-pillars" data-hero-item><span>Software</span><span>Systems</span><span>Automation</span><span>Marketing</span></p>
     </div>
 
     <div class="hero-visual" aria-hidden="true">
@@ -40,6 +49,8 @@
     </div>
   </div>
 </section>
+
+<%- include('partials/trust', { stats, credentials }) %>
 
 <section class="section section-tight" aria-labelledby="fit-h">
   <div class="wrap">
@@ -214,6 +225,37 @@
     </article>
   </div>
 </section>
+
+<section class="section" aria-labelledby="train-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>For students</p>
+        <h2 id="train-h" class="h2" data-reveal>Paid training that ends in <em>an internship offer.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Live classes, study material, assignments and projects, taught by our instructor team. Finish the training and you are offered a supervised internship with Goforge Digital.</p>
+    </div>
+    <ul class="role-grid" data-reveal-group>
+      <% PROGRAMS.slice(0, 3).forEach((t, i) => { %>
+      <li data-reveal>
+        <a class="role-card" href="/internship/programs/<%= t.slug %>">
+          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num"><%= String(i + 1).padStart(2, '0') %></span></span>
+          <h3 class="service-name"><%= t.name %></h3>
+          <p class="service-blurb"><%= t.summary %></p>
+          <ul class="program-meta"><li><%= t.training %> training</li><li><%= t.internship %> internship</li><li><%= t.feeText %></li></ul>
+          <span class="service-more">Curriculum and fees <%- include('partials/icon', { name: 'upright' }) %></span>
+        </a>
+      </li>
+      <% }) %>
+    </ul>
+    <div class="hero-actions section-cta" data-reveal>
+      <a class="btn btn-primary" href="/internship">All programmes and the 7-step path <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/people', { instructors: [], testimonials: allTestimonials, tesEyebrow: 'Clients and students' }) %>
 
 <section class="section section-alt" aria-labelledby="why-h">
   <div class="wrap">

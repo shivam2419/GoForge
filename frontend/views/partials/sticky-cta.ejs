@@ -1,0 +1,4 @@
+<div class="sticky-cta" role="region" aria-label="Quick actions">
+  <a class="btn btn-primary btn-sm" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply"<% if (locals.track) { %> data-prefill-name="track" data-prefill-value="<%= track %>"<% } %>>Apply now</a>
+  <a class="btn btn-ghost btn-sm" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Enquire</a>
+</div>

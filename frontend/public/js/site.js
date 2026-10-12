@@ -279,4 +279,33 @@
     var msg = e.target && e.target.getAttribute && e.target.getAttribute('data-confirm');
     if (msg && !window.confirm(msg)) e.preventDefault();
   });
+  /* ---------- testimonial carousel (user-driven, no autoplay) ---------- */
+  doc.querySelectorAll('[data-carousel]').forEach(function (c) {
+    var track = c.querySelector('[data-carousel-track]');
+    var prev = c.querySelector('[data-carousel-prev]'), next = c.querySelector('[data-carousel-next]');
+    function step() { var item = track.querySelector('li'); return item ? item.getBoundingClientRect().width + 16 : track.clientWidth; }
+    function sync() {
+      var max = track.scrollWidth - track.clientWidth - 2;
+      c.classList.toggle('is-static', max <= 0);
+      prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+    }
+    prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+    track.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  });
+
+  /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
+  var mt = doc.querySelector('[data-motion-toggle]');
+  function setMotion(paused) {
+    doc.documentElement.classList.toggle('motion-paused', paused);
+    if (mt) { mt.setAttribute('aria-pressed', String(paused)); mt.textContent = paused ? 'Play animations' : 'Pause animations'; }
+  }
+  var saved = null; try { saved = localStorage.getItem('gf-motion'); } catch (_) {}
+  setMotion(saved === 'paused');
+  if (mt) mt.addEventListener('click', function () {
+    var p = !doc.documentElement.classList.contains('motion-paused');
+    setMotion(p); try { localStorage.setItem('gf-motion', p ? 'paused' : 'on'); } catch (_) {}
+  });
 })();

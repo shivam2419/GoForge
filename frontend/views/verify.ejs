@@ -1,0 +1,41 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Certificates</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Verify a</span></span> <span class="line"><span><em>certificate.</em></span></span></h1>
+    <p class="lede" data-hero-item>Every Goforge Digital training certificate and internship letter carries a certificate ID. Colleges and employers can check it with us.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap split split-form">
+    <div class="prose">
+      <h2 class="h3">How it works</h2>
+      <ol class="check-list numbered">
+        <li><span>Enter the certificate ID printed on the certificate, for example <strong>GFD-2026-0042</strong>.</span></li>
+        <li><span>Send it to us. We confirm the name, programme and dates.</span></li>
+        <li><span>Instant online lookup is being added. Until then, every check is answered by a person.</span></li>
+      </ol>
+    </div>
+    <div class="form-card">
+      <form class="form" method="get" action="/verify">
+        <div class="field field-wide">
+          <label for="v-id">Certificate ID</label>
+          <input id="v-id" name="id" type="text" value="<%= certId %>" maxlength="40" autocomplete="off" placeholder="GFD-2026-0042" pattern="[A-Za-z0-9-]{4,40}">
+        </div>
+        <div class="form-foot"><button class="btn btn-primary" type="submit">Check this ID <%- include('partials/icon', { name: 'arrow' }) %></button></div>
+      </form>
+      <% if (certId) { %>
+      <div class="verify-result" role="status">
+        <p><strong>Certificate ID: <%= certId %></strong></p>
+        <p>Online lookup is not live yet. Send this ID to us and we will confirm it.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-sm" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Send a verification request <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-ghost btn-sm" href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Certificate verification: ' + certId) %>">Email us</a>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>
