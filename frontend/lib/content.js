@@ -183,7 +183,7 @@ const FAQ = [
       },
       {
         q: 'What does the fee include, and is the training paid?',
-        a: 'Yes, the training is paid. The fee covers the live classes, study material, assignments with reviews, projects, doubt sessions and the training certificate. Each programme page shows the fee, or says "Contact for fees" if it is confirmed on the call. The internship offer comes after you finish the training.'
+        a: 'Yes, the training is paid. The fee covers the live classes, study material, assignments with reviews, projects, doubt sessions and the training certificate. Projects and internship included — no extra fees: there are no project or internship charges. Each programme page shows the fee, or says "Contact for fees" if it is confirmed on the call. The internship follows the training.'
       },
       {
         q: 'What does the 98% success rate mean?',

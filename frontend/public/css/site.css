@@ -920,3 +920,5 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .curriculum .check-list { columns: 2; column-gap: 28px; }
 .curriculum .check-list li { break-inside: avoid; }
 @media (max-width: 700px) { .curriculum .check-list { columns: 1; } }
+
+.fee-inc { display: block; font-size: 12px; font-weight: 600; color: var(--gold-deep, #9a7a14); margin-top: 2px; }

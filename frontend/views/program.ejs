@@ -14,7 +14,7 @@
       <div data-reveal><dt>Training</dt><dd><%= p.training %></dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= p.internship %>, supervised</dd></div>
       <div data-reveal><dt>Mode</dt><dd><%= p.modeText %></dd></div>
-      <div data-reveal><dt>Fee</dt><dd><%= p.feeText %></dd></div>
+      <div data-reveal><dt>Training fee</dt><dd><%= p.feeText %><small class="fee-inc">Projects + internship included</small></dd></div>
     </dl>
   </div>
 </section>
@@ -91,7 +91,7 @@
       </table>
     </div>
     <% } else { %>
-    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Fee: <strong><%= p.feeText %></strong>.</p>
+    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Training fee: <strong><%= p.feeText %></strong>. Projects and internship included — no extra fees.</p>
     <% } %>
   </div>
 </section>
