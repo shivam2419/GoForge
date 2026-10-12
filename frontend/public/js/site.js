@@ -74,6 +74,20 @@
       entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-drawn'); lio.unobserve(e.target); } });
     }, { threshold: 0.3 });
     lines.forEach(function (l) { lio.observe(l); });
+    doc.querySelectorAll('[data-count]').forEach(function (node) {
+      var end = Number(node.getAttribute('data-count'));
+      if (!end) return;
+      var start = performance.now();
+      var dur = 900;
+      function tick(now) {
+        var p = Math.min(1, (now - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        node.textContent = String(Math.round(end * eased));
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      node.textContent = '0';
+      requestAnimationFrame(tick);
+    });
   } else {
     root.classList.add('no-reveal');
   }
