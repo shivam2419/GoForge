@@ -48,7 +48,11 @@
         <div><dt>Service</dt><dd><%= r.service || 'Not chosen' %></dd></div>
       <% } else { %>
         <div><dt>WhatsApp</dt><dd><a href="<%= waUrl(r.whatsapp) %>" target="_blank" rel="noopener"><%= r.whatsapp %></a> &middot; <a href="<%= telHref(r.whatsapp) %>">Call</a></dd></div>
-        <div><dt>Role</dt><dd><%= r.track %></dd></div>
+        <div><dt>Programme</dt><dd><%= r.track %></dd></div>
+        <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
+        <% if (r.city) { %><div><dt>City</dt><dd><%= r.city %></dd></div><% } %>
+        <% if (r.mode) { %><div><dt>Mode</dt><dd><%= r.mode %></dd></div><% } %>
+        <% if (r.source) { %><div><dt>Heard via</dt><dd><%= r.source %></dd></div><% } %>
       <% } %>
       <div><dt>Received</dt><dd><time datetime="<%= r.created_at %>"><%= fmtTime(r.created_at) %></time></dd></div>
       <% if (r.updated_at) { %><div><dt>Status changed</dt><dd><time datetime="<%= r.updated_at %>"><%= fmtTime(r.updated_at) %></time></dd></div><% } %>

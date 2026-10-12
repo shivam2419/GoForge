@@ -1,0 +1,47 @@
+<%- include('top') %>
+<div class="admin-head">
+  <p class="admin-sub"><a href="/admin/<%= entity %>">&larr; <%= cfg.title %></a></p>
+  <h1 class="admin-title"><%= item ? 'Edit ' + cfg.singular : 'New ' + cfg.singular %></h1>
+</div>
+<% if (flash) { %><div class="flash" role="status"><%= flash %></div><% } %>
+<% if (Object.keys(errors).length) { %><div class="form-alert" role="alert">Please check the highlighted fields.</div><% } %>
+<form method="post" action="/admin/<%= entity %>/<%= item ? item.id : 'new' %>" class="form settings-form" enctype="multipart/form-data" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <fieldset class="panel">
+    <legend><%= cfg.singular %></legend>
+    <div class="form-grid">
+    <% cfg.fields.forEach(f => { const id = 'c-' + f.name; const v = values[f.name] == null ? '' : values[f.name]; const err = errors[f.name]; %>
+      <% if (f.type === 'bool') { %>
+      <div class="field field-wide field-check">
+        <label for="<%= id %>"><input id="<%= id %>" type="checkbox" name="<%= f.name %>" value="1"<% if (Number(v)) { %> checked<% } %>> <%= f.label %></label>
+      </div>
+      <% } else if (f.type === 'image') { %>
+      <div class="field field-wide<%= err ? ' has-error' : '' %>">
+        <label for="<%= id %>"><%= f.label %> <span class="opt">optional</span></label>
+        <% if (v) { %><p class="cms-preview"><img src="<%= v %>" alt="Current image" width="96" height="96"> <label class="inline-check"><input type="checkbox" name="<%= f.name %>_remove" value="1"> Remove image</label></p><% } %>
+        <% if (uploadMode !== 'off') { %>
+        <p class="field-hint">Upload a JPG, PNG or WebP under 2 MB, or paste an image link below.</p>
+        <input id="<%= id %>-file" type="file" name="<%= f.name %>_file" accept="image/jpeg,image/png,image/webp">
+        <% } else { %>
+        <p class="field-hint">Uploads are not set up yet (connect Vercel Blob). Paste an image link (https://…) instead.</p>
+        <% } %>
+        <input id="<%= id %>" type="url" name="<%= f.name %>" value="<%= v %>" maxlength="500" placeholder="https://…" aria-label="<%= f.label %> link">
+        <p class="field-error" data-error-for="<%= f.name %>"><%= err || '' %></p>
+      </div>
+      <% } else { %>
+      <%- include('../partials/field', { errors, values: { [f.name]: String(v) }, f: {
+        id, name: f.name, label: f.label, required: f.required, max: f.max || 500, hint: f.hint,
+        as: (f.type === 'textarea' || f.type === 'lines') ? 'textarea' : (f.type === 'select' ? 'select' : undefined),
+        rows: f.rows || (f.type === 'lines' ? 6 : undefined), options: f.options, type: f.type === 'number' ? 'number' : (f.type === 'url' ? 'url' : 'text'),
+        wide: ['textarea', 'lines'].includes(f.type) || ['name', 'summary', 'quote', 'bio'].includes(f.name)
+      } }) %>
+      <% } %>
+    <% }) %>
+    </div>
+  </fieldset>
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-ghost" href="/admin/<%= entity %>">Cancel</a>
+  </div>
+</form>
+<%- include('bottom') %>

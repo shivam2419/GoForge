@@ -2,88 +2,73 @@
 <%- include('partials/header') %>
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow" data-hero-item>Internship program</p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span>Train first,</span></span> <span class="line"><span><em>then do real work.</em></span></span></h1>
-    <p class="lede" data-hero-item>For BTech, BCA and similar students who still need an internship. Choose a role, learn it live online, then work on it under Goforge Digital. Your college decides whether this counts. Ask them before you pay.</p>
+    <p class="eyebrow" data-hero-item>Training + internship</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Learn it live,</span></span> <span class="line"><span><em>then work on it for real.</em></span></span></h1>
+    <p class="lede" data-hero-item>Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. For BTech, BCA, MCA and similar students. Your college decides whether it counts, so ask them before you pay.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="#programs">See programmes</a>
       <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
     </div>
     <dl class="facts" data-reveal-group>
       <div data-reveal><dt>Training</dt><dd><%= s.intern_training %>, live online</dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= s.intern_work %>, supervised</dd></div>
-      <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA and similar</dd></div>
+      <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
       <div data-reveal><dt>Fee</dt><dd><%= s.intern_fee %></dd></div>
     </dl>
   </div>
 </section>
 
-<section class="section section-tight" aria-labelledby="benefit-h">
-  <div class="wrap">
-    <dl class="kpi-pills" data-reveal-group>
-      <div data-reveal><dt data-count="5">5</dt><dd>Roles you can train in</dd></div>
-      <div data-reveal><dt data-count="1">1</dt><dd>Project you finish</dd></div>
-      <div data-reveal><dt data-count="2">2</dt><dd>Stages: train, then work</dd></div>
-      <div data-reveal><dt>Free</dt><dd>Demo class before any fee</dd></div>
-    </dl>
-    <h2 id="benefit-h" class="h2" data-reveal>What you <em>actually get.</em></h2>
-    <ol class="benefit-path cols-4">
-      <li data-reveal>
-        <span class="benefit-orb orb-a"><%- include('partials/icon', { name: 'browser' }) %></span>
-        <h3>Live classes</h3>
-        <p>You learn the role on a call, then do the task. Not a folder of old videos.</p>
-      </li>
-      <li data-reveal>
-        <span class="benefit-orb orb-b"><%- include('partials/icon', { name: 'user' }) %></span>
-        <h3>The founder teaches</h3>
-        <p>Rohit Sharma is on the training. There is no bench of stand-in instructors.</p>
-      </li>
-      <li data-reveal>
-        <span class="benefit-orb orb-c"><%- include('partials/icon', { name: 'check' }) %></span>
-        <h3>One real project</h3>
-        <p>A piece of studio work, or a practice project of the same shape if no client task fits.</p>
-      </li>
-      <li data-reveal>
-        <span class="benefit-orb orb-d"><%- include('partials/icon', { name: 'tag' }) %></span>
-        <h3>A letter after the work</h3>
-        <p>Issued only when the project is finished. It names the dates and the work. It is not a job offer.</p>
-      </li>
-    </ol>
-  </div>
-</section>
+<%- include('partials/trust', { stats, credentials }) %>
 
-<section class="section section-alt" aria-labelledby="who-h">
+<section class="section section-alt" aria-labelledby="inc-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>Who we are</p>
-      <h2 id="who-h" class="h2" data-reveal>A small studio, <em>not a certificate shop.</em></h2>
+      <p class="eyebrow" data-reveal>What the fee covers</p>
+      <h2 id="inc-h" class="h2" data-reveal>Everything you need <em>to finish.</em></h2>
     </div>
-    <ul class="values" data-reveal-group>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'code' }) %></span><h3>The studio</h3><p>Goforge Digital builds software, CRM, ERP and marketing for businesses in Faridabad. The internship sits inside that work.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Who teaches</h3><p>Rohit Sharma, Founder and Director. You are not passed to a different trainer after you pay.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'megaphone' }) %></span><h3>How you learn</h3><p><%= s.intern_training %> of live online training in the role you chose, then <%= s.intern_work %> of supervised work.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'eye' }) %></span><h3>What is different</h3><p>The letter describes work you did. We do not invent a client, a placement percentage, or a job at the end.</p></li>
+    <ul class="values values-3" data-reveal-group>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Study material</h3><p>Notes, slides and reading for every module, yours to keep.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'browser' }) %></span><h3>Live classes</h3><p>Taught live online by an instructor, with time for questions.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><h3>Assignments</h3><p>A task after each module, checked by an instructor, so you practise instead of only watching.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'code' }) %></span><h3>Projects</h3><p>Mini projects during training and one capstone you can show and explain in an interview.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Mentor support</h3><p>Doubt sessions and code or work reviews from the instructor team.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Internship offer</h3><p>Complete the training and assessment, and you are offered a supervised internship on studio or practice work.</p></li>
     </ul>
   </div>
 </section>
 
-<section class="section section-alt" id="roles" aria-labelledby="roles-h">
+<section class="section" aria-labelledby="path-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>How it works</p>
+      <h2 id="path-h" class="h2" data-reveal>Seven steps, <em>in this order.</em></h2>
+      <p class="section-intro" data-reveal>Training comes first. The internship offer comes after you finish it. The letter comes after the internship work is done.</p>
+    </div>
+    <%- include('partials/path') %>
+  </div>
+</section>
+
+<section class="section section-alt" id="programs" aria-labelledby="programs-h">
   <div class="wrap">
     <div class="section-head split-head">
       <div>
-        <p class="eyebrow" data-reveal>Roles</p>
-        <h2 id="roles-h" class="h2" data-reveal>Roles you can <em>apply for</em></h2>
+        <p class="eyebrow" data-reveal>Programmes</p>
+        <h2 id="programs-h" class="h2" data-reveal>Choose a <em>programme</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Select a role to see what it covers. Applying for something close to these? Choose "Similar role" in the form and name it in your note.</p>
+      <p class="section-intro" data-reveal>Open a programme for its curriculum, tools, batches and fee. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
     </div>
     <ul class="role-grid" data-reveal-group>
-      <% TRACK_DETAILS.forEach((t, i) => { %>
-      <li data-reveal id="role-<%= t.slug %>">
-        <a class="role-card" href="/internship/roles/<%= t.slug %>">
-          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num">0<%= i + 1 %></span></span>
+      <% PROGRAMS.forEach((t, i) => { %>
+      <li data-reveal id="program-<%= t.slug %>">
+        <a class="role-card" href="/internship/programs/<%= t.slug %>">
+          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num"><%= String(i + 1).padStart(2, '0') %></span></span>
           <h3 class="service-name"><%= t.name %></h3>
           <p class="service-blurb"><%= t.summary %></p>
-          <span class="service-more">Role details <%- include('partials/icon', { name: 'upright' }) %></span>
+          <ul class="program-meta">
+            <li><%= t.training %> training</li><li><%= t.internship %> internship</li><li><%= t.modeText %></li><li><%= t.feeText %></li>
+          </ul>
+          <span class="service-more">Curriculum and fees <%- include('partials/icon', { name: 'upright' }) %></span>
         </a>
       </li>
       <% }) %>
@@ -91,7 +76,7 @@
         <a class="role-card role-card-similar" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">
           <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><span class="service-num">+</span></span>
           <h3 class="service-name">And similar roles</h3>
-          <p class="service-blurb">Interested in a related role? Apply with "Similar role" and tell us which one in your note.</p>
+          <p class="service-blurb">Interested in a related field? Apply with "Similar role" and tell us which one in your note.</p>
           <span class="service-more">Apply with a note <%- include('partials/icon', { name: 'arrow' }) %></span>
         </a>
       </li>
@@ -99,36 +84,7 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="road-h">
-  <div class="wrap road-layout">
-    <div class="road-card" data-reveal>
-      <p class="road-banner">Road map of the internship</p>
-      <svg class="road-svg" viewBox="0 0 640 210" role="img" aria-hidden="true">
-        <path class="road-base" d="M36 150 C 90 150 110 58 176 62 C 250 66 230 168 310 156 C 390 144 378 48 458 58 C 530 67 520 150 604 118" fill="none" stroke="#d5d8e0" stroke-width="26" stroke-linecap="round"/>
-        <path class="road-dash" d="M36 150 C 90 150 110 58 176 62 C 250 66 230 168 310 156 C 390 144 378 48 458 58 C 530 67 520 150 604 118" fill="none" stroke="#fff" stroke-width="2.4" stroke-dasharray="7 9" stroke-linecap="round"/>
-        <g class="road-pins" font-family="Manrope, sans-serif" font-size="16" font-weight="800" text-anchor="middle">
-          <circle cx="78" cy="132" r="18" fill="#e25b8a"/><text x="78" y="138" fill="#fff">1</text>
-          <circle cx="176" cy="62" r="18" fill="#2f9e74"/><text x="176" y="68" fill="#fff">2</text>
-          <circle cx="310" cy="156" r="18" fill="#7a5af5"/><text x="310" y="162" fill="#fff">3</text>
-          <circle cx="458" cy="58" r="18" fill="#e07a2f"/><text x="458" y="64" fill="#fff">4</text>
-          <circle cx="584" cy="112" r="18" fill="#3b82f6"/><text x="584" y="118" fill="#fff">5</text>
-        </g>
-      </svg>
-      <ol class="road-captions">
-        <li><strong>Apply</strong><span>Send the form. We reply on WhatsApp.</span></li>
-        <li><strong>Demo class</strong><span>One free live class before any fee.</span></li>
-        <li><strong>Live training</strong><span><%= s.intern_training %>, in the role you chose.</span></li>
-        <li><strong>The project</strong><span><%= s.intern_work %> of supervised work.</span></li>
-        <li><strong>The letter</strong><span>Only after the project is finished.</span></li>
-      </ol>
-    </div>
-    <div class="road-copy">
-      <h2 id="road-h" class="h2" data-reveal>Train first. <em>Then the project.</em></h2>
-      <p data-reveal>You do not start with a certificate. You apply, sit one free class, train live, then do the project under Goforge Digital. The letter names that work. Your college still decides if it counts.</p>
-      <a class="btn btn-primary" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-reveal>Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
-    </div>
-  </div>
-</section>
+<%- include('partials/people', { instructors, testimonials }) %>
 
 <section class="section section-alt" aria-labelledby="rules-h">
   <div class="wrap">
@@ -140,10 +96,10 @@
       <div class="rules-col rules-yes" data-reveal>
         <h3>You receive</h3>
         <ul>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Skills in your chosen role</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>One project you can explain in an interview</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>A training note</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship letter that names the dates and the work</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Study material, live classes and reviewed assignments</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Projects you can explain in an interview</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>A training certificate when you finish the training</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship offer, and a letter that names the dates and the work once it is done</span></li>
         </ul>
       </div>
       <div class="rules-col rules-no" data-reveal>
@@ -151,6 +107,7 @@
         <ul>
           <li><%- include('partials/icon', { name: 'cross' }) %><span>A certificate without doing the work</span></li>
           <li><%- include('partials/icon', { name: 'cross' }) %><span>A job guarantee</span></li>
+          <li><%- include('partials/icon', { name: 'cross' }) %><span>A promise that your college will accept it. Ask them first.</span></li>
         </ul>
       </div>
     </div>
@@ -174,12 +131,12 @@
   </div>
 </section>
 
-<section class="section" id="apply" aria-labelledby="apply-h">
+<section class="section section-alt" id="apply" aria-labelledby="apply-h">
   <div class="wrap split split-form">
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
-      <p class="section-intro" data-reveal>We read every application and reply on WhatsApp. The fee and batch dates are confirmed on the call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+      <p class="section-intro" data-reveal>We read every application and reply on WhatsApp. The fee and batch dates are confirmed on the counselling call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form') %>

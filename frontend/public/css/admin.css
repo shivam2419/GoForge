@@ -75,3 +75,12 @@
   .admin-header { position: static; }
 }
 @media (max-width: 420px) { .item-grid { grid-template-columns: 1fr; } }
+.admin-head-row { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.cms-item-main { display: flex; gap: 14px; align-items: center; }
+.cms-thumb { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
+.cms-preview { display: flex; align-items: center; gap: 14px; margin: 6px 0 10px; }
+.cms-preview img { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
+.inline-check { display: inline-flex; gap: 6px; align-items: center; font-weight: 600; }
+.btn-danger { color: #b3261e; }
+.settings-form input[type="file"] { display: block; margin: 6px 0 10px; }
+.settings-form input[type="url"] { width: 100%; }

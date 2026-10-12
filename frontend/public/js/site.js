@@ -209,7 +209,7 @@
     var errors = {};
     Array.prototype.forEach.call(form.querySelectorAll('input, select, textarea'), function (el) {
       if (!el.name || el.type === 'hidden' || el.closest('.hp')) return;
-      var v = (el.value || '').trim(), msg = '';
+      var v = el.type === 'checkbox' ? (el.checked ? 'yes' : '') : (el.value || '').trim(), msg = '';
       if (el.required && !v) msg = 'This field is required.';
       else if (v && el.minLength > 0 && v.length < el.minLength) msg = 'This looks too short.';
       else if (v && el.maxLength > 0 && v.length > el.maxLength) msg = 'This is too long.';
@@ -273,5 +273,10 @@
         alertBox.hidden = false;
       });
     });
+  });
+  /* ---------- admin: confirm destructive actions ---------- */
+  document.addEventListener('submit', function (e) {
+    var msg = e.target && e.target.getAttribute && e.target.getAttribute('data-confirm');
+    if (msg && !window.confirm(msg)) e.preventDefault();
   });
 })();
