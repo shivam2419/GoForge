@@ -128,10 +128,13 @@ const SIMILAR_ROLE = 'Similar role (describe it in your note)';
 const TRACKS = TRACK_DETAILS.map(t => t.name).concat([SIMILAR_ROLE]);
 
 const PROCESS = [
-  { name: 'Listen', text: 'What the business is trying to do, and what is in the way.' },
-  { name: 'Shape', text: 'A small scope and a clear price.' },
-  { name: 'Build', text: 'Software, a system, or a campaign, with progress the client can see.' },
-  { name: 'Hand over', text: 'Something the team can run, plus a short note on how.' }
+  { name: 'Discovery call', text: 'A free call to understand your business, your users and the goal.', out: 'Goals and priorities agreed' },
+  { name: 'Proposal', text: 'A written scope, timeline and one clear price, shaped to your budget.', out: 'Signed scope and quote' },
+  { name: 'Design', text: 'Wireframes and screens you review and approve before the build starts.', out: 'Approved designs' },
+  { name: 'Build', text: 'Development in short rounds with a working demo you can click through.', out: 'Weekly progress demos' },
+  { name: 'Testing', text: 'Checks on phones, browsers, speed, security and every key flow.', out: 'Tested, ready-to-launch build' },
+  { name: 'Launch', text: 'Go live on your domain with hosting, analytics and search set up.', out: 'Live product + team walkthrough' },
+  { name: 'Support', text: '30 days of included support, then optional care and improvements.', out: 'Ongoing care and growth' }
 ];
 
 const STATUSES = ['New', 'Contacted', 'Closed'];

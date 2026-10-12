@@ -18,7 +18,10 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 32 * 1024 } });
 
 const PORT = Number(process.env.PORT) || 3000;
-const SITE_URL = (process.env.SITE_URL || 'https://goforgedigital.com').replace(/\/+$/, '');
+// Canonical base URL. Vercel serves the site on www (the apex 308-redirects to it), so an apex SITE_URL is
+// normalised to www; CANONICAL_URL overrides this if the primary domain ever changes.
+const SITE_URL = (process.env.CANONICAL_URL || (process.env.SITE_URL || 'https://www.goforgedigital.com')
+  .replace(/^https?:\/\/goforgedigital\.com/i, 'https://www.goforgedigital.com')).replace(/\/+$/, '');
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'goforgedigital@gmail.com').toLowerCase();
 const SESSION_DAYS = 7;
 const BCRYPT_COST = 12;
@@ -107,6 +110,24 @@ function validateContact(body) {
   values.service = text(body.service);
   if (values.service && !CONTACT_SERVICES.includes(values.service)) errors.service = 'Please choose a service from the list.';
   field(errors, values, body, 'message', 'a short message', { required: true, min: 10, max: 2000 });
+  return { errors, values };
+}
+const COLLEGE_INTERESTS = ['Campus tie-up / MoU', 'Workshop or bootcamp', 'Faculty development programme', 'Bulk training for a batch', 'Internship programme for students', 'Something else'];
+const COLLEGE_SIZES = ['Under 50 students', '50–150 students', '150–500 students', '500+ students'];
+function validateCollege(body) {
+  const errors = {}, values = {};
+  field(errors, values, body, 'name', 'your name', { required: true, min: 2, max: 80 });
+  field(errors, values, body, 'designation', 'your designation', { max: 80 });
+  field(errors, values, body, 'institution', 'the college or university name', { required: true, min: 3, max: 160 });
+  field(errors, values, body, 'city', 'the city', { max: 60 });
+  phoneField(errors, values, body, 'phone', 'phone number');
+  values.email = text(body.email);
+  if (values.email && (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120)) errors.email = 'Please enter a valid email address.';
+  values.interest = text(body.interest);
+  if (!COLLEGE_INTERESTS.includes(values.interest)) errors.interest = 'Please choose what you are interested in.';
+  values.size = text(body.size);
+  if (values.size && !COLLEGE_SIZES.includes(values.size)) errors.size = 'Please choose from the list.';
+  field(errors, values, body, 'message', 'a short message', { max: 2000 });
   return { errors, values };
 }
 const MODES = ['Live online', 'Either is fine'];
@@ -263,8 +284,15 @@ function wantsJson(req) { return (req.get('accept') || '').includes('application
 function pageMeta(req, title, desc, extra = {}) {
   const seoTitle = extra.seoTitle;
   const rest = { ...extra };
-  delete rest.seoTitle;
+  delete rest.seoTitle; delete rest.crumbs;
+  const canonicalPath = req.path === '/' ? '/' : req.path.replace(/\/+$/, '');
+  const crumbs = extra.crumbs || (canonicalPath === '/' ? [] : [['Home', '/'], [title, canonicalPath]]);
+  const breadcrumbLd = crumbs.length > 1 && !extra.noindex ? JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map(([name, p], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE_URL + p }))
+  }).replace(/</g, '\\u003c') : null;
   return {
+    breadcrumbLd,
     pageTitle: seoTitle || (title === 'Home'
       ? 'Custom software and marketing studio in Faridabad | Goforge Digital'
       : `${title} | Goforge Digital`),
@@ -278,8 +306,10 @@ function jsonLd() {
   const s = getSettings();
   const data = {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
+    '@type': ['ProfessionalService', 'EducationalOrganization'],
+    '@id': SITE_URL + '/#organization',
     name: BRAND.name,
+    description: 'MSME-registered software development company and IT training institute in Faridabad, Haryana: custom software, CRM, ERP, websites and digital marketing for businesses, and paid training with an included internship for students.',
     slogan: BRAND.tagline,
     url: SITE_URL + '/',
     logo: SITE_URL + '/img/gf-512.png',
@@ -290,21 +320,32 @@ function jsonLd() {
       '@type': 'PostalAddress',
       streetAddress: BRAND.address.line1 + ', Sector-8',
       addressLocality: BRAND.address.locality,
+      postalCode: '121006',
       addressRegion: BRAND.address.region,
       addressCountry: BRAND.address.country
     },
     founder: { '@type': 'Person', name: BRAND.founder, jobTitle: BRAND.founderRole, sameAs: [BRAND.linkedin] },
     sameAs: [BRAND.instagram],
-    knowsAbout: SERVICES.map(x => x.name)
+    areaServed: [{ '@type': 'City', name: 'Faridabad' }, { '@type': 'AdministrativeArea', name: 'Delhi NCR' }, { '@type': 'Country', name: 'India' }],
+    openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '10:00', closes: '18:30' }],
+    knowsAbout: SERVICES.map(x => x.name),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog', name: 'Services and training programmes',
+      itemListElement: SERVICES.map(x => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: x.name, url: SITE_URL + '/services/' + x.slug } }))
+    }
   };
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
 function courseJsonLd(p) {
   return JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Course', name: p.name, description: p.summary,
-    provider: { '@type': 'Organization', name: BRAND.name, sameAs: SITE_URL + '/' },
-    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: p.training }
+    '@context': 'https://schema.org', '@type': 'Course', name: p.name + ' training + internship', description: p.summary,
+    url: SITE_URL + '/internship/programs/' + p.slug, inLanguage: 'en-IN',
+    provider: { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: BRAND.name, url: SITE_URL + '/' },
+    educationalCredentialAwarded: 'Training certificate and internship letter',
+    teaches: p.coversList.length ? p.coversList : undefined,
+    syllabusSections: p.curriculumList.map(m => ({ '@type': 'Syllabus', name: (m.label ? m.label + ': ' : '') + m.title, description: m.topics.join('; ') })),
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'Online', courseWorkload: p.training, location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } }
   }).replace(/</g, '\\u003c');
 }
 function faqJsonLd() {
@@ -334,29 +375,47 @@ const loginLimiter = rateLimit({
 app.get('/', async (req, res) => {
   const t = await trustData();
   res.render('home', { ...t, allTestimonials: t.clientTestimonials.concat(t.testimonials), ...pageMeta(req, 'Home',
-    'Goforge Digital is an MSME-registered software company and training institute in Faridabad: custom software, CRM, ERP, websites and marketing for businesses, and paid training with an internship for students.', { jsonld: jsonLd() }) });
+    'Software development company in Faridabad, Haryana: custom software, CRM and ERP development, websites and digital marketing. Plus IT training with an included internship for students.', { jsonld: jsonLd(), seoTitle: 'Software Company in Faridabad: CRM, ERP & IT Training | Goforge' }) });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
   res.render('verify', { certId: id, ...pageMeta(req, 'Verify a certificate',
-    'Check a Goforge Digital training certificate or internship letter.', { seoTitle: 'Verify a certificate | Goforge Digital' }) });
+    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
 });
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
-  'Custom software, CRM, ERP, AI automation, and digital marketing from a studio in Faridabad. See what each service includes and what you get at handover.',
-  { seoTitle: 'Custom software, CRM and marketing in Faridabad | Goforge Digital' })));
+  'Custom software development, CRM and ERP development, AI automation, website design and digital marketing services in Faridabad and Delhi NCR. See what each service includes.',
+  { seoTitle: 'Software, CRM & ERP Development in Faridabad | Goforge Digital' })));
 
 app.get('/services/:slug', (req, res, next) => {
   const service = SERVICES.find(item => item.slug === req.params.slug);
   if (!service) return next();
   res.render('service', pageMeta(req, service.name,
     service.name + ' from Goforge Digital in Faridabad. What it includes, the questions on a first call, and what you receive at handover.',
-    { seoTitle: service.name + ' in Faridabad | Goforge Digital', service }));
+    { seoTitle: service.name + ' in Faridabad | Goforge Digital', service, crumbs: [['Home', '/'], ['Services', '/services'], [service.name, '/services/' + service.slug]] }));
 });
 
 app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
-  'Portfolio of Goforge Digital, a studio in Faridabad. Only finished work we are allowed to show is listed here.',
-  { seoTitle: 'Portfolio | Goforge Digital, Faridabad' })));
+  'Portfolio of software, CRM, website and marketing projects delivered by Goforge Digital, Faridabad. 150+ projects delivered.',
+  { seoTitle: 'Software & Website Projects | Goforge Digital, Faridabad' })));
+
+const COLLEGES_DESC = 'Campus tie-ups and MoUs, workshops and bootcamps, faculty development programmes, bulk training and internship programmes for colleges in Faridabad, Delhi NCR and across India.';
+app.get('/colleges', async (req, res) => res.render('colleges', {
+  ...(await trustData()), values: {}, COLLEGE_INTERESTS, COLLEGE_SIZES,
+  ...pageMeta(req, 'For colleges', COLLEGES_DESC, { seoTitle: 'College Partnerships: MoU, FDP & Internships | Goforge Digital' })
+}));
+app.post('/colleges', formLimiter, async (req, res) => {
+  if (text(req.body.website)) return respondOk(req, res, 'college', 'Thanks. Your enquiry has been sent.');
+  const { errors, values } = validateCollege(req.body);
+  if (Object.keys(errors).length) {
+    if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
+    return res.status(422).render('colleges', { ...(await trustData()), errors, values, COLLEGE_INTERESTS, COLLEGE_SIZES, ...pageMeta(req, 'For colleges', COLLEGES_DESC) });
+  }
+  const msg = [values.designation && 'Designation: ' + values.designation, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'college')",
+    values.name, values.institution, values.phone, values.interest, msg, values.email || null);
+  respondOk(req, res, 'college', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our partnerships team will contact you within one working day.');
+});
 
 async function trustData() {
   const [stats, credentials, instructors, testimonials] = await Promise.all([
@@ -364,11 +423,11 @@ async function trustData() {
   ]);
   return { stats, credentials, instructors, testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = 'Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. Programmes in software, AI/ML, data, web and digital marketing.';
+const INTERNSHIP_DESC = 'Internship with training in Faridabad and online: live classes, study material, real projects and an included internship in software, AI/ML, data analytics, web development and digital marketing.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: res.locals.TRACKS.includes(req.query.track) ? req.query.track : '' },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Paid training + internship programme | Goforge Digital, Faridabad' })
+  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training in Faridabad | Goforge Digital' })
 }));
 
 app.get('/internship/programs/:slug', async (req, res, next) => {
@@ -380,15 +439,15 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
       program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects, batches and fees.',
-      { seoTitle: program.name + ' training & internship | Goforge Digital', jsonld: courseJsonLd(program) })
+      { seoTitle: program.name + ' Course with Internship | Goforge Digital', jsonld: courseJsonLd(program), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
 // Old role pages moved to programme pages.
 app.get('/internship/roles/:slug', (req, res) => res.redirect(301, '/internship/programs/' + encodeURIComponent(req.params.slug)));
 
 app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(req, 'Programme overview',
-  'Printable overview of the Goforge Digital internship: stages, roles, letter, and what a college should check.',
-  { seoTitle: 'Internship programme overview | Goforge Digital, Faridabad' })));
+  'Printable overview of the Goforge Digital training + internship programme for students and college training cells.',
+  { seoTitle: 'Training + Internship Programme Overview | Goforge Digital', crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Programme overview', '/internship/overview']] })));
 
 app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
@@ -398,15 +457,15 @@ app.get('/internship/overview.pdf', (req, res) => {
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   'Answers for students and clients: how the internship works, certificates and college recognition, the letter, how projects are chosen, and how client work is priced.',
-  { seoTitle: 'FAQ for students and clients | Goforge Digital, Faridabad', jsonld: faqJsonLd() })));
+  { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd() })));
 
 app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
   'Goforge Digital is an MSME-registered software, marketing and training company in Sector 8, Faridabad, led by Rohit Sharma, Founder and Director.',
-  { seoTitle: 'About Goforge Digital, a studio in Faridabad' })));
+  { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() })));
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
   'Call, email or visit Goforge Digital at Puri Highstreet, Sector 8, Faridabad. Office hours Monday to Saturday.',
-  { seoTitle: 'Contact Goforge Digital in Faridabad' }) }));
+  { seoTitle: 'Contact Goforge Digital | Sector 8, Faridabad, Haryana', jsonld: jsonLd() }) }));
 
 app.get('/privacy', (req, res) => res.render('legal', pageMeta(req, 'Privacy',
   'Privacy notice for Goforge Digital: what the enquiry and internship forms collect, why, and how to ask for a correction or deletion.',
@@ -447,9 +506,9 @@ function respondOk(req, res, kind, message) {
   res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message });
 }
 
-app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
+app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
-  const pages = ['/', '/services', '/work', '/internship', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
+  const pages = ['/', '/services', '/work', '/internship', '/colleges', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
     .concat(SERVICES.map(item => '/services/' + item.slug))
     .concat(res.locals.PROGRAMS.map(item => '/internship/programs/' + item.slug));
   const today = new Date().toISOString().slice(0, 10);
@@ -485,7 +544,8 @@ async function requireAdmin(req, res, next) {
   res.set('Cache-Control', 'no-store');
   res.locals.noindex = true;
   res.locals.newCounts = {
-    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New'")).n,
+    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind <> 'college'")).n,
+    colleges: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'college'")).n,
     applications: (await db.get("SELECT COUNT(*) n FROM applications WHERE status = 'New'")).n
   };
   next();
@@ -521,7 +581,10 @@ app.get('/admin', requireAdmin, (req, res) => res.redirect(303, '/admin/contacts
 
 const INBOXES = {
   contacts: {
-    table: 'contacts', title: 'Project enquiries', search: ['name', 'business', 'phone', 'service', 'message']
+    table: 'contacts', title: 'Project enquiries', base: "kind <> 'college'", search: ['name', 'business', 'phone', 'service', 'message']
+  },
+  colleges: {
+    table: 'contacts', title: 'College enquiries', base: "kind = 'college'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
   },
   applications: {
     table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city']
@@ -533,7 +596,7 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
     const q = text(req.query.q).slice(0, 100);
     const status = STATUSES.includes(req.query.status) ? req.query.status : '';
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const where = [], params = [];
+    const where = cfg.base ? [cfg.base] : [], params = [];
     if (status) { where.push('status = ?'); params.push(status); }
     if (q) {
       const like = '%' + q.replace(/[\\%_]/g, m => '\\' + m) + '%';
@@ -543,7 +606,7 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
     const w = where.length ? 'WHERE ' + where.join(' AND ') : '';
     const total = (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} ${w}`, ...params)).n;
     const rows = (await db.all(`SELECT * FROM ${cfg.table} ${w} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`, ...params, PAGE_SIZE, (page - 1) * PAGE_SIZE));
-    const counts = Object.fromEntries(await Promise.all(STATUSES.map(async st => [st, (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?`, st)).n])));
+    const counts = Object.fromEntries(await Promise.all(STATUSES.map(async st => [st, (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?${cfg.base ? ' AND ' + cfg.base : ''}`, st)).n])));
     res.render('admin/inbox', {
       ...pageMeta(req, cfg.title, 'Admin'), slug, cfg, rows, q, status, page, total,
       pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved ? 'Status updated.' : null

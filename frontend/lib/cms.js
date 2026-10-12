@@ -148,6 +148,9 @@ async function migrate() {
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
   const add = Object.entries(APPLICATION_COLUMNS).filter(([c]) => !have.has(c)).map(([c, t]) => [`ALTER TABLE applications ADD COLUMN ${c} ${t}`]);
   if (add.length) await db.batch(add);
+  const contactCols = new Set((await db.all('PRAGMA table_info(contacts)')).map(r => r.name));
+  if (!contactCols.has('kind')) await db.run("ALTER TABLE contacts ADD COLUMN kind TEXT NOT NULL DEFAULT 'client'");
+  if (!contactCols.has('email')) await db.run('ALTER TABLE contacts ADD COLUMN email TEXT');
   await seed();
 }
 

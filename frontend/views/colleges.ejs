@@ -1,0 +1,142 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<% const offers = [
+  ['key', 'Campus tie-up / MoU', 'A formal Memorandum of Understanding for year-round training, internships and industry sessions, with clear deliverables for both sides.'],
+  ['spark', 'Workshops and bootcamps', 'One-day workshops to 1–4 week bootcamps on AI, full-stack development, data analytics, web and digital marketing. On campus, online or hybrid.'],
+  ['user', 'Faculty development programmes', 'Hands-on FDPs that bring faculty up to date with current industry tools, so new skills carry into the classroom.'],
+  ['chart', 'Bulk training for a batch', 'Our live training programmes delivered for a whole class or department, scheduled around your academic calendar.'],
+  ['code', 'Internship programmes', 'Structured training + internship tracks with real projects, mentor reviews, a training certificate and an internship letter for every student who completes.'],
+  ['megaphone', 'Expert sessions and hackathons', 'Guest lectures from working developers and marketers, project expos and hackathons that give students real-world exposure.']
+];
+const benefits = [
+  ['Industry-ready students', 'Students build portfolio projects on the tools employers use today.'],
+  ['Internship requirements covered', 'Internship letters with dates, role and work completed, in your college’s format on request.'],
+  ['Support for accreditation', 'Attendance, assessment and completion records you can use for NAAC/NBA documentation.'],
+  ['Trainers who build software', 'Sessions led by our team of 10+ instructors from a company with 150+ delivered projects.'],
+  ['Flexible delivery', 'On campus in Faridabad and Delhi NCR, live online anywhere in India, or a mix of both.'],
+  ['MSME-registered partner', 'A registered company that signs a clear MoU and reports outcomes after every programme.']
+];
+const steps = [
+  ['Enquiry', 'Send the form below or call us.'],
+  ['Discovery call', 'We understand your departments, students and goals.'],
+  ['Proposal', 'A tailored plan with topics, schedule, delivery mode and outcomes.'],
+  ['MoU and onboarding', 'We sign the MoU and plan the first programme together.'],
+  ['Delivery', 'Live sessions, labs, projects and mentor reviews.'],
+  ['Certificates and report', 'Certificates for students and an outcome report for the college.']
+];
+const faqs = [
+  ['How does a college partnership start?', 'Send the enquiry form or call us. We arrange a discovery call with your Principal, HoD or Training & Placement Officer, then send a tailored proposal. Long-term partnerships are formalised with an MoU.'],
+  ['Can sessions be held on campus?', 'Yes. We deliver on campus in Faridabad and Delhi NCR, live online for colleges anywhere in India, or in a hybrid format.'],
+  ['Which topics do you cover?', 'Software engineering, AI/ML, data analytics, web development and digital marketing, plus custom topics on request. Every programme includes hands-on projects.'],
+  ['Do students receive certificates?', 'Yes. Students receive a training certificate, and those in internship programmes receive an internship letter naming the role, dates and work completed. Our certificates are accepted by colleges and recognised by industry.'],
+  ['Can you match our internship or credit format?', 'Yes. Tell us the hours, format or NOC your university needs and we prepare the letters and records to match.'],
+  ['How is a college programme priced?', 'Pricing depends on the format, duration and number of students. Bulk batches and MoU partners receive institutional pricing, shared in the proposal.']
+]; %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>For colleges and universities</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Partner with us to make</span></span> <span class="line"><span><em>your students industry-ready.</em></span></span></h1>
+    <p class="lede" data-hero-item>Campus tie-ups, workshops, faculty development, bulk training and internship programmes, delivered by an MSME-registered software company that builds real products every day.</p>
+    <div class="hero-actions" data-hero-item>
+      <a class="btn btn-primary btn-lg" href="#college-enquiry">Send a partnership enquiry <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/internship">See student programmes</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/trust', { stats, credentials }) %>
+
+<section class="section" aria-labelledby="offer-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>What we offer colleges</p>
+      <h2 id="offer-h" class="h2" data-reveal>Six ways to <em>work together.</em></h2>
+      <p class="section-intro" data-reveal>Start with a single workshop or build a long-term partnership. Every format includes hands-on projects.</p>
+    </div>
+    <ul class="values values-3" data-reveal-group>
+      <% offers.forEach(([icon, t, d]) => { %>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: icon }) %></span><h3><%= t %></h3><p><%= d %></p></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="benefits-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Benefits for your college</p>
+      <h2 id="benefits-h" class="h2" data-reveal>What your institution <em>gains.</em></h2>
+    </div>
+    <ul class="check-grid" data-reveal-group>
+      <% benefits.forEach(([t, d]) => { %>
+      <li data-reveal><%- include('partials/icon', { name: 'check' }) %><div><h3><%= t %></h3><p><%= d %></p></div></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cprocess-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Process</p>
+      <h2 id="cprocess-h" class="h2" data-reveal>From enquiry to <em>certificates.</em></h2>
+    </div>
+    <ol class="steps7 steps6" data-reveal-group>
+      <% steps.forEach((st, i) => { %>
+      <li data-reveal><span class="step-num"><%= i + 1 %></span><h3><%= st[0] %></h3><p><%= st[1] %></p></li>
+      <% }) %>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="cfaq-h">
+  <div class="wrap faq-wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Questions colleges ask</p>
+      <h2 id="cfaq-h" class="h2" data-reveal>College <em>FAQ.</em></h2>
+    </div>
+    <div class="faq-list" data-reveal>
+      <% faqs.forEach(([q, a]) => { %>
+      <details><summary><%= q %></summary><p><%= a %></p></details>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="college-enquiry" aria-labelledby="cform-h">
+  <div class="wrap split split-form">
+    <div>
+      <p class="eyebrow" data-reveal>Partnership enquiry</p>
+      <h2 id="cform-h" class="h2" data-reveal>Let’s plan a programme <em>for your campus.</em></h2>
+      <p class="section-intro" data-reveal>Tell us a little about your institution. Our partnerships team replies within one working day with next steps.</p>
+      <ul class="contact-mini" data-reveal>
+        <li><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a></li>
+        <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
+      </ul>
+    </div>
+    <div class="form-card" data-reveal>
+      <form class="form" data-form="college" method="post" action="/colleges" novalidate data-ajax-form>
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <div class="hp" aria-hidden="true"><label for="cl-website">Leave this empty</label><input id="cl-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="form-alert" role="alert" data-form-alert<% if (!Object.keys(errors).length) { %> hidden<% } %>><%= Object.keys(errors).length ? 'Please check the highlighted fields.' : '' %></div>
+        <div class="form-grid">
+          <%- include('partials/field', { f: { id: 'cl-name', name: 'name', label: 'Your name', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-designation', name: 'designation', label: 'Designation', max: 80, hint: 'For example: TPO, HoD, Principal' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-institution', name: 'institution', label: 'College or university', required: true, min: 3, max: 160, autocomplete: 'organization' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-city', name: 'city', label: 'City', max: 60, autocomplete: 'address-level2' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-phone', name: 'phone', label: 'Phone', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-interest', name: 'interest', label: 'Interested in', as: 'select', required: true, options: COLLEGE_INTERESTS, placeholder: 'Choose one' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-size', name: 'size', label: 'Approximate students', as: 'select', options: COLLEGE_SIZES, placeholder: 'Choose a range' } }) %>
+          <%- include('partials/field', { f: { id: 'cl-message', name: 'message', label: 'Anything else we should know', as: 'textarea', max: 2000, wide: true, hint: 'Departments, preferred dates, topics or internship requirements.' } }) %>
+        </div>
+        <div class="form-foot">
+          <button class="btn btn-primary" type="submit" data-submit>Send enquiry <%- include('partials/icon', { name: 'arrow' }) %></button>
+          <p class="form-note">We use these details only to reply about a college programme. <a href="/privacy">Privacy notice</a>.</p>
+        </div>
+        <%- include('partials/form-success') %>
+      </form>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

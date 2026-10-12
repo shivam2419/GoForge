@@ -7,7 +7,7 @@
 <form class="filters" method="get" action="/admin/<%= slug %>" role="search">
   <div class="field field-search">
     <label for="q">Search</label>
-    <input id="q" name="q" type="search" value="<%= q %>" placeholder="<%= slug === 'contacts' ? 'Name, business, phone, message' : 'Name, college, role, number' %>">
+    <input id="q" name="q" type="search" value="<%= q %>" placeholder="<%= cfg.table === 'contacts' ? 'Name, business, phone, message' : 'Name, college, role, number' %>">
   </div>
   <div class="field">
     <label for="status">Status</label>
@@ -28,24 +28,25 @@
   <% STATUSES.forEach(st => { %><a role="listitem" href="/admin/<%= slug %>?status=<%= st %>"<% if (status === st) { %> aria-current="true"<% } %>><%= st %> <span><%= counts[st] %></span></a><% }) %>
 </div>
 <% if (!rows.length) { %>
-  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : (slug === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
+  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : (slug === 'colleges' ? 'No college enquiries yet. Enquiries from the For colleges page will appear here.' : cfg.table === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
 <% } else { %>
 <ul class="items">
   <% rows.forEach(r => { %>
   <li class="item status-<%= r.status.toLowerCase() %>" id="item-<%= r.id %>">
     <div class="item-head">
       <div>
-        <h2 class="item-name"><%= slug === 'contacts' ? r.name : r.full_name %></h2>
+        <h2 class="item-name"><%= cfg.table === 'contacts' ? r.name : r.full_name %></h2>
         <p class="item-meta">
-          <% if (slug === 'contacts') { %><%= r.business || 'No business name given' %><% } else { %><%= r.college %> &middot; <%= r.course_year %><% } %>
+          <% if (cfg.table === 'contacts') { %><%= r.business || (slug === 'colleges' ? 'No institution given' : 'No business name given') %><% } else { %><%= r.college %> &middot; <%= r.course_year %><% } %>
         </p>
       </div>
       <span class="pill pill-<%= r.status.toLowerCase() %>"><%= r.status %></span>
     </div>
     <dl class="item-grid">
-      <% if (slug === 'contacts') { %>
+      <% if (cfg.table === 'contacts') { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.phone) %>"><%= r.phone %></a></dd></div>
-        <div><dt>Service</dt><dd><%= r.service || 'Not chosen' %></dd></div>
+        <div><dt><%= slug === 'colleges' ? 'Interested in' : 'Service' %></dt><dd><%= r.service || 'Not chosen' %></dd></div>
+        <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
       <% } else { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.whatsapp) %>"><%= r.whatsapp %></a> &middot; <a href="<%= telHref(r.whatsapp) %>">Call</a></dd></div>
         <div><dt>Programme</dt><dd><%= r.track %></dd></div>
@@ -57,7 +58,7 @@
       <div><dt>Received</dt><dd><time datetime="<%= r.created_at %>"><%= fmtTime(r.created_at) %></time></dd></div>
       <% if (r.updated_at) { %><div><dt>Status changed</dt><dd><time datetime="<%= r.updated_at %>"><%= fmtTime(r.updated_at) %></time></dd></div><% } %>
     </dl>
-    <% const body = slug === 'contacts' ? r.message : r.note; %>
+    <% const body = cfg.table === 'contacts' ? r.message : r.note; %>
     <% if (body) { %><p class="item-body"><%= body %></p><% } %>
     <form class="status-form" method="post" action="/admin/<%= slug %>/<%= r.id %>/status">
       <input type="hidden" name="_csrf" value="<%= csrf %>">
