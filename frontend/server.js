@@ -401,7 +401,7 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   { seoTitle: 'FAQ for students and clients | Goforge Digital, Faridabad', jsonld: faqJsonLd() })));
 
 app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
-  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 8, Faridabad, led by Rohit Sharma, Founder and Director.',
+  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 8, Faridabad, led by Aakash Parashar, Founder and Director.',
   { seoTitle: 'About Goforge Digital, a studio in Faridabad' })));
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',

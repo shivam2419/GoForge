@@ -139,7 +139,7 @@ const STATUSES = ['New', 'Contacted', 'Closed'];
 const BRAND = {
   name: 'Goforge Digital',
   tagline: 'Digital Solutions & Growth',
-  founder: 'Rohit Sharma',
+  founder: 'Aakash Parashar',
   founderRole: 'Founder & Director',
   website: 'goforgedigital.com',
   address: { line1: 'D125b, 1st floor, Puri Highstreet', line2: 'Sector-8, Faridabad', locality: 'Faridabad', region: 'Haryana', country: 'IN' },
@@ -154,7 +154,7 @@ const BRAND = {
 };
 
 const WHY_SMALL = [
-  { title: 'You speak to the people doing the work', text: 'Rohit Sharma, Founder & Director, and the team who will build it are on the call. There is no account manager passing a brief down a corridor.' },
+  { title: 'You speak to the people doing the work', text: 'Aakash Parashar, Founder & Director, and the team who will build it are on the call. There is no account manager passing a brief down a corridor.' },
   { title: 'Proven and focused', text: '150+ projects delivered, with a team that gives every project dedicated attention.' },
   { title: 'Scope and price in writing', text: 'Work starts after one written scope and one price. Clear pricing from day one, shaped to your budget.' },
   { title: 'Transparent results', text: 'Every figure we share comes with a clear definition, and client work is showcased with permission.' }
@@ -175,11 +175,11 @@ const FAQ = [
       },
       {
         q: 'What does the letter include?',
-        a: 'When you complete the internship, your letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, a summary of the work you delivered, and a signatory: Rohit Sharma, Founder & Director, with a phone number and email for verification. Hours can be included if your college counts credit in hours. You also receive a separate training certificate.'
+        a: 'When you complete the internship, your letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, a summary of the work you delivered, and a signatory: Aakash Parashar, Founder & Director, with a phone number and email for verification. Hours can be included if your college counts credit in hours. You also receive a separate training certificate.'
       },
       {
         q: 'Who teaches the classes?',
-        a: 'Our team of 10+ instructors and mentors, led by Rohit Sharma, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
+        a: 'Our team of 10+ instructors and mentors, led by Aakash Parashar, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
       },
       {
         q: 'What does the fee include, and is the training paid?',
@@ -217,7 +217,7 @@ const FAQ = [
       },
       {
         q: 'Who do I deal with?',
-        a: 'Rohit Sharma, Founder & Director, and the team who will build your project. We are in Faridabad and also work remotely. You work directly with the people building your project from start to finish.'
+        a: 'Aakash Parashar, Founder & Director, and the team who will build your project. We are in Faridabad and also work remotely. You work directly with the people building your project from start to finish.'
       }
     ]
   }
