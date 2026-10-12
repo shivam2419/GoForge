@@ -6,7 +6,7 @@
     <%- include('contact-form', { px: 'mc', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
-<% if (path !== '/internship') { %>
+<% if (path !== '/internship' && path !== '/') { %>
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
@@ -33,7 +33,7 @@
     </div>
 <%- include('dialog-close') %>
 <% }) } %>
-<% if (path === '/' || path === '/internship') { PROGRAMS.forEach((t, i) => { %>
+<% if (path === '/internship') { PROGRAMS.forEach((t, i) => { %>
 <%- include('dialog-open', { id: 'dlg-role-' + t.slug }) %>
     <div class="modal-head">
       <span class="service-icon"><%- include('icon', { name: t.icon }) %></span>

@@ -26,7 +26,7 @@
         <li data-reveal>
           <span class="detail-icon"><%- include('partials/icon', { name: 'pin' }) %></span>
           <span><small>Office</small><address><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
-          <a class="small-link" href="https://www.google.com/maps/search/?api=1&amp;query=<%= encodeURIComponent('Puri Highstreet Sector 8 Faridabad') %>" target="_blank" rel="noopener">Open in Google Maps</a></span>
+          <a class="small-link" href="https://www.google.com/maps/search/?api=1&amp;query=<%= encodeURIComponent('Puri Highstreet Sector 81 Faridabad') %>" target="_blank" rel="noopener">Open in Google Maps</a></span>
         </li>
       </ul>
       <ul class="footer-social social-dark">
@@ -44,7 +44,7 @@
   <div class="wrap visit-grid">
     <div>
       <p class="eyebrow" data-reveal>Visit</p>
-      <h2 id="visit-h" class="h2" data-reveal>Sector 8, <em>Faridabad.</em></h2>
+      <h2 id="visit-h" class="h2" data-reveal>Sector 81, <em>Faridabad.</em></h2>
       <address class="about-address" data-reveal><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>,<br><%= BRAND.address.region %>, India</address>
       <dl class="hours" data-reveal>
         <% BRAND.hours.forEach(row => { %>
@@ -55,7 +55,7 @@
       <a class="text-link" data-reveal href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(BRAND.mapQuery) %>" target="_blank" rel="noopener">Open in Google Maps <%- include('partials/icon', { name: 'upright' }) %></a>
     </div>
     <div class="map-frame" data-reveal>
-      <iframe title="Map showing Puri Highstreet, Sector 8, Faridabad" src="<%= mapEmbed %>" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe title="Map showing Puri Highstreet, Sector 81, Faridabad" src="<%= mapEmbed %>" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </section>
