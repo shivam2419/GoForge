@@ -4,7 +4,7 @@
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Training + internship</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Learn it live,</span></span> <span class="line"><span><em>then work on it for real.</em></span></span></h1>
-    <p class="lede" data-hero-item>Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. For BTech, BCA, MCA and similar students. Your college decides whether it counts, so ask them before you pay.</p>
+    <p class="lede" data-hero-item>Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. For BTech, BCA, MCA and similar students. Certificates are accepted by colleges and recognised by industry.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="#programs">See programmes</a>
@@ -97,8 +97,8 @@
 <section class="section section-alt" aria-labelledby="rules-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>The honest rules</p>
-      <h2 id="rules-h" class="h2" data-reveal>What you get, <em>and what you do not.</em></h2>
+      <p class="eyebrow" data-reveal>What you take away</p>
+      <h2 id="rules-h" class="h2" data-reveal>Everything you earn <em>on the way.</em></h2>
     </div>
     <div class="rules" data-reveal-group>
       <div class="rules-col rules-yes" data-reveal>
@@ -107,16 +107,17 @@
           <li><%- include('partials/icon', { name: 'check' }) %><span>Study material, live classes and reviewed assignments</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>Projects you can explain in an interview</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>A training certificate when you finish the training</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship offer, and a letter that names the dates and the work once it is done</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship offer, and an internship letter that names your role, dates and work</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>A certificate ID that anyone can <a href="/verify">check with us</a></span></li>
         </ul>
       </div>
-      <div class="rules-col rules-no" data-reveal>
-        <h3>You do not receive</h3>
+      <div class="rules-col rules-yes" data-reveal>
+        <h3>Recognised and accepted</h3>
         <ul>
-          <li><%- include('partials/icon', { name: 'cross' }) %><span>A certificate without doing the work</span></li>
-          <li><%- include('partials/icon', { name: 'cross' }) %><span>A job guarantee</span></li>
-          <li><%- include('partials/icon', { name: 'cross' }) %><span>A promise that your college will accept it. Ask them first.</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Issued by an MSME-registered company</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Accepted by colleges for internship requirements and recognised by industry</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>A signed letter with contact details, so colleges and employers can confirm it</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>College-specific formats, hours or NOC support on request</span></li>
         </ul>
       </div>
     </div>
@@ -127,7 +128,7 @@
   <div class="wrap faq-wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Questions students ask</p>
-      <h2 id="faq-h" class="h2" data-reveal>Read this <em>before you pay.</em></h2>
+      <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
     <div class="faq-list" data-reveal>
       <% FAQ.find(group => group.id === 'students').items.forEach(item => { %>

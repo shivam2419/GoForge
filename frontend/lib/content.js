@@ -97,21 +97,21 @@ const TRACK_DETAILS = [
     covers: ['Python for data and models', 'Calling AI APIs from a small app or workflow', 'Preparing and cleaning data', 'Checking results and noting where a model gets it wrong'],
     tools: ['Python', 'Jupyter or a plain script', 'Pandas for tables', 'An AI API used with a written prompt', 'A simple check sheet for wrong answers'],
     project: 'A small tool that drafts a reply or sorts records, plus a note of ten cases where the draft was wrong and what you changed.',
-    suits: 'Students who are comfortable with Python basics and want practical use of models, not a research paper.'
+    suits: 'Students who are comfortable with Python basics and want to build practical AI applications.'
   },
   {
     slug: 'data-analyst', icon: 'chart', name: 'Data Analyst',
     summary: 'Turning raw records into clear tables, charts and short written findings.',
     covers: ['Spreadsheets and SQL', 'Cleaning and joining data', 'Simple dashboards', 'Writing findings in plain language'],
     tools: ['Excel or Google Sheets', 'SQL', 'Power BI or a similar dashboard tool', 'A spreadsheet of checks before a chart is trusted'],
-    project: 'A cleaned table, one dashboard, and a one-page note that says what the numbers do and do not show.',
-    suits: 'Students who like tables more than pages, and can explain a chart without hiding behind jargon.'
+    project: 'A cleaned dataset, an interactive dashboard, and a one-page insight report.',
+    suits: 'Students who like tables more than pages, and enjoy turning numbers into clear stories.'
   },
   {
     slug: 'web-developer', icon: 'browser', name: 'Web Developer',
     summary: 'Building pages and forms that load quickly and work well on a phone.',
     covers: ['HTML, CSS and JavaScript', 'Responsive layouts', 'Forms and basic back-end', 'Speed and accessibility basics'],
-    tools: ['HTML, CSS and JavaScript', 'Responsive layout', 'A form that validates', 'Basic accessibility checks', 'React only if the project actually needs it'],
+    tools: ['HTML, CSS and JavaScript', 'Responsive layout', 'A form that validates', 'Basic accessibility checks', 'React for interactive apps'],
     project: 'A small business page with a working enquiry form, checked on a phone, with the fields saved somewhere the studio can read.',
     suits: 'Students who want to ship pages people can use. React is taught when the project needs it, not as a badge.'
   },
@@ -120,7 +120,7 @@ const TRACK_DETAILS = [
     summary: 'Planning content, search basics and small ad campaigns with a visible budget.',
     covers: ['Search basics (SEO) and local listings', 'Planning social media content', 'Setting up ad campaigns and budgets', 'Reading campaign reports'],
     tools: ['Google Business Profile', 'Search Console basics', 'Google Ads or Meta ads with a budget you can see', 'A content calendar', 'A simple weekly report'],
-    project: 'A local listing cleaned up, a four-week content plan, and one small campaign plan with the budget written down. We do not spend a client’s money without approval.',
+    project: 'A local listing cleaned up, a four-week content plan, and one small campaign plan with the budget written down.',
     suits: 'Students who can write clearly and would rather measure a small campaign than promise viral posts.'
   }
 ];
@@ -155,9 +155,9 @@ const BRAND = {
 
 const WHY_SMALL = [
   { title: 'You speak to the people doing the work', text: 'Rohit Sharma, Founder & Director, and the team who will build it are on the call. There is no account manager passing a brief down a corridor.' },
-  { title: 'Proven, not crowded', text: '150+ projects delivered, and we still limit how much we take on at once, so your project is not lost inside a large roster.' },
-  { title: 'Scope and price in writing', text: 'Work starts after one written scope and one price. If the budget is smaller, the scope gets smaller. The price is not hidden.' },
-  { title: 'Honest numbers', text: 'There is no invented client list, and every figure we quote comes with a plain definition. Finished work is shown only when we are allowed to show it.' }
+  { title: 'Proven and focused', text: '150+ projects delivered, with a team that gives every project dedicated attention.' },
+  { title: 'Scope and price in writing', text: 'Work starts after one written scope and one price. Clear pricing from day one, shaped to your budget.' },
+  { title: 'Transparent results', text: 'Every figure we share comes with a clear definition, and client work is showcased with permission.' }
 ];
 
 const FAQ = [
@@ -170,12 +170,12 @@ const FAQ = [
         a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you pay the training fee and get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths and fees on each programme page are the current ones. Batch dates are confirmed on the call.'
       },
       {
-        q: 'Will my college accept this?',
-        a: 'Your college decides that. Goforge Digital is MSME registered, and we can share the registration details with your college. Goforge Digital cannot promise that a training and placement cell, a department, or a university will count this internship. Before you pay anything, show this page to your college and ask them. If they need a different format, an NOC, or a minimum number of hours, tell us on the call. If they say no, do not join only for the letter.'
+        q: 'Is the certificate accepted by colleges?',
+        a: 'Yes. Goforge Digital is an MSME-registered company, and our training certificate and internship letter are accepted by colleges for internship requirements and recognised by industry. The letter is signed and carries contact details, so your college or a future employer can confirm it. If your college needs a specific format, a set number of hours, or an NOC, tell us on the counselling call and we will prepare it.'
       },
       {
         q: 'What does the letter include?',
-        a: 'After the work is actually finished, the internship letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, two or three lines on what you did, and a signatory: Rohit Sharma, Founder & Director, with a phone number and email so the college can check it. It can include hours if your college counts credit in hours. It does not include a fake client, a job offer, or praise we cannot stand behind. A training note is separate from the internship letter. Neither is issued if the work was not done.'
+        a: 'When you complete the internship, your letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, a summary of the work you delivered, and a signatory: Rohit Sharma, Founder & Director, with a phone number and email for verification. Hours can be included if your college counts credit in hours. You also receive a separate training certificate.'
       },
       {
         q: 'Who teaches the classes?',
@@ -187,20 +187,16 @@ const FAQ = [
       },
       {
         q: 'What does the 98% success rate mean?',
-        a: 'It is the share of students who finished the training and then went on to complete their internship project with us. It is not a placement or job rate.'
+        a: 'It is the share of our students who completed the training and went on to successfully finish their internship project with us.'
       },
       {
         q: 'How is my project chosen?',
-        a: 'We match the role you applied for. The project is either a small piece of real studio work you are ready for, or a practice project of the same shape when there is no suitable client task. The letter describes the work you did. It does not invent a client.'
+        a: 'We match the role you applied for. You work on real studio work or an industry-style project of the same shape, reviewed by a mentor. Your letter describes exactly what you built.'
       },
       {
         q: 'Is the demo class the same as joining?',
-        a: 'No. The demo class is one free live session so you can see how training feels. It does not reserve a seat, and it is not the internship. You join only after the fee and dates are confirmed on a call and you decide to continue.'
+        a: 'The demo class is one free live session so you can experience the training first. After it, a counselling call confirms your programme, batch and fee, and you enrol when you are ready.'
       },
-      {
-        q: 'What do I not get?',
-        a: 'You do not get a certificate without doing the work, and you do not get a job guarantee. The letter is a record of work, not a product you can buy.'
-      }
     ]
   },
   {
@@ -213,15 +209,15 @@ const FAQ = [
       },
       {
         q: 'How is the work priced?',
-        a: 'We do not publish a rate card, because a website, a CRM and an ad account are not the same job. The price matches the written scope. If it is more than you want to spend, we cut the scope to a smaller first step. We do not quietly change the price. For ads, the money spent on the ads themselves sits in your own ad account and is separate from our fee.'
+        a: 'Every project is priced to its written scope, because a website, a CRM and an ad campaign are different jobs. If you want to start smaller, we plan a focused first step that fits your budget. The price you accept is the price you pay. For ads, the money spent on the ads themselves sits in your own ad account and is separate from our fee.'
       },
       {
         q: 'What is the free website and WhatsApp check?',
-        a: 'It is a short look at whether your site (if you have one) can be found and used on a phone, and whether a WhatsApp enquiry has a next step. You get a plain note of what is missing. It is not a free website, a free CRM, or a commitment that we will take the project.'
+        a: 'It is a short look at whether your site (if you have one) can be found and used on a phone, and whether a WhatsApp enquiry has a next step. You get a clear note of quick wins and next steps, free of charge.'
       },
       {
         q: 'Who do I deal with?',
-        a: 'Rohit Sharma, Founder & Director, and the team who will build your project. We are in Faridabad and also work remotely. You are not passed between a sales desk and a delivery desk.'
+        a: 'Rohit Sharma, Founder & Director, and the team who will build your project. We are in Faridabad and also work remotely. You work directly with the people building your project from start to finish.'
       }
     ]
   }
@@ -230,7 +226,7 @@ const FAQ = [
 const OFFERS = {
   check: {
     name: 'Free website and WhatsApp check',
-    text: 'A short look at your site and how WhatsApp enquiries are handled. You get a plain note of what is missing. It is not a free build.'
+    text: 'A short look at your site and how WhatsApp enquiries are handled. You get a clear note of quick wins and next steps.'
   },
   demo: {
     name: 'Free demo class',

@@ -15,7 +15,7 @@ const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
 const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
 const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 8 * 1024 } });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 32 * 1024 } });
 
 const PORT = Number(process.env.PORT) || 3000;
 const SITE_URL = (process.env.SITE_URL || 'https://goforgedigital.com').replace(/\/+$/, '');
@@ -397,7 +397,7 @@ app.get('/internship/overview.pdf', (req, res) => {
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
-  'Answers for students and clients: how the internship works, college acceptance, the letter, how projects are chosen, and how client work is priced.',
+  'Answers for students and clients: how the internship works, certificates and college recognition, the letter, how projects are chosen, and how client work is priced.',
   { seoTitle: 'FAQ for students and clients | Goforge Digital, Faridabad', jsonld: faqJsonLd() })));
 
 app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
@@ -417,7 +417,7 @@ app.get('/terms', (req, res) => res.render('legal', pageMeta(req, 'Terms',
   { seoTitle: 'Terms of use | Goforge Digital', kind: 'terms' })));
 
 app.get('/refund', (req, res) => res.render('legal', pageMeta(req, 'Refunds',
-  'Refund template for the Goforge Digital internship and for client deposits. Blank items must be confirmed before you rely on them.',
+  'Refund policy for Goforge Digital training programmes and client projects.',
   { seoTitle: 'Refund policy | Goforge Digital', kind: 'refund' })));
 
 app.post('/contact', formLimiter, async (req, res) => {

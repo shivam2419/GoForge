@@ -28,7 +28,7 @@
       <% if (certId) { %>
       <div class="verify-result" role="status">
         <p><strong>Certificate ID: <%= certId %></strong></p>
-        <p>Online lookup is not live yet. Send this ID to us and we will confirm it.</p>
+        <p>Send this ID to us and our team will confirm it for you.</p>
         <div class="hero-actions">
           <a class="btn btn-primary btn-sm" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Send a verification request <%- include('partials/icon', { name: 'arrow' }) %></a>
           <a class="btn btn-ghost btn-sm" href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Certificate verification: ' + certId) %>">Email us</a>

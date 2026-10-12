@@ -11,34 +11,32 @@ function programmeLines({ settings, brand, tracks }) {
     brand.address.line1 + ', ' + brand.address.line2 + ', ' + brand.address.region,
     'goforgedigital.com',
     '',
-    'This page is a summary for students and for a college training cell.',
-    'It is not a promise that a college will accept the internship.',
+    'A summary for students and college training cells.',
+    'Our certificate and internship letter are accepted by colleges',
+    'and recognised by industry.',
     '',
     '# How it runs',
     'Training: ' + settings.intern_training + ', live online.',
     'Internship: ' + settings.intern_work + ', supervised, after the training.',
     'Who can apply: BTech, BCA and similar courses.',
     'Fee: ' + settings.intern_fee + '.',
-    'Batch dates are confirmed on a call. They are not printed here.',
+    'Batch dates are shared on the counselling call.',
     '',
-    '# What you receive if you finish the work',
+    '# What you receive',
     '- Skills in the role you chose.',
     '- One project you can explain.',
-    '- A training note.',
+    '- A training certificate.',
     '- An internship letter with your name, college, role, exact dates,',
     '  that the work was online, two or three lines on the work you did,',
     '  and a signatory who can be contacted to check the letter.',
     '',
-    '# What you do not receive',
-    '- A certificate if the work was not done.',
-    '- A job guarantee.',
-    '- A promise that your college will count this internship.',
-    '  Ask your training and placement cell before you pay.',
+    '# College support',
+    '- Issued by an MSME-registered company.',
+    '- College-specific formats, hours or an NOC on request.',
     '',
     '# How a project is chosen',
-    'The project matches the role. It is a small piece of studio work',
-    'you are ready for, or a practice project of the same shape if there',
-    'is no suitable client task. The letter does not invent a client.',
+    'The project matches your programme: real studio work or an',
+    'industry-style project, reviewed by a mentor.',
     '',
     '# Roles'
   ];
@@ -49,9 +47,8 @@ function programmeLines({ settings, brand, tracks }) {
     lines.push('');
   });
   lines.push('# Check before you join');
-  lines.push('Show this overview to your college. If they need hours, an NOC,');
-  lines.push('or a different format, say so on the call. If they say no, do not');
-  lines.push('join only for the letter.');
+  lines.push('# Next step');
+  lines.push('Book a free demo class and counselling call at goforgedigital.com.');
   lines.push('');
   lines.push('Goforge Digital  |  ' + brand.website);
   return lines;

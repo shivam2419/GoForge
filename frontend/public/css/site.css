@@ -915,3 +915,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .carousel-track { scroll-behavior: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .ticker-light .ticker-group + .ticker-group { display: none; } }
+
+.cur-task { margin: 14px 0 4px; padding: 12px 16px; border-left: 3px solid var(--gold); background: rgba(201,162,39,.08); border-radius: 0 10px 10px 0; font-size: 15px; }
+.curriculum .check-list { columns: 2; column-gap: 28px; }
+.curriculum .check-list li { break-inside: avoid; }
+@media (max-width: 700px) { .curriculum .check-list { columns: 1; } }
