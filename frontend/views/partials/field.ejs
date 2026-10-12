@@ -1,0 +1,19 @@
+<% const err = errors[f.name]; const val = values[f.name] || ''; const id = f.id; %>
+<div class="field<%= err ? ' has-error' : '' %><%= f.wide ? ' field-wide' : '' %>">
+  <label for="<%= id %>"><%= f.label %><% if (f.required) { %> <span class="req" aria-hidden="true">*</span><% } else { %> <span class="opt">optional</span><% } %></label>
+  <% if (f.hint) { %><p class="field-hint" id="<%= id %>-hint"><%= f.hint %></p><% } %>
+  <% const describedby = [f.hint ? id + '-hint' : '', id + '-err'].filter(Boolean).join(' '); %>
+  <% if (f.as === 'textarea') { %>
+  <textarea id="<%= id %>" name="<%= f.name %>" rows="<%= f.rows || 5 %>"<% if (f.required) { %> required<% } %><% if (f.min) { %> minlength="<%= f.min %>"<% } %> maxlength="<%= f.max %>" aria-describedby="<%= describedby %>"<% if (err) { %> aria-invalid="true"<% } %>><%= val %></textarea>
+  <% } else if (f.as === 'select') { %>
+  <div class="select-wrap">
+  <select id="<%= id %>" name="<%= f.name %>"<% if (f.required) { %> required<% } %> aria-describedby="<%= describedby %>"<% if (err) { %> aria-invalid="true"<% } %>>
+    <option value=""><%= f.placeholder || 'Choose one' %></option>
+    <% f.options.forEach(o => { %><option value="<%= o %>"<% if (val === o) { %> selected<% } %>><%= o %></option><% }) %>
+  </select>
+  </div>
+  <% } else { %>
+  <input id="<%= id %>" name="<%= f.name %>" type="<%= f.type || 'text' %>" value="<%= val %>"<% if (f.autocomplete) { %> autocomplete="<%= f.autocomplete %>"<% } %><% if (f.inputmode) { %> inputmode="<%= f.inputmode %>"<% } %><% if (f.required) { %> required<% } %><% if (f.min) { %> minlength="<%= f.min %>"<% } %> maxlength="<%= f.max %>"<% if (f.pattern) { %> pattern="<%= f.pattern %>"<% } %> aria-describedby="<%= describedby %>"<% if (err) { %> aria-invalid="true"<% } %>>
+  <% } %>
+  <p class="field-error" id="<%= id %>-err" data-error-for="<%= f.name %>"><%= err || '' %></p>
+</div>

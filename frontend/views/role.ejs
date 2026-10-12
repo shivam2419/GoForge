@@ -1,0 +1,46 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item><a class="crumb" href="/internship">Internship</a></p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span><%= role.name %></span></span></h1>
+    <p class="lede" data-hero-item><%= role.summary %></p>
+    <div class="hero-actions" data-hero-item>
+      <a class="btn btn-primary btn-lg" href="/internship?track=<%= encodeURIComponent(role.name) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= role.name %>">Apply for this role <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
+    </div>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap detail-grid">
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">What you practise</p>
+      <ul class="check-list">
+        <% role.covers.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+      </ul>
+    </article>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">Tools this role usually uses</p>
+      <ul class="check-list">
+        <% role.tools.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+      </ul>
+      <p class="row-start">Tools follow the project. A name on this list is not a promise that every batch uses every tool.</p>
+    </article>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">A typical project</p>
+      <p><%= role.project %></p>
+      <p class="row-start">Your actual task may be a piece of studio work of this shape, or a practice project if there is no suitable client task. The letter describes what you did.</p>
+    </article>
+    <article class="detail-block" data-reveal>
+      <p class="mini-h">Who it suits</p>
+      <p><%= role.suits %></p>
+    </article>
+  </div>
+</section>
+<section class="section section-alt">
+  <div class="wrap prose">
+    <h2 class="h3">Before you pay</h2>
+    <p>Your college decides whether this internship counts. Show them the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview</a>. If they say no, do not join only for the letter.</p>
+  </div>
+</section>
+<%- include('partials/footer') %>

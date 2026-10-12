@@ -1,0 +1,40 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<article class="section print-sheet">
+  <div class="wrap prose">
+    <p class="eyebrow">Programme overview</p>
+    <h1 class="h2">Goforge Digital internship</h1>
+    <p class="lede">A one-page summary for a student or a college training cell. The college decides whether this internship counts. This page does not promise that it will.</p>
+    <p class="hero-actions no-print">
+      <a class="btn btn-primary" href="/internship/overview.pdf">Download PDF</a>
+      <button class="btn btn-ghost" type="button" data-print>Print this page</button>
+    </p>
+    <h2 class="h3">How it runs</h2>
+    <ul>
+      <li>Training: <%= s.intern_training %>, live online.</li>
+      <li>Internship: <%= s.intern_work %>, supervised, after the training.</li>
+      <li>Who can apply: BTech, BCA and similar courses.</li>
+      <li>Fee: <%= s.intern_fee %>.</li>
+      <li>Batch dates are confirmed on a call.</li>
+    </ul>
+    <h2 class="h3">If the work is finished</h2>
+    <ul>
+      <li>Skills in the chosen role, and one project the student can explain.</li>
+      <li>A training note.</li>
+      <li>An internship letter naming Goforge Digital, the student, the college and course, the role, the exact dates, that the work was online, two or three lines on the work, and <%= BRAND.founder %>, <%= BRAND.founderRole %>, with a phone and email so the letter can be checked.</li>
+    </ul>
+    <h2 class="h3">What is not included</h2>
+    <ul>
+      <li>A certificate without the work.</li>
+      <li>A job guarantee.</li>
+      <li>A promise of college credit. Ask the training cell before paying. If they need hours or an NOC, say so on the call.</li>
+    </ul>
+    <h2 class="h3">Roles</h2>
+    <% TRACK_DETAILS.forEach(role => { %>
+    <h3 class="h3"><%= role.name %></h3>
+    <p><%= role.summary %> Tools usually include <%= role.tools.join(', ') %>. <%= role.project %></p>
+    <% }) %>
+    <p>Studio: <%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %>. <%= BRAND.website %></p>
+  </div>
+</article>
+<%- include('partials/footer') %>

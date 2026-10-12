@@ -1,0 +1,54 @@
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-bar">
+    <div class="footer-brand">
+      <a class="footer-logo" href="/">
+        <%- include('mark', { cls: 'footer-logo-mark', decorative: true, uid: 'fw' }) %>
+        <span>Goforge Digital</span>
+      </a>
+      <p>A digital studio in Faridabad. Software, systems and marketing for businesses, and a live online internship for students.</p>
+    </div>
+    <div>
+      <h2 class="footer-h">Explore</h2>
+      <ul class="footer-list">
+        <li><a href="/services">Services</a></li>
+        <li><a href="/internship">Internship</a></li>
+        <li><a href="/work">Work</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-h">Policies</h2>
+      <ul class="footer-list">
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/refund">Refunds</a></li>
+        <li><a href="/internship/overview">Programme overview</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-h">Talk to us</h2>
+      <ul class="footer-list">
+        <li><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a></li>
+        <li><a href="<%= telHref(s.phone2) %>"><%= s.phone2 %></a></li>
+        <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
+        <li><a href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener">WhatsApp</a></li>
+      </ul>
+      <ul class="footer-social">
+        <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram"><%- include('icon', { name: 'instagram' }) %></a></li>
+        <li><a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener" aria-label="Rohit Sharma on LinkedIn"><%- include('icon', { name: 'linkedin' }) %></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>&copy; <%= year %> Goforge Digital</span>
+    <span><%= BRAND.address.line2 %>, <%= BRAND.address.region %></span>
+    <a class="to-top" href="#main">Back to top <%- include('icon', { name: 'up' }) %></a>
+  </div>
+</footer>
+<a class="float-wa" href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><%- include('icon', { name: 'whatsapp' }) %><span>Let's talk</span></a>
+<%- include('modals') %>
+</body>
+</html>

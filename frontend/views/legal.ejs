@@ -1,0 +1,58 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<article class="section">
+  <div class="wrap prose legal">
+    <p class="legal-note">This is a plain-language template, not legal advice. A lawyer should review it before you rely on it. Anything in square brackets is still yours to confirm. It is written against the notice duties in India’s Digital Personal Data Protection Act, 2023: say what you collect, why, and how a person can object or complain. Most of the Act’s operational duties are being phased in; treat this page as the notice you can stand behind today, and revisit it before May 2027.</p>
+    <% if (kind === 'privacy') { %>
+    <p class="eyebrow">Privacy</p>
+    <h1 class="h2">Privacy notice</h1>
+    <p>Goforge Digital (“we”) is run by <%= BRAND.founder %>, <%= BRAND.founderRole %>, from <%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %>, India. The legal name on invoices is <span class="blank">[legal name of the business, if different from Goforge Digital]</span>. GSTIN: <span class="blank">[GSTIN, or “not registered”]</span>.</p>
+    <h2 class="h3">What we collect, and why</h2>
+    <ul>
+      <li>Project form: your name, phone, business name and message, so we can reply about a project.</li>
+      <li>Internship form: your name, college, course and year, WhatsApp number, role and note, so we can consider an application and reply.</li>
+      <li>If you later pay a fee or a deposit: the payment reference your bank or UPI app shows us. We do not store card numbers on this website.</li>
+      <li>Technical logs of the site (such as IP address) for security and rate limits, kept with the hosting provider.</li>
+      <li>Analytics, only if it has been switched on: which pages were opened. It is off until an analytics ID is set in the server environment.</li>
+    </ul>
+    <p>We do not sell this information. We do not use it for ads about other companies.</p>
+    <h2 class="h3">Who else sees it</h2>
+    <p>The studio, and the host that stores the database. If you choose WhatsApp after a form, that message is also on WhatsApp, under WhatsApp’s own terms. We do not send the form to a college unless you ask us to.</p>
+    <h2 class="h3">How long we keep it</h2>
+    <p>Enquiries and applications are kept for <span class="blank">[retention period — suggested: 24 months after the last message]</span>, or sooner if you ask us to delete them, unless we have to keep a record for a legal claim or a payment.</p>
+    <h2 class="h3">Your choices</h2>
+    <p>You can ask for a copy, a correction, or deletion, and you can withdraw consent for us to keep using the details to contact you. Email <%= s.email %> or write to the address above. We aim to answer within <span class="blank">[number of days — suggested: 30]</span>. If you are not satisfied, you can complain to the Data Protection Board of India once that route is open to you.</p>
+    <p>This programme is for college students. Do not apply if you are under 18.</p>
+    <h2 class="h3">Grievance contact</h2>
+    <p><%= BRAND.founder %>, <%= BRAND.founderRole %>, <%= s.email %>, <%= s.phone1 %>.</p>
+    <% } else if (kind === 'terms') { %>
+    <p class="eyebrow">Terms</p>
+    <h1 class="h2">Terms of use</h1>
+    <p>The site goforgedigital.com describes the studio’s services and internship. It is information, not an offer that forces either side to proceed.</p>
+    <h2 class="h3">Projects</h2>
+    <p>Client work starts only after you accept a written scope and a price. A free website and WhatsApp check is a short note, not a free build, and not an agreement that we will take the work. Who owns the finished work is written in that scope. Until a scope says otherwise, <span class="blank">[who owns the code and the design — suggested: you own the work you paid for, we may keep a copy as a portfolio piece only with your permission]</span>.</p>
+    <h2 class="h3">Internship</h2>
+    <p>Training and the internship are two stages. The fee and dates are confirmed on a call. Applying, or attending a free demo class, does not reserve a seat and is not a job offer. Your college decides whether the internship counts. We will not tell you that it does.</p>
+    <h2 class="h3">The site</h2>
+    <p>Do not misuse the forms, try to break the site, or send other people’s personal data without a reason. The law of India applies. Courts at <span class="blank">[city — suggested: Faridabad, Haryana]</span> are the suggested venue.</p>
+    <% } else { %>
+    <p class="eyebrow">Refunds</p>
+    <h1 class="h2">Refunds</h1>
+    <p>Confirm every bracket before you charge a fee. The sentences below are a starting point, not a rule you have already adopted.</p>
+    <h2 class="h3">Free offers</h2>
+    <p>The demo class and the website and WhatsApp check have no fee, so there is nothing to refund.</p>
+    <h2 class="h3">Internship fee</h2>
+    <ul>
+      <li>If Goforge Digital cancels a batch before it starts, fees already paid for that batch are refunded in full.</li>
+      <li><span class="blank">[If you cancel before the first live session — suggested: full refund of the fee already paid.]</span></li>
+      <li><span class="blank">[If you cancel after attending the first live session — suggested: no refund, because the seat and the session have been used.]</span></li>
+      <li>The internship letter is not sold on its own. No fee is charged for the letter. A letter is not issued if the work was not done, and that is not a reason for a refund of training you already attended.</li>
+    </ul>
+    <h2 class="h3">Client projects</h2>
+    <p><span class="blank">[Deposit rule — suggested: a deposit is refundable until work starts. After work starts, you pay for the part already done, and the rest of the deposit is discussed in writing.]</span></p>
+    <p>Ask for a refund by email at <%= s.email %>, with the name used on the payment. We reply within <span class="blank">[number of days — suggested: 7]</span>.</p>
+    <% } %>
+    <p class="legal-links"><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/refund">Refunds</a></p>
+  </div>
+</article>
+<%- include('partials/footer') %>

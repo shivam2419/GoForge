@@ -1,0 +1,25 @@
+<%- include('../partials/head', { adminCss: true }) %>
+<body class="admin admin-login">
+<main id="main" class="login-main page" tabindex="-1">
+  <div class="login-card">
+    <%- include('../partials/corners') %>
+    <%- include('../partials/mark', { cls: 'login-mark', decorative: true, uid: 'login' }) %>
+    <h1 class="login-title"><span class="wordmark">Goforge Digital</span><span class="login-sub">Admin sign in</span></h1>
+    <% if (error) { %><div class="form-alert" role="alert"><%= error %></div><% } %>
+    <form method="post" action="/admin/login" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <div class="field">
+        <label for="l-email">Email</label>
+        <input id="l-email" name="email" type="email" autocomplete="username" required value="<%= email %>" maxlength="200">
+      </div>
+      <div class="field">
+        <label for="l-pass">Password</label>
+        <input id="l-pass" name="password" type="password" autocomplete="current-password" required maxlength="200">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+    <p class="login-foot"><a href="/">Back to the website</a></p>
+  </div>
+</main>
+</body>
+</html>

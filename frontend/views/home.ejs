@@ -1,0 +1,292 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<section class="section section-tight first-look" aria-labelledby="benefit-h">
+  <div class="wrap">
+    <dl class="kpi-row">
+      <div data-reveal><dt>6</dt><dd>Services, from software to ads</dd></div>
+      <div data-reveal><dt>5</dt><dd>Internship roles</dd></div>
+      <div data-reveal><dt>1</dt><dd>Founder on the work</dd></div>
+      <div data-reveal><dt>Free</dt><dd>Demo class before any fee</dd></div>
+    </dl>
+    <h2 id="benefit-h" class="h2" data-reveal>What you <em>actually get.</em></h2>
+    <ol class="benefit-path">
+      <li data-reveal>
+        <span class="benefit-orb orb-a"><%- include('partials/icon', { name: 'browser' }) %></span>
+        <h3>Live classes</h3>
+        <p>A written task in the role you chose. Not a folder of recorded videos.</p>
+      </li>
+      <li data-reveal>
+        <span class="benefit-orb orb-b"><%- include('partials/icon', { name: 'user' }) %></span>
+        <h3>The founder teaches</h3>
+        <p>Rohit Sharma is on the call. There is no separate instructor bench.</p>
+      </li>
+      <li data-reveal>
+        <span class="benefit-orb orb-c"><%- include('partials/icon', { name: 'check' }) %></span>
+        <h3>A letter after the work</h3>
+        <p>Issued only when the project is finished. It is not a job offer.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow" data-hero-item>A digital studio in Faridabad</p>
+      <h1 class="hero-title">
+        <span class="line"><span>Software, systems</span></span>
+        <span class="line"><span>and marketing,</span></span>
+        <span class="line"><span>built around</span></span>
+        <span class="line"><span><em class="hl">your business.</em></span></span>
+      </h1>
+      <p class="lede" data-hero-item>Goforge Digital is a new studio. We take on a small number of projects, agree a clear scope and price, and hand over something your team can run.</p>
+      <div class="hero-actions" data-hero-item>
+        <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+        <a class="btn btn-ghost btn-lg" href="/internship">Internship <%- include('partials/icon', { name: 'arrow' }) %></a>
+      </div>
+      <p class="hero-pillars" data-hero-item><span>Software</span><span>Systems</span><span>Automation</span><span>Marketing</span></p>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="board" data-parallax="0.04">
+        <div class="board-bar">
+          <span class="board-brand"><%- include('partials/mark', { cls: 'board-mark', decorative: true, uid: 'board' }) %>Goforge / project board</span>
+          <span class="board-tag">Illustration</span>
+        </div>
+        <p class="board-eyebrow">How a project moves</p>
+        <p class="board-title">From first call to handover.</p>
+        <ol class="board-steps">
+          <li class="is-done"><span class="bs-num">01</span><span class="bs-name">Listen<small>What is in the way</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
+          <li class="is-done"><span class="bs-num">02</span><span class="bs-name">Shape<small>Scope and price agreed</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
+          <li class="is-active"><span class="bs-num">03</span><span class="bs-name">Build<small>Progress you can see</small></span><span class="bs-progress"><span></span></span></li>
+          <li><span class="bs-num">04</span><span class="bs-name">Hand over<small>A short note on how to run it</small></span><span class="bs-state bs-wait"></span></li>
+        </ol>
+      </div>
+      <div class="chip chip-a" data-parallax="-0.06"><span class="chip-icon"><%- include('partials/icon', { name: 'tag' }) %></span><span>Clear price,<strong>agreed first</strong></span></div>
+      <div class="chip chip-b" data-parallax="0.09"><span class="chip-icon"><%- include('partials/icon', { name: 'user' }) %></span><span>A person<strong>in the loop</strong></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <% for (let r = 0; r < 2; r++) { %><div class="ticker-group"><% SERVICES.forEach(svc => { %><span><%= svc.name %></span><i>&#10022;</i><% }) %></div><% } %>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="services-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>What we do</p>
+        <h2 id="services-h" class="h2" data-reveal>Four services, <em>one studio.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Each project starts small. Pick one area, or tell us the problem and we will say which one fits. Select a service for the details.</p>
+    </div>
+    <ul class="service-grid" data-reveal-group>
+      <% SERVICES.forEach((svc, i) => { %>
+      <li class="service-card" data-reveal>
+        <a href="/services/<%= svc.slug %>" class="service-link" data-dialog="dlg-svc-<%= svc.slug %>">
+          <span class="service-top">
+            <span class="service-icon"><%- include('partials/icon', { name: svc.icon }) %></span>
+            <span class="service-num">0<%= i + 1 %></span>
+          </span>
+          <h3 class="service-name"><%= svc.name %></h3>
+          <p class="service-blurb"><%= s[svc.key] %></p>
+          <span class="service-more">Let's explore <%- include('partials/icon', { name: 'upright' }) %></span>
+        </a>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="navy-band" aria-labelledby="systems-h">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap navy-grid">
+    <div>
+      <p class="eyebrow eyebrow-light" data-reveal>Business systems, made simple</p>
+      <h2 id="systems-h" class="h2 h2-light" data-reveal>Make the moving parts feel like <em>one business.</em></h2>
+      <p class="navy-text" data-reveal>When leads sit in WhatsApp, records in a spreadsheet and follow-ups in someone's head, work gets lost. We join the tools you already use, so the team works from one place.</p>
+      <ul class="navy-checks" data-reveal-group>
+        <% ['Lead records','Customer records','Follow-up reminders','Billing and stock','Form-to-WhatsApp messages','Simple reports'].forEach(item => { %>
+        <li data-reveal><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li>
+        <% }) %>
+      </ul>
+      <a class="btn btn-gold btn-lg" href="/contact?service=<%= encodeURIComponent(SERVICES[1].name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= SERVICES[1].name %>" data-reveal>Talk about a system <%- include('partials/icon', { name: 'upright' }) %></a>
+    </div>
+    <div class="workspace" aria-hidden="true" data-reveal data-parallax="0.03">
+      <div class="ws-bar"><i></i><i></i><i></i><span>Your workspace &middot; illustration</span></div>
+      <div class="ws-body">
+        <p class="ws-eyebrow">Today, in one place</p>
+        <p class="ws-title">A calmer working day.</p>
+        <ul class="ws-list">
+          <li><span class="ws-n">01</span><span>New enquiries<small>From the website form</small></span><span class="ws-pill">Ready to follow up</span></li>
+          <li><span class="ws-n">02</span><span>Customer records<small>One list, not five</small></span><span class="ws-pill">Up to date</span></li>
+          <li><span class="ws-n">03</span><span>Reminders<small>Sent after a person approves</small></span><span class="ws-pill">Scheduled</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="values-h">
+  <div class="wrap values-grid">
+    <div class="values-intro">
+      <p class="eyebrow" data-reveal>How we work with you</p>
+      <h2 id="values-h" class="h2" data-reveal>Built around your business, <em>not a template.</em></h2>
+      <p class="section-intro" data-reveal>Plain commitments for every project, written down before work starts.</p>
+    </div>
+    <ul class="values" data-reveal-group>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Small scope, clear price</h3><p>One written scope and one price, agreed before anything is built.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'eye' }) %></span><h3>Progress you can see</h3><p>Work is shared as it happens, not saved for a big reveal at the end.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>A person in the loop</h3><p>Automations prepare the work. A person on your team approves what goes out.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Yours to run</h3><p>A handover your team can use, with a short note on how it works.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="process-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>How a project works</p>
+      <h2 id="process-h" class="h2" data-reveal>Four steps, <em>in this order.</em></h2>
+      <p class="section-intro" data-reveal>Clear steps, open conversations, progress you can see.</p>
+    </div>
+    <ol class="timeline-h" data-reveal-group data-line>
+      <% PROCESS.forEach((step, i) => { %>
+      <li data-reveal>
+        <span class="th-num">0<%= i + 1 %></span>
+        <span class="th-dot" aria-hidden="true"></span>
+        <h3><%= step.name %></h3>
+        <p><%= step.text %></p>
+      </li>
+      <% }) %>
+    </ol>
+    <p class="pricing-note" data-reveal>Fees are discussed on a call, once the scope is clear. We do not publish a price list.</p>
+  </div>
+</section>
+
+<section class="section section-alt intern-home" aria-labelledby="intern-h">
+  <div class="wrap intern-grid">
+    <div>
+      <p class="eyebrow" data-reveal>Internship program</p>
+      <h2 id="intern-h" class="h2" data-reveal>Train first, <em>then do real work.</em></h2>
+      <p class="section-intro" data-reveal>For BTech, BCA and similar students who still need an internship: <%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work under Goforge Digital.</p>
+      <div class="hero-actions" data-reveal>
+        <a class="btn btn-primary" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply for internship <%- include('partials/icon', { name: 'upright' }) %></a>
+        <a class="btn btn-ghost" href="/internship">See the program</a>
+      </div>
+    </div>
+    <div>
+      <p class="mini-h" data-reveal>Roles you can apply for</p>
+      <ul class="role-list" data-reveal-group>
+        <% TRACK_DETAILS.forEach(t => { %>
+        <li data-reveal><a href="/internship/roles/<%= t.slug %>" data-dialog="dlg-role-<%= t.slug %>"><span class="role-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="role-name"><%= t.name %></span><%- include('partials/icon', { name: 'arrow', cls: 'role-arrow' }) %></a></li>
+        <% }) %>
+        <li data-reveal class="role-similar">and similar roles</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work" aria-labelledby="work-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Work</p>
+        <h2 id="work-h" class="h2" data-reveal>Portfolio</h2>
+      </div>
+      <p class="section-intro" data-reveal>Only finished work we are allowed to show goes here.</p>
+    </div>
+    <div class="work-frame" data-reveal>
+      <%- include('partials/corners') %>
+      <p class="work-line">Selected work will be added here.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="start-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Two ways to start</p>
+      <h2 id="start-h" class="h2" data-reveal>A free look, <em>before any fee.</em></h2>
+    </div>
+    <div class="offer-grid" data-reveal-group>
+      <article class="offer-card" data-reveal>
+        <p class="mini-h">For a business</p>
+        <h3><%= OFFERS.check.name %></h3>
+        <p><%= OFFERS.check.text %></p>
+        <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Ask for the check</a>
+      </article>
+      <article class="offer-card" data-reveal>
+        <p class="mini-h">For a student</p>
+        <h3><%= OFFERS.demo.name %></h3>
+        <p><%= OFFERS.demo.text %></p>
+        <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Why a small studio</p>
+      <h2 id="why-h" class="h2" data-reveal>Less theatre, <em>a person you can call.</em></h2>
+    </div>
+    <ul class="values" data-reveal-group>
+      <% WHY_SMALL.forEach(item => { %>
+      <li data-reveal><h3><%= item.title %></h3><p><%= item.text %></p></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt about-home" aria-labelledby="about-h">
+  <div class="wrap about-home-grid">
+    <div class="orbit" aria-hidden="true" data-reveal>
+      <span class="orbit-ring r1"></span><span class="orbit-ring r2"></span><span class="orbit-ring r3"></span>
+      <span class="orbit-dot d1"></span><span class="orbit-dot d2"></span>
+      <div class="orbit-core">
+        <%- include('partials/mark', { cls: 'orbit-mark', decorative: true, uid: 'orbit' }) %>
+        <span class="orbit-words">Listen &middot; Shape &middot; Build</span>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow" data-reveal>A little about us</p>
+      <h2 id="about-h" class="h2" data-reveal>An early studio, <em>run by its founder.</em></h2>
+      <p class="section-intro" data-reveal>Goforge Digital is led by Rohit Sharma, Founder &amp; Director. When you work with us, you speak with the person doing the work.</p>
+      <dl class="about-facts" data-reveal-group>
+        <div data-reveal><dt>Who you talk to</dt><dd>Rohit Sharma, Founder &amp; Director</dd></div>
+        <div data-reveal><dt>Who we work with</dt><dd>Small businesses</dd></div>
+      </dl>
+      <a class="text-link" href="/about" data-reveal>Get to know us <%- include('partials/icon', { name: 'arrow' }) %></a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-h">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap cta-grid">
+    <div>
+      <p class="eyebrow eyebrow-light" data-reveal>Your next good move</p>
+      <h2 id="cta-h" class="h2 h2-light" data-reveal>Have a business problem <em>to solve?</em></h2>
+      <p class="navy-text" data-reveal>Tell us what you are trying to do and what is in the way. A short call is usually enough to know whether we are the right fit.</p>
+      <div class="hero-actions" data-reveal>
+        <a class="btn btn-gold btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+        <a class="btn btn-outline-light btn-lg" href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'whatsapp' }) %> WhatsApp us</a>
+      </div>
+    </div>
+    <ul class="cta-contacts" data-reveal-group>
+      <li data-reveal><a href="<%= telHref(s.phone1) %>"><span class="cc-k">Phone</span><span class="cc-v"><%= s.phone1 %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
+      <li data-reveal><a href="<%= telHref(s.phone2) %>"><span class="cc-k">Phone</span><span class="cc-v"><%= s.phone2 %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
+      <li data-reveal><a href="mailto:<%= s.email %>"><span class="cc-k">Email</span><span class="cc-v break"><%= s.email %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
+      <li data-reveal><a href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><span class="cc-k">WhatsApp</span><span class="cc-v"><%= s.whatsapp %></span><%- include('partials/icon', { name: 'upright' }) %></a></li>
+    </ul>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

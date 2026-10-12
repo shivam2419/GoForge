@@ -1,0 +1,19 @@
+<% const px = locals.px || 'a'; %>
+<form class="form" data-form="apply" method="post" action="/internship" novalidate data-ajax-form>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="hp" aria-hidden="true"><label for="<%= px %>-website">Leave this empty</label><input id="<%= px %>-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <div class="form-alert" role="alert" data-form-alert<% if (!Object.keys(errors).length) { %> hidden<% } %>><%= Object.keys(errors).length ? 'Please check the highlighted fields.' : '' %></div>
+  <div class="form-grid">
+    <%- include('field', { f: { id: px + '-name', name: 'full_name', label: 'Full name', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
+    <%- include('field', { f: { id: px + '-college', name: 'college', label: 'College', required: true, min: 2, max: 120 } }) %>
+    <%- include('field', { f: { id: px + '-course', name: 'course_year', label: 'Course and year', required: true, min: 2, max: 60, hint: 'For example: BTech CSE, 3rd year' } }) %>
+    <%- include('field', { f: { id: px + '-wa', name: 'whatsapp', label: 'WhatsApp number', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
+    <%- include('field', { f: { id: px + '-track', name: 'track', label: 'Role you are applying for', as: 'select', required: true, options: TRACKS, placeholder: 'Choose a role', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-note', name: 'note', label: 'Short note', as: 'textarea', rows: 4, max: 1000, wide: true, hint: 'Why this role, and anything you have already built or learned. If you chose a similar role, name it here.' } }) %>
+  </div>
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit" data-submit>Send application <%- include('icon', { name: 'arrow' }) %></button>
+    <p class="form-note">We save your application and open WhatsApp to <%= s.whatsapp %> with the same details. We use these details only to consider your application. <a href="/privacy">Privacy notice</a>.</p>
+  </div>
+  <%- include('form-success') %>
+</form>

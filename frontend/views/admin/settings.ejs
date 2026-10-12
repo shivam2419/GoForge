@@ -1,0 +1,37 @@
+<%- include('top') %>
+<div class="admin-head">
+  <h1 class="admin-title">Site settings</h1>
+  <p class="admin-sub">These details appear across the public site: header, footer, contact strips and WhatsApp links. Changes go live as soon as you save.</p>
+</div>
+<% if (flash) { %><div class="flash" role="status"><%= flash %></div><% } %>
+<% if (Object.keys(errors).length) { %><div class="form-alert" role="alert">Please check the highlighted fields.</div><% } %>
+<form method="post" action="/admin/settings" class="form settings-form" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <fieldset class="panel">
+    <legend>Contact details</legend>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-phone1', name: 'phone1', label: 'Phone 1', type: 'tel', required: true, max: 20 } }) %>
+      <%- include('../partials/field', { f: { id: 's-phone2', name: 'phone2', label: 'Phone 2', type: 'tel', required: true, max: 20 } }) %>
+      <%- include('../partials/field', { f: { id: 's-wa', name: 'whatsapp', label: 'WhatsApp number', type: 'tel', required: true, max: 20, hint: 'Form submissions open WhatsApp to this number.' } }) %>
+      <%- include('../partials/field', { f: { id: 's-email', name: 'email', label: 'Email', type: 'email', required: true, max: 120 } }) %>
+    </div>
+  </fieldset>
+  <fieldset class="panel">
+    <legend>Service lines</legend>
+    <div class="form-grid">
+      <% SERVICES.forEach((svc, i) => { %>
+      <%- include('../partials/field', { f: { id: 's-' + svc.key, name: svc.key, label: svc.name, as: 'textarea', rows: 2, required: true, max: 220, wide: true } }) %>
+      <% }) %>
+    </div>
+  </fieldset>
+  <fieldset class="panel">
+    <legend>Internship details</legend>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Training length', required: true, max: 40 } }) %>
+      <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Internship length', required: true, max: 40 } }) %>
+      <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Fee line', required: true, max: 80, wide: true } }) %>
+    </div>
+  </fieldset>
+  <div class="form-foot"><button class="btn btn-primary" type="submit">Save settings</button></div>
+</form>
+<%- include('bottom') %>

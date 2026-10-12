@@ -1,0 +1,66 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Contact</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Tell us what you</span></span> <span class="line"><span><em>have in mind.</em></span></span></h1>
+    <p class="lede" data-hero-item>Call, WhatsApp or email. Or send a few lines below and we will get back to you.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap split split-form">
+    <div class="contact-details">
+      <ul class="detail-list" data-reveal-group>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'phone' }) %></span>
+          <span><small>Phone</small><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a><a href="<%= telHref(s.phone2) %>"><%= s.phone2 %></a></span>
+        </li>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'whatsapp' }) %></span>
+          <span><small>WhatsApp</small><a href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><%= s.whatsapp %></a></span>
+        </li>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'mail' }) %></span>
+          <span><small>Email</small><a class="break" href="mailto:<%= s.email %>"><%= s.email %></a></span>
+        </li>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'globe' }) %></span>
+          <span><small>Website</small><a href="https://<%= BRAND.website %>"><%= BRAND.website %></a></span>
+        </li>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'pin' }) %></span>
+          <span><small>Office</small><address><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
+          <a class="small-link" href="https://www.google.com/maps/search/?api=1&amp;query=<%= encodeURIComponent('Puri Highstreet Sector 8 Faridabad') %>" target="_blank" rel="noopener">Open in Google Maps</a></span>
+        </li>
+      </ul>
+      <ul class="footer-social social-dark">
+        <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram"><%- include('partials/icon', { name: 'instagram' }) %></a></li>
+        <li><a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener" aria-label="Rohit Sharma on LinkedIn"><%- include('partials/icon', { name: 'linkedin' }) %></a></li>
+      </ul>
+    </div>
+    <div class="form-card" id="message" data-reveal>
+      <div class="form-card-head"><p class="mini-h">Project enquiry</p><h2 class="h3 form-title">Send a message</h2></div>
+      <%- include('partials/contact-form') %>
+    </div>
+  </div>
+</section>
+<section class="section section-alt" aria-labelledby="visit-h">
+  <div class="wrap visit-grid">
+    <div>
+      <p class="eyebrow" data-reveal>Visit</p>
+      <h2 id="visit-h" class="h2" data-reveal>Sector 8, <em>Faridabad.</em></h2>
+      <address class="about-address" data-reveal><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>,<br><%= BRAND.address.region %>, India</address>
+      <dl class="hours" data-reveal>
+        <% BRAND.hours.forEach(row => { %>
+        <div><dt><%= row[0] %></dt><dd><%= row[1] %></dd></div>
+        <% }) %>
+      </dl>
+      <p class="section-intro" data-reveal><%= BRAND.hoursNote %></p>
+      <a class="text-link" data-reveal href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(BRAND.mapQuery) %>" target="_blank" rel="noopener">Open in Google Maps <%- include('partials/icon', { name: 'upright' }) %></a>
+    </div>
+    <div class="map-frame" data-reveal>
+      <iframe title="Map showing Puri Highstreet, Sector 8, Faridabad" src="<%= mapEmbed %>" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

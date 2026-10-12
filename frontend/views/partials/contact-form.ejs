@@ -1,0 +1,18 @@
+<% const px = locals.px || 'c'; %>
+<form class="form" data-form="contact" method="post" action="/contact" novalidate data-ajax-form>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="hp" aria-hidden="true"><label for="<%= px %>-website">Leave this empty</label><input id="<%= px %>-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <div class="form-alert" role="alert" data-form-alert<% if (!Object.keys(errors).length) { %> hidden<% } %>><%= Object.keys(errors).length ? 'Please check the highlighted fields.' : '' %></div>
+  <div class="form-grid">
+    <%- include('field', { f: { id: px + '-name', name: 'name', label: 'Your name', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
+    <%- include('field', { f: { id: px + '-business', name: 'business', label: 'Business name', max: 120, autocomplete: 'organization' } }) %>
+    <%- include('field', { f: { id: px + '-phone', name: 'phone', label: 'Phone or WhatsApp', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
+    <%- include('field', { f: { id: px + '-service', name: 'service', label: 'What do you need?', as: 'select', options: CONTACT_SERVICES, placeholder: 'Choose a service' } }) %>
+    <%- include('field', { f: { id: px + '-message', name: 'message', label: 'A few lines about the project', as: 'textarea', required: true, min: 10, max: 2000, wide: true, hint: 'What the business does, what you want to change, and any deadline.' } }) %>
+  </div>
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit" data-submit>Send message <%- include('icon', { name: 'arrow' }) %></button>
+    <p class="form-note">We save your message and open WhatsApp to <%= s.whatsapp %> with the same text. We use your name, phone and message only to reply. <a href="/privacy">Privacy notice</a>.</p>
+  </div>
+  <%- include('form-success') %>
+</form>

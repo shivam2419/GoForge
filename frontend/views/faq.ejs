@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>FAQ</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Questions,</span></span> <span class="line"><span><em>answered plainly.</em></span></span></h1>
+    <p class="lede" data-hero-item>For students deciding whether to apply, and for businesses deciding whether to start a project.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap faq-wrap">
+    <% FAQ.forEach(group => { %>
+    <h2 class="h2" id="<%= group.id %>"><%= group.title %></h2>
+    <div class="faq-list">
+      <% group.items.forEach(item => { %>
+      <details class="faq-item">
+        <summary><%= item.q %></summary>
+        <p><%= item.a %></p>
+      </details>
+      <% }) %>
+    </div>
+    <% }) %>
+    <p class="faq-more"><a class="text-link" href="/internship">Internship programme <%- include('partials/icon', { name: 'arrow' }) %></a> <a class="text-link" href="/contact">Talk about a project <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,38 @@
+<body class="<%= locals.bodyClass || '' %>">
+<a class="skip-link" href="#main">Skip to content</a>
+<% const nav = [['/services','Services'],['/work','Work'],['/internship','Internship'],['/about','About'],['/contact','Contact']]; %>
+<header class="site-header" data-header>
+  <div class="wrap header-row">
+    <a class="brand" href="/" aria-label="Goforge Digital home">
+      <%- include('mark', { cls: 'brand-mark', decorative: true, uid: 'h' }) %>
+      <span class="brand-text"><span class="wordmark">Goforge Digital</span><span class="brand-tag"><%= BRAND.tagline %></span></span>
+    </a>
+    <nav class="nav-desktop" aria-label="Main">
+      <ul>
+        <% nav.forEach(([href, label]) => { const cur = path === href || path.startsWith(href + '/'); %>
+        <li><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><%= label %></a></li>
+        <% }) %>
+      </ul>
+    </nav>
+    <a class="btn btn-primary btn-sm header-cta" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Let's talk <%- include('icon', { name: 'upright' }) %></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>
+      <span class="menu-icon" aria-hidden="true"><span></span><span></span></span>
+      <span class="menu-label">Menu</span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" data-menu>
+    <nav class="wrap" aria-label="Mobile">
+      <ul>
+        <li><a href="/"<% if (path === '/') { %> aria-current="page"<% } %>><span class="mm-num">00</span>Home</a></li>
+        <% nav.forEach(([href, label], i) => { const cur = path === href; %>
+        <li><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><span class="mm-num">0<%= i + 1 %></span><%= label %></a></li>
+        <% }) %>
+      </ul>
+      <div class="mobile-menu-foot">
+        <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project</a>
+        <a class="btn btn-ghost" href="<%= waUrl(s.whatsapp) %>" target="_blank" rel="noopener"><%- include('icon', { name: 'whatsapp' }) %> WhatsApp</a>
+      </div>
+    </nav>
+  </div>
+</header>
+<main id="main" class="page" tabindex="-1">

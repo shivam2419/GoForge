@@ -1,0 +1,92 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>About</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>An early studio,</span></span> <span class="line"><span><em>run by its founder.</em></span></span></h1>
+    <p class="lede" data-hero-item>Goforge Digital builds software, systems and marketing for small businesses, and trains students on the same kind of work. The studio is new. There is no invented client list.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap">
+    <dl class="kpi-row">
+      <div data-reveal><dt>6</dt><dd>Services, from software to ads</dd></div>
+      <div data-reveal><dt>5</dt><dd>Internship roles</dd></div>
+      <div data-reveal><dt>1</dt><dd>Founder on the work</dd></div>
+      <div data-reveal><dt>2</dt><dd>Ways in: a project, or training</dd></div>
+    </dl>
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Who we are</p>
+      <h2 class="h2" data-reveal>Four things worth <em>knowing first.</em></h2>
+    </div>
+    <ul class="who-grid" data-reveal-group>
+      <li class="who-card" data-reveal>
+        <span class="who-icon orb-a"><%- include('partials/icon', { name: 'spark' }) %></span>
+        <h3>The studio</h3>
+        <p>Custom software, CRM, automation and marketing, from one desk in Faridabad. Students train on the same kind of work the studio sells.</p>
+      </li>
+      <li class="who-card" data-reveal>
+        <span class="who-icon orb-b"><%- include('partials/icon', { name: 'tag' }) %></span>
+        <h3>For a business</h3>
+        <p>You speak to Rohit Sharma. One written scope and one price, then the build. Nothing starts before that is agreed.</p>
+        <a href="/services">See services <%- include('partials/icon', { name: 'arrow' }) %></a>
+      </li>
+      <li class="who-card" data-reveal>
+        <span class="who-icon orb-c"><%- include('partials/icon', { name: 'user' }) %></span>
+        <h3>For a student</h3>
+        <p>Live online training, then supervised work. The letter comes after the work is finished. Your college decides if it counts.</p>
+        <a href="/internship">See the programme <%- include('partials/icon', { name: 'arrow' }) %></a>
+      </li>
+      <li class="who-card" data-reveal>
+        <span class="who-icon orb-d"><%- include('partials/icon', { name: 'check' }) %></span>
+        <h3>What is different</h3>
+        <p>No fake client logos, no job promise, and no certificate you can buy. If the studio has not done the work, it is not on this site.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap about-grid">
+    <figure class="founder-card" data-reveal>
+      <%- include('partials/corners') %>
+      <%- include('partials/mark', { cls: 'founder-mark', decorative: true, uid: 'about' }) %>
+      <figcaption>
+        <span class="founder-name">Rohit Sharma</span>
+        <span class="founder-role">Founder &amp; Director</span>
+        <a class="founder-link" href="<%= BRAND.linkedin %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'linkedin' }) %> LinkedIn</a>
+      </figcaption>
+    </figure>
+    <div class="prose">
+      <p class="prose-lead" data-reveal>Goforge Digital is led by Rohit Sharma, Founder &amp; Director. The studio builds custom software, CRM and ERP systems, AI automation, and digital marketing.</p>
+      <p data-reveal>When you work with us, you speak with the person doing the work. We agree a small scope and a clear price before anything is built, show progress as it happens, and hand over something your team can run, with a short note on how.</p>
+      <p data-reveal>We work with small businesses. If you are not sure whether your problem is a software problem, a systems problem or a marketing problem, that is a good first call.</p>
+      <h2 class="h3" data-reveal>What we hold ourselves to</h2>
+      <ul class="check-list" data-reveal>
+        <li><%- include('partials/icon', { name: 'check' }) %><span>Plain language, in writing</span></li>
+        <li><%- include('partials/icon', { name: 'check' }) %><span>A price agreed before the build starts</span></li>
+        <li><%- include('partials/icon', { name: 'check' }) %><span>Progress you can see, not a big reveal at the end</span></li>
+        <li><%- include('partials/icon', { name: 'check' }) %><span>A handover your team can actually use</span></li>
+      </ul>
+      <h2 class="h3" data-reveal>Where we are</h2>
+      <address class="about-address" data-reveal><%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
+      <div class="hero-actions" data-reveal>
+        <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+        <a class="btn btn-ghost" href="/services">See services</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section-alt" aria-labelledby="why-about">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Why work with a small studio</p>
+      <h2 id="why-about" class="h2" data-reveal>The reasons we will <em>actually keep.</em></h2>
+    </div>
+    <ul class="values" data-reveal-group>
+      <% WHY_SMALL.forEach(item => { %>
+      <li data-reveal><h3><%= item.title %></h3><p><%= item.text %></p></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,53 @@
+<% if (path !== '/contact') { %>
+<%- include('dialog-open', { id: 'dlg-contact', wide: true }) %>
+    <p class="eyebrow">Project enquiry</p>
+    <h2 class="modal-title" id="dlg-contact-title">Talk about a project</h2>
+    <p class="modal-lede">A few lines are enough. We save your message and open WhatsApp with the same text.</p>
+    <%- include('contact-form', { px: 'mc', values: {}, errors: {} }) %>
+<%- include('dialog-close') %>
+<% } %>
+<% if (path !== '/internship') { %>
+<%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
+    <p class="eyebrow">Internship program</p>
+    <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
+    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Fee: <%= s.intern_fee.charAt(0).toLowerCase() + s.intern_fee.slice(1) %>.</p>
+    <%- include('apply-form', { px: 'ma', values: {}, errors: {} }) %>
+<%- include('dialog-close') %>
+<% } %>
+<% if (path === '/' || path === '/services') { SERVICES.forEach((svc, i) => { %>
+<%- include('dialog-open', { id: 'dlg-svc-' + svc.slug }) %>
+    <div class="modal-head">
+      <span class="service-icon"><%- include('icon', { name: svc.icon }) %></span>
+      <span class="modal-num">0<%= i + 1 %> / 04</span>
+    </div>
+    <h2 class="modal-title" id="dlg-svc-<%= svc.slug %>-title"><%= svc.name %></h2>
+    <p class="modal-lede"><%= s[svc.key] %></p>
+    <p class="mini-h">This can include</p>
+    <ul class="check-list">
+      <% svc.includes.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+    </ul>
+    <p class="modal-note"><%= svc.start %> Fees are discussed on a call, once the scope is clear.</p>
+    <div class="modal-actions">
+      <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(svc.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= svc.name %>">Talk about this <%- include('icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost" href="/services#<%= svc.slug %>">Services page</a>
+    </div>
+<%- include('dialog-close') %>
+<% }) } %>
+<% if (path === '/' || path === '/internship') { TRACK_DETAILS.forEach((t, i) => { %>
+<%- include('dialog-open', { id: 'dlg-role-' + t.slug }) %>
+    <div class="modal-head">
+      <span class="service-icon"><%- include('icon', { name: t.icon }) %></span>
+      <span class="modal-num">Internship role</span>
+    </div>
+    <h2 class="modal-title" id="dlg-role-<%= t.slug %>-title"><%= t.name %></h2>
+    <p class="modal-lede"><%= t.summary %></p>
+    <p class="mini-h">What the role covers</p>
+    <ul class="check-list">
+      <% t.covers.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+    </ul>
+    <p class="modal-note"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. You finish with one project you can explain and a letter naming the dates and the work. No job guarantee.</p>
+    <div class="modal-actions">
+      <a class="btn btn-primary" href="/internship?track=<%= encodeURIComponent(t.name) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= t.name %>">Apply for this role <%- include('icon', { name: 'arrow' }) %></a>
+    </div>
+<%- include('dialog-close') %>
+<% }) } %>

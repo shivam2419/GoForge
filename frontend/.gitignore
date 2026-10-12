@@ -1,0 +1,5 @@
+node_modules/
+data/
+ADMIN_INITIAL_PASSWORD.txt
+screenshots/
+.env

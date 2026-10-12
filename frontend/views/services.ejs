@@ -1,0 +1,50 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Services</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Four services,</span></span> <span class="line"><span><em>kept small enough to finish.</em></span></span></h1>
+    <p class="lede" data-hero-item>We would rather build one thing your team uses every day than ten things nobody opens.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="wrap">
+    <ol class="service-list">
+      <% SERVICES.forEach((svc, i) => { %>
+      <li class="service-row" id="<%= svc.slug %>" data-reveal>
+        <div class="service-row-num">0<%= i + 1 %></div>
+        <div class="service-row-main">
+          <span class="service-icon"><%- include('partials/icon', { name: svc.icon }) %></span>
+          <h2 class="service-row-name"><%= svc.name %></h2>
+          <p class="service-row-blurb"><%= s[svc.key] %></p>
+          <div class="row-actions">
+            <a class="btn btn-primary btn-sm" href="/contact?service=<%= encodeURIComponent(svc.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= svc.name %>">Talk about this <%- include('partials/icon', { name: 'arrow' }) %></a>
+            <a class="btn btn-ghost btn-sm" href="/services/<%= svc.slug %>">Full page</a>
+          </div>
+        </div>
+        <div class="service-row-list">
+          <p class="mini-h">This can include</p>
+          <ul class="check-list">
+            <% svc.includes.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+          </ul>
+          <p class="row-start"><%= svc.start %></p>
+        </div>
+      </li>
+      <% }) %>
+    </ol>
+  </div>
+</section>
+<section class="cta-band cta-compact">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap cta-grid">
+    <div>
+      <p class="eyebrow eyebrow-light" data-reveal>Pricing</p>
+      <h2 class="h2 h2-light" data-reveal>Fees are discussed <em>on a call.</em></h2>
+    </div>
+    <div class="navy-text-col" data-reveal>
+      <p class="navy-text">Every project is different, so we do not print a price list. After a short call we send a written scope with one clear price. If it does not fit your budget, we suggest a smaller first step. For ads, the media budget is agreed with you up front and stays visible to you.</p>
+      <a class="btn btn-gold btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

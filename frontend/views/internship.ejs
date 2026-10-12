@@ -1,0 +1,115 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Internship program</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Train first,</span></span> <span class="line"><span><em>then do real work.</em></span></span></h1>
+    <p class="lede" data-hero-item>For BTech, BCA and similar students who still need an internship. Choose a role, learn it live online, then work on it under Goforge Digital. Your college decides whether this counts. Ask them before you pay.</p>
+    <div class="hero-actions" data-hero-item>
+      <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
+    </div>
+    <dl class="facts" data-reveal-group>
+      <div data-reveal><dt>Training</dt><dd><%= s.intern_training %>, live online</dd></div>
+      <div data-reveal><dt>Internship</dt><dd><%= s.intern_work %>, supervised</dd></div>
+      <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA and similar</dd></div>
+      <div data-reveal><dt>Fee</dt><dd><%= s.intern_fee %></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section section-alt" id="roles" aria-labelledby="roles-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Roles</p>
+        <h2 id="roles-h" class="h2" data-reveal>Roles you can <em>apply for</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Select a role to see what it covers. Applying for something close to these? Choose "Similar role" in the form and name it in your note.</p>
+    </div>
+    <ul class="role-grid" data-reveal-group>
+      <% TRACK_DETAILS.forEach((t, i) => { %>
+      <li data-reveal id="role-<%= t.slug %>">
+        <a class="role-card" href="/internship/roles/<%= t.slug %>">
+          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num">0<%= i + 1 %></span></span>
+          <h3 class="service-name"><%= t.name %></h3>
+          <p class="service-blurb"><%= t.summary %></p>
+          <span class="service-more">Role details <%- include('partials/icon', { name: 'upright' }) %></span>
+        </a>
+      </li>
+      <% }) %>
+      <li data-reveal>
+        <a class="role-card role-card-similar" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">
+          <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><span class="service-num">+</span></span>
+          <h3 class="service-name">And similar roles</h3>
+          <p class="service-blurb">Interested in a related role? Apply with "Similar role" and tell us which one in your note.</p>
+          <span class="service-more">Apply with a note <%- include('partials/icon', { name: 'arrow' }) %></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="structure-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>How it runs</p>
+      <h2 id="structure-h" class="h2" data-reveal>Two stages, <em>one after the other.</em></h2>
+    </div>
+    <ol class="stages" data-reveal-group>
+      <li data-reveal>
+        <span class="stage-num">01</span>
+        <h3>Training</h3>
+        <p class="stage-len"><%= s.intern_training %> &middot; live online</p>
+        <p>Live sessions on your chosen role. You build as you learn, with questions answered in the session.</p>
+      </li>
+      <li data-reveal>
+        <span class="stage-num">02</span>
+        <h3>Internship</h3>
+        <p class="stage-len"><%= s.intern_work %> &middot; supervised</p>
+        <p>After training, you work on tasks under Goforge Digital, with review from the team.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="rules-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>The honest rules</p>
+      <h2 id="rules-h" class="h2" data-reveal>What you get, <em>and what you do not.</em></h2>
+    </div>
+    <div class="rules" data-reveal-group>
+      <div class="rules-col rules-yes" data-reveal>
+        <h3>You receive</h3>
+        <ul>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Skills in your chosen role</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>One project you can explain in an interview</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>A training note</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship letter that names the dates and the work</span></li>
+        </ul>
+      </div>
+      <div class="rules-col rules-no" data-reveal>
+        <h3>You do not receive</h3>
+        <ul>
+          <li><%- include('partials/icon', { name: 'cross' }) %><span>A certificate without doing the work</span></li>
+          <li><%- include('partials/icon', { name: 'cross' }) %><span>A job guarantee</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="apply" aria-labelledby="apply-h">
+  <div class="wrap split split-form">
+    <div>
+      <p class="eyebrow" data-reveal>Apply</p>
+      <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
+      <p class="section-intro" data-reveal>We read every application and reply on WhatsApp. The fee and batch dates are confirmed on the call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+    </div>
+    <div class="form-card" data-reveal>
+      <%- include('partials/apply-form') %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>
