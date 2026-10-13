@@ -158,7 +158,7 @@ const BRAND = {
 
 const WHY_SMALL = [
   { title: 'You speak to the people doing the work', text: 'Rohit Sharma, Founder & Director, and the team who will build it are on the call. There is no account manager passing a brief down a corridor.' },
-  { title: 'Proven and focused', text: '150+ projects delivered, with a team that gives every project dedicated attention.' },
+  { title: 'Proven and focused', text: 'A focused team that gives every project dedicated attention, from first call to launch.' },
   { title: 'Scope and price in writing', text: 'Work starts after one written scope and one price. Clear pricing from day one, shaped to your budget.' },
   { title: 'Transparent results', text: 'Every figure we share comes with a clear definition, and client work is showcased with permission.' }
 ];

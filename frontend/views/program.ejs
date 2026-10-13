@@ -19,6 +19,8 @@
   </div>
 </section>
 
+<%- include('partials/trust', { stats, credentials }) %>
+
 <% if (p.overview) { %>
 <section class="section section-tight"><div class="wrap prose"><p class="prose-lead" data-reveal><%= p.overview %></p></div></section>
 <% } %>
@@ -30,7 +32,7 @@
       <p class="eyebrow" data-reveal>Curriculum</p>
       <h2 id="cur-h" class="h2" data-reveal>Module by <em>module.</em></h2>
     </div>
-    <ol class="curriculum" data-reveal>
+    <ol class="curriculum" data-zoom data-reveal>
       <% p.curriculumList.forEach((m, i) => { %>
       <li>
         <details<% if (i === 0) { %> open<% } %>>

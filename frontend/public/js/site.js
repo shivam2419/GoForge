@@ -61,13 +61,17 @@
     });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) { entry.target.classList.add('is-in'); io.unobserve(entry.target); }
+        var el = entry.target;
+        if (entry.isIntersecting) { el.classList.add('is-in'); el.classList.remove('is-past'); }
+        // Gentle zoom-out once an element has scrolled up and out of view; zooms back in on return.
+        else if (el.classList.contains('is-in') && entry.boundingClientRect.top < 0) el.classList.add('is-past');
+        else if (entry.boundingClientRect.top > 0) el.classList.remove('is-past');
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     revealEls.forEach(function (el) {
       // Anything already on screen at load shows straight away.
       if (el.getBoundingClientRect().top < window.innerHeight * 0.92) el.classList.add('is-in');
-      else io.observe(el);
+      io.observe(el);
     });
     var lines = doc.querySelectorAll('[data-line]');
     var lio = new IntersectionObserver(function (entries) {
@@ -90,6 +94,28 @@
     });
   } else {
     root.classList.add('no-reveal');
+  }
+
+  /* ---------- scroll-linked zoom fallback (browsers without CSS view timelines) ---------- */
+  var zoomEls = doc.querySelectorAll('[data-zoom]');
+  if (zoomEls.length && !reduceMotion && !(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'))) {
+    var zticking = false;
+    function zoomFrame() {
+      zticking = false;
+      if (root.classList.contains('motion-paused')) { zoomEls.forEach(function (el) { el.style.scale = ''; }); return; }
+      var vh = window.innerHeight;
+      zoomEls.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) return;
+        var c = (r.top + r.height / 2) / vh;           // 0 = top of viewport, 1 = bottom
+        var d = Math.min(1, Math.abs(c - 0.5) * 1.6);  // distance from the centre
+        el.style.scale = (1 - d * 0.06).toFixed(4);
+      });
+    }
+    function zoomTick() { if (!zticking) { zticking = true; window.requestAnimationFrame(zoomFrame); } }
+    window.addEventListener('scroll', zoomTick, { passive: true });
+    window.addEventListener('resize', zoomTick);
+    zoomFrame();
   }
 
   /* ---------- modals ---------- */

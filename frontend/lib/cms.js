@@ -125,7 +125,7 @@ async function seed() {
   if (!statCount) {
     [
       [100, '+', 'Students trained', 'Students who completed a Goforge Digital training programme.'],
-      [150, '+', 'Projects delivered', 'Client and studio projects completed by the team.'],
+      [150, '+', 'Projects completed', 'Projects completed by our students during training and internships.'],
       [98, '%', 'Success rate', 'Share of students who finished training and went on to complete their internship project.'],
       [10, '+', 'Instructors', 'Trainers and mentors who teach or review student work.']
     ].forEach(([v, s, l, n], i) => stmts.push(['INSERT INTO stats (value, suffix, label, note, sort_order, published) VALUES (?, ?, ?, ?, ?, 1)', v, s, l, n, (i + 1) * 10]));
@@ -138,6 +138,9 @@ async function seed() {
     stmts.push([`UPDATE programs SET curriculum = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
       WHERE slug = ? AND (curriculum IS NULL OR curriculum = '' OR curriculum = ?)`, CURRICULUM[slug].join('\n'), slug, old.join('\n')]);
   }
+  // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
+  stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
+  stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);
   if (stmts.length) await db.batch(stmts);
 }
 

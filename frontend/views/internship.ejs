@@ -36,7 +36,7 @@
       <h2 id="inc-h" class="h2" data-reveal>Everything you need <em>to finish.</em></h2>
       <p class="section-intro included-note" data-reveal><strong>Projects and internship included — no extra fees.</strong> One training fee covers your classes, study material, assignments, projects and the internship.</p>
     </div>
-    <ul class="values values-3" data-reveal-group>
+    <ul class="values values-3" data-zoom data-reveal-group>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Study material</h3><p>Notes, slides and reading for every module, yours to keep.</p></li>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'browser' }) %></span><h3>Live classes</h3><p>Taught live online by an instructor, with time for questions.</p></li>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><h3>Assignments</h3><p>A task after each module, checked by an instructor, so you practise instead of only watching.</p></li>
@@ -67,7 +67,7 @@
       </div>
       <p class="section-intro" data-reveal>Open a programme for its curriculum, tools, batches and fee. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
     </div>
-    <ul class="role-grid" data-reveal-group>
+    <ul class="role-grid" data-reveal-group data-zoom>
       <% PROGRAMS.forEach((t, i) => { %>
       <li data-reveal id="program-<%= t.slug %>">
         <a class="role-card" href="/internship/programs/<%= t.slug %>">
