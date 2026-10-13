@@ -1069,3 +1069,36 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (min-width: 1180px) { .role-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (min-width: 761px) and (max-width: 1179px) { .role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 #apply { scroll-margin-top: 90px; }
+
+/* ---------- Spacing audit (Oct 2026): tighter vertical rhythm, no dead columns ---------- */
+/* Section padding: ~96px desktop, ~56px phones (was up to 140px each side). */
+.section { padding: clamp(56px, 7vw, 96px) 0; }
+.section-tight { padding-top: clamp(24px, 3vw, 40px); }
+.navy-band, .cta-band { padding: clamp(56px, 7vw, 96px) 0; }
+.section-head { margin-bottom: clamp(28px, 3.5vw, 48px); }
+.hero { padding: clamp(40px, 5vw, 80px) 0 clamp(48px, 6vw, 88px); }
+.page-hero { padding: clamp(44px, 6vw, 88px) 0 clamp(24px, 3vw, 40px); }
+.work-frame { padding: clamp(48px, 6vw, 88px) 24px; }
+.work-frame-lg { padding: clamp(56px, 7vw, 104px) 24px; }
+.facts { margin-top: clamp(32px, 4vw, 48px); }
+/* Two plain sections in a row would stack both paddings; trim the second one's top. */
+.section:not(.section-alt):not(.navy-band):not(.cta-band):not(.trust-band) + .section:not(.section-alt):not(.navy-band):not(.cta-band):not(.trust-band) { padding-top: clamp(16px, 2.5vw, 40px); }
+.section-alt + .section-alt { padding-top: clamp(16px, 2.5vw, 40px); }
+
+/* Home "free check": heading beside the card instead of a lone card with empty right side. */
+.start-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.start-split .section-head { margin-bottom: 0; }
+.start-split .offer-solo { max-width: none; }
+@media (max-width: 860px) { .start-split { grid-template-columns: 1fr; } }
+
+/* Facts strips adapt to 3 or 4 items (internship has 3 now). */
+.facts { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+/* Uneven rows on tablets: 4 stat pills -> 2x2, 3 cards -> last spans the row. */
+@media (max-width: 1000px) { .trust .trust-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 561px) and (max-width: 1000px) {
+  .scene-grid > :last-child:nth-child(odd), .fit-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .detail-grid:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 561px) and (max-width: 1000px) { .facts:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -57,7 +57,7 @@
     root.classList.add('reveal-on');
     doc.querySelectorAll('[data-reveal-group]').forEach(function (group) {
       var items = group.querySelectorAll(':scope > [data-reveal]');
-      items.forEach(function (el, i) { el.style.setProperty('--d', (i * 0.08).toFixed(2) + 's'); });
+      items.forEach(function (el, i) { el.style.setProperty('--d', Math.min(i * 0.07, 0.42).toFixed(2) + 's'); });
     });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -67,7 +67,7 @@
         else if (el.classList.contains('is-in') && entry.boundingClientRect.top < 0) el.classList.add('is-past');
         else if (entry.boundingClientRect.top > 0) el.classList.remove('is-past');
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '0px 0px -4% 0px', threshold: 0 });
     revealEls.forEach(function (el) {
       // Anything already on screen at load shows straight away.
       if (el.getBoundingClientRect().top < window.innerHeight * 0.92) el.classList.add('is-in');
