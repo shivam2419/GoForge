@@ -54,3 +54,9 @@ chk "bad entity 404" 404 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/h
 chk "contacts still work" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/contacts)
 chk "settings still work" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/settings)
 chk "sitemap programs" 6 $(curl -s $B/sitemap.xml | grep -c '/internship/programs/')
+# programme card Apply now goes to the programme page; programme page has preselected form
+chk "card apply links to programme page" 1 $(curl -s $B/internship | grep -c 'btn-apply" href="/internship/programs/data-science"')
+PG=$(curl -s $B/internship/programs/data-science)
+chk "programme page apply button scrolls" 1 $(echo "$PG" | grep -c 'href="#apply">Apply now' | sed 's/[2-9]/1/')
+chk "programme page form preselected" 1 $(echo "$PG" | grep -c '<option value="Data Science" selected')
+chk "programme page no fees" 0 $(echo "$PG" | grep -ci 'contact for fees\|training fee')

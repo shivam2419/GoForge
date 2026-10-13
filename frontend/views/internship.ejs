@@ -76,7 +76,7 @@
           <ul class="program-meta">
             <li><%= t.training %> training</li><li><%= t.internship %> internship</li>
           </ul>
-          <a class="btn btn-primary btn-apply" href="/internship?track=<%= encodeURIComponent(t.name) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-primary btn-apply" href="/internship/programs/<%= t.slug %>" aria-label="Apply now: <%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
         </div>
       </li>
       <% }) %>
