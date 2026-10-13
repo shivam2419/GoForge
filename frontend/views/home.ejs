@@ -49,7 +49,7 @@
   </div>
 </section>
 
-<%- include('partials/trust', { stats, credentials }) %>
+<% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
 <section class="section section-tight" aria-labelledby="fit-h">
   <div class="wrap">

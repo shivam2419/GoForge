@@ -1016,3 +1016,39 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .badge-card .badge-text span { font-size: 13px; color: var(--ink-2); }
 @media (hover: hover) { .badge-card:hover { transform: translateY(-4px); box-shadow: 0 24px 46px -24px rgba(27, 42, 74, .35); } }
 @media (max-width: 640px) { .badge-card { width: 100%; max-width: 320px; } }
+
+/* Home trust band: badge card(s) + accountable-business copy, full width. */
+.trust-band { background: linear-gradient(180deg, transparent, rgba(198, 161, 91, .07)); border-block: 1px solid var(--line); }
+.tb-grid { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+.tb-badges { display: grid; gap: 16px; justify-items: center; }
+.tb-badges .badge-card { width: 100%; max-width: 340px; padding: 34px 24px 28px; }
+.tb-badges .badge-tile { width: 180px; height: 180px; }
+.tb-badges .badge-tile img { width: 148px; max-height: 148px; }
+.tb-badges-many { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tb-badges-many .badge-tile { width: 120px; height: 120px; }
+.tb-copy .section-intro { max-width: 60ch; }
+.tb-points { list-style: none; padding: 0; margin: 26px 0 30px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.tb-points li { display: flex; gap: 12px; align-items: flex-start; padding: 16px; background: var(--paper, #fff); border: 1px solid var(--line); border-radius: 16px; }
+.tb-points .icon { width: 22px; height: 22px; flex: none; color: var(--gold-deep); margin-top: 2px; }
+.tb-points strong { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 2px; }
+.tb-points span { font-size: 14px; color: var(--ink-2); }
+@media (max-width: 900px) { .tb-grid { grid-template-columns: 1fr; } .tb-badges { order: 2; } }
+@media (max-width: 560px) { .tb-points { grid-template-columns: 1fr; } }
+
+/* Stats pages: notes and a compact badge sit side by side under the stat pills. */
+.trust-foot { display: grid; grid-template-columns: 1fr auto; gap: 18px 32px; align-items: center; }
+.trust-foot.no-badges { grid-template-columns: 1fr; }
+.trust-foot .trust-notes { margin: 0; }
+.badge-row-compact { justify-content: flex-end; }
+.badge-row-compact .badge-card { flex-direction: row; text-align: left; width: auto; padding: 12px 18px 12px 12px; gap: 14px; border-radius: 18px; }
+.badge-row-compact .badge-tile { width: 76px; height: 76px; border-radius: 14px; }
+.badge-row-compact .badge-tile img { width: 64px; }
+.badge-row-compact .badge-text { justify-items: start; }
+.badge-row-compact .badge-text strong { font-size: 16px; }
+@media (max-width: 800px) { .trust-foot { grid-template-columns: 1fr; } .badge-row-compact { justify-content: flex-start; } }
+
+/* Grids that end up with only one or two published items should not leave a lonely card in a wide row. */
+.people-grid:has(> :only-child), .quote-grid:has(> :only-child) { grid-template-columns: minmax(0, 520px); justify-content: center; }
+.people-grid:has(> :nth-child(2):last-child), .quote-grid:has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 460px)); justify-content: center; }
+.role-grid:has(> :only-child) { grid-template-columns: minmax(0, 520px); }
+@media (max-width: 640px) { .people-grid:has(> :nth-child(2):last-child), .quote-grid:has(> :nth-child(2):last-child) { grid-template-columns: 1fr; } }
