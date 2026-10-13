@@ -95,11 +95,7 @@ const faqs = [
       <p class="eyebrow" data-reveal>Questions colleges ask</p>
       <h2 id="cfaq-h" class="h2" data-reveal>College <em>FAQ.</em></h2>
     </div>
-    <div class="faq-list" data-reveal>
-      <% faqs.forEach(([q, a]) => { %>
-      <details><summary><%= q %></summary><p><%= a %></p></details>
-      <% }) %>
-    </div>
+    <%- include('partials/faq-accordion', { items: faqs.map(([q, a]) => ({ q, a })), name: 'faq-colleges', openFirst: true }) %>
   </div>
 </section>
 

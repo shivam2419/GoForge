@@ -185,12 +185,35 @@ const FAQ = [
     title: 'For students',
     items: [
       {
-        q: 'How does the programme work?',
-        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
+        q: 'What makes Goforge Digital different from other learning platforms?',
+        a: 'You learn in live online classes from working professionals, then use those skills on real studio work during a supervised internship. Every assignment is reviewed by a mentor, batches stay small, and you finish with projects you can confidently explain in an interview.'
       },
       {
-        q: 'Which programmes can I join?',
-        a: 'Seven programmes, each with 6 weeks of live training and a 12-week internship: Software Engineering, AI/ML Engineer, Data Analyst, Full Stack Web Development, Digital Marketing, Business Analyst and Data Science. Interested in a related field? Apply with "Similar role" and name it in your note.'
+        q: 'How can I register for an internship?',
+        a: 'Fill in the contact form, then submit the application form for the programme you want. Our team reviews your application and schedules an interview call with you to discuss your goals, the programme and the next batch.',
+        link: ['/internship#apply', 'Open the application form']
+      },
+      {
+        q: 'What domains are available for internships?',
+        a: 'Seven programmes: Software Engineering, AI/ML Engineer, Data Analyst, Full Stack Web Development, Digital Marketing, Business Analyst and Data Science. Interested in a related field? Apply with "Similar role" and name it in your note.',
+        link: ['/internship#programs', 'See all programmes']
+      },
+      {
+        q: 'Are the internship certificates verified?',
+        a: 'Yes. Every training certificate and internship letter carries a unique certificate ID that colleges and employers can check with us. Goforge Digital is an MSME (Udyam) registered company.',
+        link: ['/verify', 'Verify a certificate']
+      },
+      {
+        q: 'What is the duration of the internship programmes?',
+        a: '6 weeks of live online training, followed by a 12-week supervised internship on real projects.'
+      },
+      {
+        q: 'Is there any fee for the internship programme?',
+        a: 'Fees are shared on a call with our counsellor. Projects and the internship are included in the programme.'
+      },
+      {
+        q: 'How does the programme work?',
+        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
       },
       {
         q: 'Is the certificate accepted by colleges?',
@@ -203,10 +226,6 @@ const FAQ = [
       {
         q: 'Who teaches the classes?',
         a: 'Our team of 10+ instructors and mentors, led by Rohit Sharma, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
-      },
-      {
-        q: 'What are the fees, and what is included?',
-        a: 'Fees are shared on a call with our counsellor. The programme includes live classes, study material, assignments with reviews, projects, doubt sessions, the training certificate and the internship that follows the training.'
       },
       {
         q: 'What does the 98% success rate mean?',

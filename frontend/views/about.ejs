@@ -76,6 +76,83 @@
     </div>
   </div>
 </section>
+<section class="section section-alt benefits-sec" aria-labelledby="benefit-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Why Goforge Digital</p>
+      <h2 id="benefit-h" class="h2" data-reveal>Everything you need <em>to grow.</em></h2>
+    </div>
+    <div class="benefits">
+      <svg class="benefits-line" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 70 C 150 10 250 10 400 60 S 650 120 800 60 S 1050 10 1200 60"/></svg>
+      <ul class="benefit-row" data-reveal-group>
+        <li data-reveal><span class="bcircle bc-gold"><%- include('partials/icon', { name: 'book' }) %></span><h3>High-quality resources</h3><p>Structured notes, real-world projects and clear roadmaps for every programme.</p></li>
+        <li data-reveal><span class="bcircle bc-navy"><%- include('partials/icon', { name: 'cap' }) %></span><h3>Expert instructors</h3><p>Live classes and reviews from working professionals who mentor you hands-on.</p></li>
+        <li data-reveal><span class="bcircle bc-teal"><%- include('partials/icon', { name: 'shield' }) %></span><h3>Verified certificates</h3><p>A training certificate and internship letter with an ID anyone can verify.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="section journey-sec" aria-labelledby="journey-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Your path with us</p>
+      <h2 id="journey-h" class="h2" data-reveal>The internship <em>journey.</em></h2>
+      <p class="section-intro" data-reveal>Six clear steps, from your first message to a verified certificate.</p>
+    </div>
+    <div class="journey" data-reveal>
+      <div class="journey-road" aria-hidden="true">
+        <svg viewBox="0 0 1200 300" focusable="false"><path class="road-base" d="M0 150 C 50 150 50 95 100 95 C 200 95 200 205 300 205 C 400 205 400 95 500 95 C 600 95 600 205 700 205 C 800 205 800 95 900 95 C 1000 95 1000 205 1100 205 C 1150 205 1150 150 1200 150"/><path class="road-draw" pathLength="1" d="M0 150 C 50 150 50 95 100 95 C 200 95 200 205 300 205 C 400 205 400 95 500 95 C 600 95 600 205 700 205 C 800 205 800 95 900 95 C 1000 95 1000 205 1100 205 C 1150 205 1150 150 1200 150"/><path class="road-line" d="M0 150 C 50 150 50 95 100 95 C 200 95 200 205 300 205 C 400 205 400 95 500 95 C 600 95 600 205 700 205 C 800 205 800 95 900 95 C 1000 95 1000 205 1100 205 C 1150 205 1150 150 1200 150"/></svg>
+        <span class="jpin jpin-1"><span>1</span></span><span class="jpin jpin-2"><span>2</span></span><span class="jpin jpin-3"><span>3</span></span><span class="jpin jpin-4"><span>4</span></span><span class="jpin jpin-5"><span>5</span></span><span class="jpin jpin-6"><span>6</span></span>
+      </div>
+      <ol class="journey-steps">
+      <li class="jstep jstep-1"><span class="jnum">1</span><h3>Fill the contact form</h3><p>Tell us who you are and what you would like to learn.</p></li>
+      <li class="jstep jstep-2"><span class="jnum">2</span><h3>Submit the application</h3><p>Choose your programme and send the short application form.</p></li>
+      <li class="jstep jstep-3"><span class="jnum">3</span><h3>Interview call scheduled</h3><p>Our team calls you to understand your goals and background.</p></li>
+      <li class="jstep jstep-4"><span class="jnum">4</span><h3>Discussion & onboarding</h3><p>We confirm your programme and batch, and share your study material.</p></li>
+      <li class="jstep jstep-5"><span class="jnum">5</span><h3>Training + internship</h3><p>6 weeks of live training, then a 12-week internship on real projects.</p></li>
+      <li class="jstep jstep-6"><span class="jnum">6</span><h3>Certificate & experience letter</h3><p>Receive a verified training certificate and internship letter.</p></li>
+      </ol>
+    </div>
+    <p class="section-cta center" data-reveal><a class="btn btn-primary" href="/internship#apply">Start your application <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+  </div>
+</section>
+<% const certs = (credentials || []).map(c => ({ ...c, img: c.image_url || (/msme|udyam/i.test(c.title + ' ' + (c.issuer || '')) ? '/img/certificates/udyam-certificate-sm.jpg' : ''), full: c.image_url || (/msme|udyam/i.test(c.title + ' ' + (c.issuer || '')) ? '/img/certificates/udyam-certificate.jpg' : '') })).filter(c => c.img); %>
+<% if (certs.length) { %>
+<section class="section achieve-sec" aria-labelledby="ach-h">
+  <div class="wrap<%= certs.length === 1 ? ' achieve-split' : '' %>">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Recognitions</p>
+      <h2 id="ach-h" class="h2" data-reveal>Our <em>achievements.</em></h2>
+      <p class="section-intro" data-reveal>Goforge Digital is a Government of India registered enterprise. Our registration is public and can be checked on the official Udyam portal.</p>
+      <% if (certs.length === 1) { const c = certs[0]; %>
+      <ul class="ach-facts" data-reveal-group>
+        <li data-reveal><span>Registration</span><strong><%= c.title %></strong></li>
+        <% if (c.number) { %><li data-reveal><span>Udyam number</span><strong><%= c.number %></strong></li><% } %>
+        <li data-reveal><span>Issued by</span><strong><%= c.issuer || 'Ministry of MSME, Government of India' %></strong></li>
+      </ul>
+      <p class="ach-actions" data-reveal><a class="btn btn-primary" href="<%= c.full %>" data-dialog="dlg-cert-0">View certificate <%- include('partials/icon', { name: 'eye' }) %></a><% if (c.link_url) { %> <a class="btn btn-ghost" href="<%= c.link_url %>" target="_blank" rel="noopener">Verify on Udyam portal <%- include('partials/icon', { name: 'upright' }) %></a><% } %></p>
+      <% } %>
+    </div>
+    <ul class="cert-grid" data-reveal-group>
+      <% certs.forEach((c, i) => { %>
+      <li data-reveal>
+        <a class="cert-card" href="<%= c.full %>" data-dialog="dlg-cert-<%= i %>">
+          <span class="cert-img"><img src="<%= c.img %>" alt="<%= c.title %> certificate of Goforge Digital" loading="lazy" width="919" height="652"><span class="cert-zoom"><%- include('partials/icon', { name: 'eye' }) %> View</span></span>
+          <span class="cert-cap"><strong><%= c.title %></strong><span><%= c.issuer || '' %></span></span>
+        </a>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<% certs.forEach((c, i) => { %>
+<%- include('partials/dialog-open', { id: 'dlg-cert-' + i, wide: true }) %>
+    <h2 class="modal-title" id="dlg-cert-<%= i %>-title"><%= c.title %></h2>
+    <img class="cert-full" src="<%= c.full %>" alt="<%= c.title %> certificate of Goforge Digital, full view" loading="lazy">
+    <p class="modal-note">Personal address and contact details are hidden for privacy.<% if (c.link_url) { %> <a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify on the official portal</a>.<% } %></p>
+<%- include('partials/dialog-close') %>
+<% }) %>
+<% } %>
 <section class="section section-alt" aria-labelledby="why-about">
   <div class="wrap">
     <div class="section-head">

@@ -11,14 +11,7 @@
   <div class="wrap faq-wrap">
     <% FAQ.forEach(group => { %>
     <h2 class="h2" id="<%= group.id %>"><%= group.title %></h2>
-    <div class="faq-list">
-      <% group.items.forEach(item => { %>
-      <details class="faq-item">
-        <summary><%= item.q %></summary>
-        <p><%= item.a %></p>
-      </details>
-      <% }) %>
-    </div>
+    <%- include('partials/faq-accordion', { items: group.items, name: 'faq-' + group.id, openFirst: true }) %>
     <% }) %>
     <p class="faq-more"><a class="text-link" href="/internship">Internship programme <%- include('partials/icon', { name: 'arrow' }) %></a> <a class="text-link" href="/contact">Talk about a project <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
