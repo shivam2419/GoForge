@@ -170,7 +170,7 @@ const FAQ = [
     items: [
       {
         q: 'How does the programme work?',
-        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you pay the training fee and get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths and fees on each programme page are the current ones. Batch dates are confirmed on the call.'
+        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
       },
       {
         q: 'Is the certificate accepted by colleges?',
@@ -185,8 +185,8 @@ const FAQ = [
         a: 'Our team of 10+ instructors and mentors, led by Rohit Sharma, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
       },
       {
-        q: 'What does the fee include, and is the training paid?',
-        a: 'Yes, the training is paid. The fee covers the live classes, study material, assignments with reviews, projects, doubt sessions and the training certificate. Projects and internship included — no extra fees: there are no project or internship charges. Each programme page shows the fee, or says "Contact for fees" if it is confirmed on the call. The internship follows the training.'
+        q: 'What are the fees, and what is included?',
+        a: 'Fees are shared on a call with our counsellor. The programme includes live classes, study material, assignments with reviews, projects, doubt sessions, the training certificate and the internship that follows the training.'
       },
       {
         q: 'What does the 98% success rate mean?',
@@ -198,7 +198,7 @@ const FAQ = [
       },
       {
         q: 'Is the demo class the same as joining?',
-        a: 'The demo class is one free live session so you can experience the training first. After it, a counselling call confirms your programme, batch and fee, and you enrol when you are ready.'
+        a: 'The demo class is one free live session so you can experience the training first. After it, a counselling call confirms your programme and batch, and you enrol when you are ready.'
       },
     ]
   },

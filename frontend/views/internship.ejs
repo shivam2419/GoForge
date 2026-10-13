@@ -14,7 +14,6 @@
       <div data-reveal><dt>Training</dt><dd><%= s.intern_training %>, live online</dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= s.intern_work %>, supervised</dd></div>
       <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
-      <div data-reveal><dt>Fee</dt><dd><%= s.intern_fee %></dd></div>
     </dl>
   </div>
 </section>
@@ -32,9 +31,9 @@
 <section class="section section-alt" aria-labelledby="inc-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>What the fee covers</p>
+      <p class="eyebrow" data-reveal>What is included</p>
       <h2 id="inc-h" class="h2" data-reveal>Everything you need <em>to finish.</em></h2>
-      <p class="section-intro included-note" data-reveal><strong>Projects and internship included — no extra fees.</strong> One training fee covers your classes, study material, assignments, projects and the internship.</p>
+      <p class="section-intro included-note" data-reveal><strong>Projects and internship included.</strong> Your classes, study material, assignments, projects and the internship all come in one programme.</p>
     </div>
     <ul class="values values-3" data-zoom data-reveal-group>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Study material</h3><p>Notes, slides and reading for every module, yours to keep.</p></li>
@@ -65,29 +64,29 @@
         <p class="eyebrow" data-reveal>Programmes</p>
         <h2 id="programs-h" class="h2" data-reveal>Choose a <em>programme</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Open a programme for its curriculum, tools, batches and fee. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
+      <p class="section-intro" data-reveal>Open a programme for its curriculum, tools and batches. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
     </div>
     <ul class="role-grid" data-reveal-group data-zoom>
       <% PROGRAMS.forEach((t, i) => { %>
       <li data-reveal id="program-<%= t.slug %>">
-        <a class="role-card" href="/internship/programs/<%= t.slug %>">
+        <div class="role-card">
           <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: t.icon }) %></span><span class="service-num"><%= String(i + 1).padStart(2, '0') %></span></span>
-          <h3 class="service-name"><%= t.name %></h3>
+          <h3 class="service-name"><a class="role-link" href="/internship/programs/<%= t.slug %>"><%= t.name %></a></h3>
           <p class="service-blurb"><%= t.summary %></p>
           <ul class="program-meta">
-            <li><%= t.training %> training</li><li><%= t.internship %> internship</li><li><%= t.modeText %></li><li><%= t.feeText %></li><li>Projects + internship included</li>
+            <li><%= t.training %> training</li><li><%= t.internship %> internship</li>
           </ul>
-          <span class="service-more">Curriculum and fees <%- include('partials/icon', { name: 'upright' }) %></span>
-        </a>
+          <a class="btn btn-primary btn-apply" href="/internship?track=<%= encodeURIComponent(t.name) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+        </div>
       </li>
       <% }) %>
       <li data-reveal>
-        <a class="role-card role-card-similar" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">
+        <div class="role-card role-card-similar">
           <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><span class="service-num">+</span></span>
           <h3 class="service-name">And similar roles</h3>
           <p class="service-blurb">Interested in a related field? Apply with "Similar role" and tell us which one in your note.</p>
-          <span class="service-more">Apply with a note <%- include('partials/icon', { name: 'arrow' }) %></span>
-        </a>
+          <a class="btn btn-primary btn-apply" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+        </div>
       </li>
     </ul>
   </div>
@@ -147,7 +146,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
-      <p class="section-intro" data-reveal>We read every application and reply by phone or email. One training fee covers everything, including projects and the internship. The fee and batch dates are confirmed on the counselling call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included, and batch dates are confirmed on the counselling call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form') %>

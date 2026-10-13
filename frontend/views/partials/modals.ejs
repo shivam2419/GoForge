@@ -10,7 +10,7 @@
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
-    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Training fee: <%= s.intern_fee.charAt(0).toLowerCase() + s.intern_fee.slice(1) %>. Projects and internship included — no extra fees.</p>
+    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Projects and internship included.</p>
     <%- include('apply-form', { px: 'ma', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>

@@ -20,7 +20,7 @@ const ENTITIES = {
       { name: 'duration_training', label: 'Training length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'duration_internship', label: 'Internship length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'mode', label: 'Mode', type: 'text', max: 60, hint: 'For example: Live online' },
-      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Empty shows "Contact for fees".' },
+      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Internal only; not shown on the public site.' },
       { name: 'eligibility', label: 'Who can apply', type: 'text', max: 160 },
       { name: 'covers', label: 'What you learn', type: 'lines', max: 2000, hint: 'One point per line.' },
       { name: 'curriculum', label: 'Curriculum', type: 'lines', max: 16000, hint: 'One module per line: Module 1: Title | topic; topic; topic | Hands-on: assignment. Use Capstone: for the final project.' },

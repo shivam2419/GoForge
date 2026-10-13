@@ -441,7 +441,7 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
     program, instructors, credentials, stats,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects, batches and fees.',
+      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects and batches.',
       { seoTitle: program.name + ' Course with Internship | Goforge Digital', jsonld: courseJsonLd(program), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
