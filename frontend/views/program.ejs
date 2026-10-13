@@ -7,7 +7,7 @@
     <h1 class="h1 hero-title-sm"><span class="line"><span><%= p.name %></span></span></h1>
     <p class="lede" data-hero-item><%= p.summary %></p>
     <div class="hero-actions" data-hero-item>
-      <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= p.name %>">Apply for this programme <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-primary btn-lg" href="#apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
     </div>
     <dl class="facts" data-reveal-group>
