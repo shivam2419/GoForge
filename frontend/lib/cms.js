@@ -20,7 +20,7 @@ const ENTITIES = {
       { name: 'duration_training', label: 'Training length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'duration_internship', label: 'Internship length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'mode', label: 'Mode', type: 'text', max: 60, hint: 'For example: Live online' },
-      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Empty shows "Contact for fees".' },
+      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Internal only; not shown on the public site.' },
       { name: 'eligibility', label: 'Who can apply', type: 'text', max: 160 },
       { name: 'covers', label: 'What you learn', type: 'lines', max: 2000, hint: 'One point per line.' },
       { name: 'curriculum', label: 'Curriculum', type: 'lines', max: 16000, hint: 'One module per line: Module 1: Title | topic; topic; topic | Hands-on: assignment. Use Capstone: for the final project.' },
@@ -125,7 +125,7 @@ async function seed() {
   if (!statCount) {
     [
       [100, '+', 'Students trained', 'Students who completed a Goforge Digital training programme.'],
-      [150, '+', 'Projects delivered', 'Client and studio projects completed by the team.'],
+      [150, '+', 'Projects completed', 'Projects completed by our students during training and internships.'],
       [98, '%', 'Success rate', 'Share of students who finished training and went on to complete their internship project.'],
       [10, '+', 'Instructors', 'Trainers and mentors who teach or review student work.']
     ].forEach(([v, s, l, n], i) => stmts.push(['INSERT INTO stats (value, suffix, label, note, sort_order, published) VALUES (?, ?, ?, ?, ?, 1)', v, s, l, n, (i + 1) * 10]));
@@ -138,6 +138,9 @@ async function seed() {
     stmts.push([`UPDATE programs SET curriculum = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
       WHERE slug = ? AND (curriculum IS NULL OR curriculum = '' OR curriculum = ?)`, CURRICULUM[slug].join('\n'), slug, old.join('\n')]);
   }
+  // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
+  stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
+  stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);
   if (stmts.length) await db.batch(stmts);
 }
 

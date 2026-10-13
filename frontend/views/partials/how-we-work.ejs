@@ -5,7 +5,7 @@
       <h2 id="hww-h" class="h2" data-reveal>From first call to launch, <em>in seven clear steps.</em></h2>
       <p class="section-intro" data-reveal>You always know what is happening, what comes next and what it costs. Every stage ends with something you can see and approve.</p>
     </div>
-    <ol class="steps7 hww" data-reveal-group>
+    <ol class="steps7 hww" data-zoom data-reveal-group>
       <% PROCESS.forEach((st, i) => { %>
       <li data-reveal><span class="step-num"><%= i + 1 %></span><h3><%= st.name %></h3><p><%= st.text %></p><p class="hww-out"><%- include('icon', { name: 'check' }) %><span><%= st.out %></span></p></li>
       <% }) %>

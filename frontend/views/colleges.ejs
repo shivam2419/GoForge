@@ -12,7 +12,7 @@ const benefits = [
   ['Industry-ready students', 'Students build portfolio projects on the tools employers use today.'],
   ['Internship requirements covered', 'Internship letters with dates, role and work completed, in your college’s format on request.'],
   ['Support for accreditation', 'Attendance, assessment and completion records you can use for NAAC/NBA documentation.'],
-  ['Trainers who build software', 'Sessions led by our team of 10+ instructors from a company with 150+ delivered projects.'],
+  ['Trainers who build software', 'Sessions led by our team of 10+ instructors whose students have completed 150+ projects.'],
   ['Flexible delivery', 'On campus in Faridabad and Delhi NCR, live online anywhere in India, or a mix of both.'],
   ['MSME-registered partner', 'A registered company that signs a clear MoU and reports outcomes after every programme.']
 ];
@@ -53,7 +53,7 @@ const faqs = [
       <h2 id="offer-h" class="h2" data-reveal>Six ways to <em>work together.</em></h2>
       <p class="section-intro" data-reveal>Start with a single workshop or build a long-term partnership. Every format includes hands-on projects.</p>
     </div>
-    <ul class="values values-3" data-reveal-group>
+    <ul class="values values-3" data-zoom data-reveal-group>
       <% offers.forEach(([icon, t, d]) => { %>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: icon }) %></span><h3><%= t %></h3><p><%= d %></p></li>
       <% }) %>
@@ -67,7 +67,7 @@ const faqs = [
       <p class="eyebrow" data-reveal>Benefits for your college</p>
       <h2 id="benefits-h" class="h2" data-reveal>What your institution <em>gains.</em></h2>
     </div>
-    <ul class="check-grid" data-reveal-group>
+    <ul class="check-grid" data-zoom data-reveal-group>
       <% benefits.forEach(([t, d]) => { %>
       <li data-reveal><%- include('partials/icon', { name: 'check' }) %><div><h3><%= t %></h3><p><%= d %></p></div></li>
       <% }) %>

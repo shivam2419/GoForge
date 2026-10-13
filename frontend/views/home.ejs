@@ -49,7 +49,7 @@
   </div>
 </section>
 
-<%- include('partials/trust', { stats, credentials }) %>
+<% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
 <section class="section section-tight" aria-labelledby="fit-h">
   <div class="wrap">
@@ -97,7 +97,7 @@
       </div>
       <p class="section-intro" data-reveal>Each project starts small. Pick one area, or tell us the problem and we will say which one fits. Select a service for the details.</p>
     </div>
-    <ul class="service-grid" data-reveal-group>
+    <ul class="service-grid" data-reveal-group data-zoom>
       <% SERVICES.forEach((svc, i) => { %>
       <li class="service-card" data-reveal>
         <a href="/services/<%= svc.slug %>" class="service-link" data-dialog="dlg-svc-<%= svc.slug %>">
@@ -236,7 +236,7 @@
     <div>
       <p class="eyebrow" data-reveal>A little about us</p>
       <h2 id="about-h" class="h2" data-reveal>A focused team, <em>led by its founder.</em></h2>
-      <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director, with 150+ projects delivered. When you work with us, you speak with the people doing the work.</p>
+      <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director. When you work with us, you speak with the people doing the work.</p>
       <dl class="about-facts" data-reveal-group>
         <div data-reveal><dt>Who you talk to</dt><dd>Rohit Sharma, Founder &amp; Director</dd></div>
         <div data-reveal><dt>Who we work with</dt><dd>Startups, shops, clinics, institutes and growing businesses</dd></div>

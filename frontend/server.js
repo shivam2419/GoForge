@@ -375,7 +375,8 @@ const loginLimiter = rateLimit({
 app.get('/', async (req, res) => {
   const t = await trustData();
   // Home is business-only: keep project/business metrics, leave student metrics to /internship.
-  const stats = t.stats.filter(x => /project|client|business|year/i.test(x.label));
+  // Only business-facing stats (e.g. labels mentioning clients or businesses); student/programme stats stay on /internship.
+  const stats = t.stats.filter(x => /client|business/i.test(x.label) && !/student|intern|project|instructor|success/i.test(x.label));
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
     'Software development company in Faridabad, Haryana: custom software, CRM and ERP development, AI automation, websites and digital marketing for growing businesses.', { jsonld: jsonLd(), seoTitle: 'Software Development Company in Faridabad | CRM & ERP | Goforge' }) });
 });
@@ -398,7 +399,7 @@ app.get('/services/:slug', (req, res, next) => {
 });
 
 app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
-  'Portfolio of software, CRM, website and marketing projects delivered by Goforge Digital, Faridabad. 150+ projects delivered.',
+  'Portfolio of software, CRM, website and marketing projects delivered by Goforge Digital, Faridabad.',
   { seoTitle: 'Software & Website Projects | Goforge Digital, Faridabad' })));
 
 const COLLEGES_DESC = 'Campus tie-ups and MoUs, workshops and bootcamps, faculty development programmes, bulk training and internship programmes for colleges in Faridabad, Delhi NCR and across India.';
@@ -435,12 +436,12 @@ app.get('/internship', async (req, res) => res.render('internship', {
 app.get('/internship/programs/:slug', async (req, res, next) => {
   const program = await cms.programBySlug(req.params.slug, getSettings());
   if (!program) return next();
-  const { instructors, credentials } = await trustData();
+  const { instructors, credentials, stats } = await trustData();
   res.render('program', {
-    program, instructors, credentials,
+    program, instructors, credentials, stats,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects, batches and fees.',
+      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects and batches.',
       { seoTitle: program.name + ' Course with Internship | Goforge Digital', jsonld: courseJsonLd(program), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });

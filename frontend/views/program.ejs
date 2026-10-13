@@ -14,10 +14,12 @@
       <div data-reveal><dt>Training</dt><dd><%= p.training %></dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= p.internship %>, supervised</dd></div>
       <div data-reveal><dt>Mode</dt><dd><%= p.modeText %></dd></div>
-      <div data-reveal><dt>Training fee</dt><dd><%= p.feeText %><small class="fee-inc">Projects + internship included</small></dd></div>
+      <div data-reveal><dt>Included</dt><dd>Projects + internship</dd></div>
     </dl>
   </div>
 </section>
+
+<%- include('partials/trust', { stats, credentials }) %>
 
 <% if (p.overview) { %>
 <section class="section section-tight"><div class="wrap prose"><p class="prose-lead" data-reveal><%= p.overview %></p></div></section>
@@ -30,7 +32,7 @@
       <p class="eyebrow" data-reveal>Curriculum</p>
       <h2 id="cur-h" class="h2" data-reveal>Module by <em>module.</em></h2>
     </div>
-    <ol class="curriculum" data-reveal>
+    <ol class="curriculum" data-zoom data-reveal>
       <% p.curriculumList.forEach((m, i) => { %>
       <li>
         <details<% if (i === 0) { %> open<% } %>>
@@ -78,20 +80,20 @@
 <section class="section section-tight" aria-labelledby="bat-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>Batches and fee</p>
+      <p class="eyebrow" data-reveal>Batches</p>
       <h2 id="bat-h" class="h2" data-reveal>When it <em>starts.</em></h2>
     </div>
     <% if (p.batchesList.length) { %>
     <div class="table-wrap" data-reveal>
       <table class="batches">
-        <thead><tr><th scope="col">Starts</th><th scope="col">Timing</th><th scope="col">Seats</th><th scope="col">Fee</th></tr></thead>
+        <thead><tr><th scope="col">Starts</th><th scope="col">Timing</th><th scope="col">Seats</th></tr></thead>
         <tbody>
-          <% p.batchesList.forEach(b => { %><tr><td><%= b.start %></td><td><%= b.timing || 'On the call' %></td><td><%= b.seats || 'Limited' %></td><td><%= p.feeText %></td></tr><% }) %>
+          <% p.batchesList.forEach(b => { %><tr><td><%= b.start %></td><td><%= b.timing || 'On the call' %></td><td><%= b.seats || 'Limited' %></td></tr><% }) %>
         </tbody>
       </table>
     </div>
     <% } else { %>
-    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Training fee: <strong><%= p.feeText %></strong>. Projects and internship included — no extra fees.</p>
+    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Projects and internship included.</p>
     <% } %>
   </div>
 </section>

@@ -4,20 +4,22 @@
   <div class="wrap">
     <h2 id="trust-h" class="visually-hidden">Goforge Digital in numbers</h2>
     <% if (st.length) { %>
-    <dl class="kpi-pills trust-stats" data-reveal-group>
+    <dl class="kpi-pills trust-stats" data-zoom data-reveal-group>
       <% st.forEach(x => { %>
       <div data-reveal><dt><span data-count="<%= x.value %>"><%= x.value %></span><%= x.suffix || '' %></dt><dd><%= x.label %></dd></div>
       <% }) %>
     </dl>
+    <% } %>
+    <div class="trust-foot<%= cr.length ? '' : ' no-badges' %>">
     <% const notes = st.filter(x => x.note); if (notes.length) { %>
     <p class="trust-notes"><% notes.forEach((x, i) => { %><span><strong><%= x.label %>:</strong> <%= x.note %></span><% }) %></p>
     <% } %>
-    <% } %>
     <% if (cr.length) { %>
-    <ul class="badge-row" data-reveal-group>
+    <ul class="badge-row badge-row-compact" data-reveal-group>
       <% cr.forEach(c => { %>
       <li class="badge-card" data-reveal>
-        <% if (c.image_url) { %><img src="<%= c.image_url %>" alt="<%= c.title %> certificate" loading="lazy" width="64" height="64"><% } else { %><span class="service-icon"><%- include('icon', { name: 'check' }) %></span><% } %>
+        <% const fallbackImg = /msme|udyam/i.test(c.title + ' ' + (c.issuer || '')) ? '/img/badges/msme-registered.svg' : ''; const img = c.image_url || fallbackImg; %>
+        <span class="badge-tile"><% if (img) { %><img src="<%= img %>" alt="<%= c.title %><%= c.image_url ? ' certificate' : '' %>" loading="lazy" width="120" height="72"><% } else { %><%- include('icon', { name: 'check' }) %><% } %></span>
         <span class="badge-text">
           <strong><%= c.title %></strong>
           <% if (c.issuer) { %><span><%= c.issuer %></span><% } %>
@@ -28,6 +30,7 @@
       <% }) %>
     </ul>
     <% } %>
+    </div>
   </div>
 </section>
 <% } %>
