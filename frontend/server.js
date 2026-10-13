@@ -428,11 +428,12 @@ async function trustData() {
 }
 const INTERNSHIP_DESC = 'Internship with training in Faridabad and online: live classes, study material, real projects and an included internship in software, AI/ML, data analytics, web development and digital marketing.';
 app.get('/internship', async (req, res) => res.render('internship', {
-  values: { track: res.locals.TRACKS.includes(req.query.track) ? req.query.track : '' },
+  values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
   ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training in Faridabad | Goforge Digital' })
 }));
 
+app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
 app.get('/internship/programs/:slug', async (req, res, next) => {
   const program = await cms.programBySlug(req.params.slug, getSettings());
   if (!program) return next();
@@ -495,6 +496,7 @@ app.post('/contact', formLimiter, async (req, res) => {
 
 app.post('/internship', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.');
+  if (req.body && req.body.track === 'Web Developer') req.body.track = 'Full Stack Web Development';
   const { errors, values } = validateApplication(req.body, res.locals.TRACKS);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });

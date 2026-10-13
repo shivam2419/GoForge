@@ -121,7 +121,7 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await revealAll(page);
   await fullShot(page, 'internship-desktop-full.png');
   const roleOpts = await page.$$eval('#a-track option', os => os.map(o => o.value).filter(Boolean));
-  check('apply select offers the five roles + similar', ['Software Engineering', 'AI/ML Engineer', 'Data Analyst', 'Web Developer', 'Digital Marketing'].every(r => roleOpts.includes(r)) && roleOpts.some(r => /^Similar role/.test(r)), roleOpts.join(' / '));
+  check('apply select offers the seven roles + similar', ['Software Engineering', 'AI/ML Engineer', 'Data Analyst', 'Full Stack Web Development', 'Digital Marketing', 'Business Analyst', 'Data Science'].every(r => roleOpts.includes(r)) && roleOpts.some(r => /^Similar role/.test(r)), roleOpts.join(' / '));
   // role card -> modal -> Apply fills the inline form
   await page.locator('[data-dialog="dlg-role-data-analyst"]').scrollIntoViewIfNeeded(); await page.waitForTimeout(600);
   await page.click('[data-dialog="dlg-role-data-analyst"]');
@@ -282,10 +282,10 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await mp.goto(BASE + '/internship', { waitUntil: 'networkidle' }); await mp.waitForTimeout(600);
   await revealAll(mp);
   await fullShot(mp, 'internship-mobile-full.png');
-  await mp.locator('[data-dialog="dlg-role-web-developer"]').scrollIntoViewIfNeeded(); await mp.waitForTimeout(500);
-  await mp.click('[data-dialog="dlg-role-web-developer"]'); await mp.waitForSelector('#dlg-role-web-developer[open]'); await mp.waitForTimeout(600);
+  await mp.locator('[data-dialog="dlg-role-full-stack-web-development"]').scrollIntoViewIfNeeded(); await mp.waitForTimeout(500);
+  await mp.click('[data-dialog="dlg-role-full-stack-web-development"]'); await mp.waitForSelector('#dlg-role-full-stack-web-development[open]'); await mp.waitForTimeout(600);
   await mp.screenshot({ path: path.join(SHOTS, 'modal-mobile.png') });
-  const sheet = await mp.evaluate(() => { const r = document.querySelector('#dlg-role-web-developer .modal-panel').getBoundingClientRect(); return { w: r.width, right: r.right, vw: innerWidth }; });
+  const sheet = await mp.evaluate(() => { const r = document.querySelector('#dlg-role-full-stack-web-development .modal-panel').getBoundingClientRect(); return { w: r.width, right: r.right, vw: innerWidth }; });
   check('mobile modal fits the screen', sheet.right <= sheet.vw + 1, JSON.stringify(sheet));
   await mp.keyboard.press('Escape'); await mp.waitForTimeout(400);
 
@@ -301,8 +301,8 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   await np.goto(BASE + '/', { waitUntil: 'load' });
   const nojs = await np.evaluate(() => ({ hidden: [...document.querySelectorAll('[data-reveal]')].filter(e => getComputedStyle(e).opacity === '0').length, href: document.querySelector('.hero [data-dialog="dlg-contact"]').getAttribute('href') }));
   check('no-JS: content visible and modal triggers are real links', nojs.hidden === 0 && nojs.href === '/contact', JSON.stringify(nojs));
-  await np.goto(BASE + '/internship?track=' + encodeURIComponent('Web Developer'), { waitUntil: 'load' });
-  check('no-JS fallback: /internship?track= preselects the role', (await np.inputValue('#a-track')) === 'Web Developer');
+  await np.goto(BASE + '/internship?track=' + encodeURIComponent('Full Stack Web Development'), { waitUntil: 'load' });
+  check('no-JS fallback: /internship?track= preselects the role', (await np.inputValue('#a-track')) === 'Full Stack Web Development');
   await nctx.close();
 
   // keyboard: skip link visible on focus

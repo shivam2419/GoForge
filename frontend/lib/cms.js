@@ -4,7 +4,7 @@
 const { db } = require('./db');
 const { TRACK_DETAILS } = require('./content');
 
-const ICONS = ['code', 'spark', 'chart', 'browser', 'megaphone', 'database', 'gear', 'globe', 'user', 'tag', 'eye', 'key', 'check'];
+const ICONS = ['code', 'spark', 'chart', 'browser', 'megaphone', 'database', 'gear', 'globe', 'user', 'tag', 'eye', 'key', 'check', 'briefcase', 'flask'];
 
 // type: text | textarea | lines | number | select | bool | image | url | slug
 const ENTITIES = {
@@ -100,7 +100,7 @@ function schemaSql() {
   });
 }
 
-const { CURRICULUM } = require('./curriculum');
+const { CURRICULUM, LEGACY } = require('./curriculum');
 // Short starter syllabi shipped earlier; rows still holding these exact values are upgraded to CURRICULUM.
 const OLD_CURRICULUM = {
   'software-engineering': ['Week 1: Foundations | Git and GitHub, the command line, how a codebase is laid out', 'Week 2: Back end | Routes, APIs, a relational database and SQL', 'Week 3: Front end | Forms, lists and filters that talk to the API', 'Week 4: Quality | Debugging, simple tests, code review', 'Week 5: Mini project | One feature end to end, with a written test note', 'Week 6: Capstone prep | Breaking down the internship task and reporting progress'],
@@ -138,10 +138,48 @@ async function seed() {
     stmts.push([`UPDATE programs SET curriculum = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
       WHERE slug = ? AND (curriculum IS NULL OR curriculum = '' OR curriculum = ?)`, CURRICULUM[slug].join('\n'), slug, old.join('\n')]);
   }
+  // v2 programmes: rename Web Developer to Full Stack Web Development and add Business Analyst + Data Science, once.
+  stmts.push(['CREATE TABLE IF NOT EXISTS seed_marks (key TEXT PRIMARY KEY, done_at TEXT)']);
   // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
   stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
   stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);
   if (stmts.length) await db.batch(stmts);
+  await seedProgramsV2();
+}
+
+const OLD_WEB = {
+  name: 'Web Developer', summary: 'Building pages and forms that load quickly and work well on a phone.',
+  covers: "HTML, CSS and JavaScript\nResponsive layouts\nForms and basic back-end\nSpeed and accessibility basics",
+  tools: "HTML, CSS and JavaScript\nResponsive layout\nA form that validates\nBasic accessibility checks\nReact for interactive apps",
+  project: "A small business page with a working enquiry form, checked on a phone, with the fields saved somewhere the studio can read.",
+  suits: "Students who want to ship pages people can use. React is taught when the project needs it, not as a badge."
+};
+async function seedProgramsV2() {
+  if (await db.get("SELECT 1 FROM seed_marks WHERE key = 'programs_v2'")) return;
+  const fs = TRACK_DETAILS.find(t => t.slug === 'full-stack-web-development');
+  const stmts = [];
+  const old = await db.get("SELECT * FROM programs WHERE slug = 'web-developer'");
+  const taken = await db.get("SELECT 1 FROM programs WHERE slug = 'full-stack-web-development'");
+  if (old && !taken) {
+    stmts.push([`UPDATE programs SET slug = 'full-stack-web-development',
+      name = CASE WHEN name = ? THEN ? ELSE name END,
+      summary = CASE WHEN summary = ? THEN ? ELSE summary END,
+      covers = CASE WHEN covers = ? THEN ? ELSE covers END, tools = CASE WHEN tools = ? THEN ? ELSE tools END,
+      project = CASE WHEN project = ? THEN ? ELSE project END, suits = CASE WHEN suits = ? THEN ? ELSE suits END,
+      curriculum = CASE WHEN curriculum IS NULL OR curriculum = '' OR curriculum IN (?, ?) THEN ? ELSE curriculum END,
+      updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?`,
+      OLD_WEB.name, fs.name, OLD_WEB.summary, fs.summary, OLD_WEB.covers, fs.covers.join('\n'), OLD_WEB.tools, fs.tools.join('\n'), OLD_WEB.project, fs.project, OLD_WEB.suits, fs.suits,
+      LEGACY['web-developer-v1'].join('\n'), OLD_CURRICULUM['web-developer'].join('\n'), CURRICULUM[fs.slug].join('\n'), old.id]);
+  }
+  const max = (await db.get('SELECT COALESCE(MAX(sort_order), 0) m FROM programs')).m;
+  ['business-analyst', 'data-science'].forEach((slug, i) => {
+    const t = TRACK_DETAILS.find(x => x.slug === slug);
+    stmts.push([`INSERT OR IGNORE INTO programs (name, slug, icon, summary, mode, eligibility, covers, curriculum, tools, project, suits, sort_order, published)
+       VALUES (?, ?, ?, ?, 'Live online', 'BTech, BCA, MCA and similar students', ?, ?, ?, ?, ?, ?, 1)`,
+      t.name, t.slug, t.icon, t.summary, t.covers.join('\n'), CURRICULUM[slug].join('\n'), t.tools.join('\n'), t.project, t.suits, max + (i + 1) * 10]);
+  });
+  stmts.push(["INSERT OR IGNORE INTO seed_marks (key, done_at) VALUES ('programs_v2', strftime('%Y-%m-%dT%H:%M:%SZ','now'))"]);
+  await db.batch(stmts);
 }
 
 // Applications table gained columns; add them to existing databases.

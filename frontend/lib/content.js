@@ -108,12 +108,12 @@ const TRACK_DETAILS = [
     suits: 'Students who like tables more than pages, and enjoy turning numbers into clear stories.'
   },
   {
-    slug: 'web-developer', icon: 'browser', name: 'Web Developer',
-    summary: 'Building pages and forms that load quickly and work well on a phone.',
-    covers: ['HTML, CSS and JavaScript', 'Responsive layouts', 'Forms and basic back-end', 'Speed and accessibility basics'],
-    tools: ['HTML, CSS and JavaScript', 'Responsive layout', 'A form that validates', 'Basic accessibility checks', 'React for interactive apps'],
-    project: 'A small business page with a working enquiry form, checked on a phone, with the fields saved somewhere the studio can read.',
-    suits: 'Students who want to ship pages people can use. React is taught when the project needs it, not as a badge.'
+    slug: 'full-stack-web-development', icon: 'browser', name: 'Full Stack Web Development',
+    summary: 'Building complete web apps: React front end, Node.js and Express APIs, a database, login and deployment.',
+    covers: ['Responsive front ends with HTML, CSS, JavaScript and React', 'REST APIs with Node.js and Express', 'SQL and NoSQL databases', 'Authentication, security and deployment'],
+    tools: ['HTML, CSS, JavaScript and TypeScript', 'React', 'Node.js and Express', 'PostgreSQL and MongoDB', 'Git, GitHub and a cloud host'],
+    project: 'A deployed full-stack web app with sign-in, a database, a REST API and a responsive React front end, with a short README on how it runs.',
+    suits: 'Students who want to build and ship whole products, from the screen a user sees to the server and database behind it.'
   },
   {
     slug: 'digital-marketing', icon: 'megaphone', name: 'Digital Marketing',
@@ -122,6 +122,22 @@ const TRACK_DETAILS = [
     tools: ['Google Business Profile', 'Search Console basics', 'Google Ads or Meta ads with a budget you can see', 'A content calendar', 'A simple weekly report'],
     project: 'A local listing cleaned up, a four-week content plan, and one small campaign plan with the budget written down.',
     suits: 'Students who can write clearly and would rather measure a small campaign than promise viral posts.'
+  },
+  {
+    slug: 'business-analyst', icon: 'briefcase', name: 'Business Analyst',
+    summary: 'Turning business needs into clear requirements, process maps and reports a team can build from.',
+    covers: ['Requirements gathering and documentation', 'Process mapping with BPMN and UML', 'Excel, SQL and Power BI for analysis', 'Agile delivery with Jira and user testing'],
+    tools: ['Excel and Google Sheets', 'SQL', 'Power BI', 'Jira and Confluence', 'draw.io or Lucidchart', 'Figma for wireframes'],
+    project: 'A business requirements document, process maps, a prioritised backlog of user stories and a KPI dashboard for a real business problem.',
+    suits: 'Students who enjoy asking questions, writing clearly and connecting what a business needs with what a team builds.'
+  },
+  {
+    slug: 'data-science', icon: 'flask', name: 'Data Science',
+    summary: 'Using Python, statistics and machine learning to find patterns in data and predict what happens next.',
+    covers: ['Python, statistics and exploratory analysis', 'Machine learning with scikit-learn', 'Deep learning, NLP and time series basics', 'Model evaluation, deployment and storytelling'],
+    tools: ['Python and Jupyter', 'NumPy, Pandas and Matplotlib', 'SQL', 'scikit-learn', 'TensorFlow or PyTorch', 'Streamlit'],
+    project: 'An end-to-end prediction project: cleaned data, a tested model, a short findings report and a small deployed demo app.',
+    suits: 'Students who are curious about numbers, comfortable with some maths and want to build models that answer real questions.'
   }
 ];
 const SIMILAR_ROLE = 'Similar role (describe it in your note)';
@@ -171,6 +187,10 @@ const FAQ = [
       {
         q: 'How does the programme work?',
         a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
+      },
+      {
+        q: 'Which programmes can I join?',
+        a: 'Seven programmes, each with 6 weeks of live training and a 12-week internship: Software Engineering, AI/ML Engineer, Data Analyst, Full Stack Web Development, Digital Marketing, Business Analyst and Data Science. Interested in a related field? Apply with "Similar role" and name it in your note.'
       },
       {
         q: 'Is the certificate accepted by colleges?',
