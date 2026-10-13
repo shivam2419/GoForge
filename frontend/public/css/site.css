@@ -1064,3 +1064,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn-apply:hover .icon { transform: translateX(4px); }
 .role-card .program-meta { margin-bottom: 22px; }
 @media (prefers-reduced-motion: reduce) { .btn-apply .icon { transition: none; } }
+
+/* 7 programmes + 'similar roles' = 8 cards: 4 columns on wide screens, 2 on tablets, 1 on phones. */
+@media (min-width: 1180px) { .role-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 761px) and (max-width: 1179px) { .role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
