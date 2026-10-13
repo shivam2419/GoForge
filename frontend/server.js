@@ -463,9 +463,12 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   'Answers for students and clients: how the internship works, certificates and college recognition, the letter, how projects are chosen, and how client work is priced.',
   { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd() })));
 
-app.get('/about', (req, res) => res.render('about', pageMeta(req, 'About',
-  'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder and Director.',
-  { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() })));
+app.get('/about', async (req, res) => {
+  const { credentials } = await trustData();
+  res.render('about', { credentials, ...pageMeta(req, 'About',
+    'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder and Director.',
+    { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() }) });
+});
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
   'Call, email or visit Goforge Digital at Puri Highstreet, Sector 81, Faridabad. Office hours Monday to Saturday.',

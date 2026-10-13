@@ -140,6 +140,9 @@ async function seed() {
   }
   // v2 programmes: rename Web Developer to Full Stack Web Development and add Business Analyst + Data Science, once.
   stmts.push(['CREATE TABLE IF NOT EXISTS seed_marks (key TEXT PRIMARY KEY, done_at TEXT)']);
+  // MSME certificate details (from the Udyam certificate) on the seeded badge, only where still empty.
+  stmts.push(["UPDATE credentials SET number = 'UDYAM-HR-03-0170735' WHERE title = 'MSME Registered' AND (number IS NULL OR number = '')"]);
+  stmts.push(["UPDATE credentials SET link_url = 'https://udyamregistration.gov.in/Udyam_Verify.aspx' WHERE title = 'MSME Registered' AND (link_url IS NULL OR link_url = '')"]);
   // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
   stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
   stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);

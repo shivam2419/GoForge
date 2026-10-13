@@ -130,14 +130,8 @@
       <p class="eyebrow" data-reveal>Questions students ask</p>
       <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
-    <div class="faq-list" data-reveal>
-      <% FAQ.find(group => group.id === 'students').items.forEach(item => { %>
-      <details>
-        <summary><%= item.q %></summary>
-        <p><%= item.a %></p>
-      </details>
-      <% }) %>
-    </div>
+    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.slice(0, 8), name: 'faq-internship', openFirst: true }) %>
+    <p class="faq-more"><a class="text-link" href="/faq#students">All student questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
 </section>
 

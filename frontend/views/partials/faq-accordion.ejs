@@ -1,0 +1,12 @@
+<% const list = locals.items || []; const nm = locals.name || 'faq'; %>
+<div class="faq-acc" data-reveal-group>
+  <% list.forEach((item, i) => { %>
+  <details class="faq-q" name="<%= nm %>" data-reveal<%= locals.openFirst && i === 0 ? ' open' : '' %>>
+    <summary><span class="faq-dot" aria-hidden="true"></span><span class="faq-text"><%= item.q %></span><span class="faq-chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+    <div class="faq-a">
+      <p><%= item.a %></p>
+      <% if (item.link) { %><a class="text-link" href="<%= item.link[0] %>"><%= item.link[1] %> <%- include('icon', { name: 'arrow' }) %></a><% } %>
+    </div>
+  </details>
+  <% }) %>
+</div>
