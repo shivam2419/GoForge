@@ -76,7 +76,7 @@ WA=0; for u in / /services /services/software /services/crm-erp /services/automa
 chk "zero whatsapp in public output" 0 $WA
 # company LinkedIn
 LI='https://www.linkedin.com/company/143989208'
-chk "footer follow linkedin" 1 $(curl -s $B/faq | grep -c "href=\"$LI\" target=\"_blank\" rel=\"noopener\"><svg" | sed 's/[2-9]/1/')
+chk "footer follow linkedin" 1 $(curl -s $B/faq | grep -c "href=\"$LI\" target=\"_blank\" rel=\"noopener\" aria-label=\"Goforge Digital on LinkedIn\" title=\"LinkedIn\"")
 chk "contact linkedin detail" 1 $(curl -s $B/contact | grep -c 'Follow us on LinkedIn</a></span>')
 chk "about linkedin button" 1 $(curl -s $B/about | grep -c 'Follow Goforge Digital on LinkedIn')
 chk "jsonld sameAs company" 1 $(curl -s $B/ | grep -c "\"sameAs\":\[\"https://www.instagram.com/goforgedigital/\",\"$LI\"\]")
