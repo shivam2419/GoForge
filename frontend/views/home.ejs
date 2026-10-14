@@ -5,27 +5,18 @@
   <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow" data-hero-item>Digital solutions &amp; growth &middot; Faridabad</p>
+      <p class="eyebrow" data-hero-item>Trusted by real estate firms and schools</p>
       <h1 class="hero-title">
-        <span class="line"><span>We build software</span></span>
-        <span class="line"><span>that runs</span></span>
+        <span class="line"><span>Software and</span></span>
+        <span class="line"><span>marketing that grow</span></span>
         <span class="line"><span><em class="hl">your business.</em></span></span>
       </h1>
-      <p class="lede" data-hero-item>An MSME-registered team building custom software, CRM, ERP, websites and digital marketing for businesses in Faridabad, Delhi NCR and across India.</p>
-      <div class="audience" data-hero-item>
-        <a class="audience-card" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">
-          <span class="audience-k">For businesses</span>
-          <span class="audience-t">Get a free consultation</span>
-          <span class="audience-d">Software, CRM/ERP, websites, social media and ads. Scope and price agreed first.</span>
-          <span class="audience-go"><%- include('partials/icon', { name: 'upright' }) %></span>
-        </a>
-        <a class="audience-card audience-card-gold" href="/internship">
-          <span class="audience-k">For students</span>
-          <span class="audience-t">Explore training + internship</span>
-          <span class="audience-d">Live classes, study material, assignments and projects, then an internship offer.</span>
-          <span class="audience-go"><%- include('partials/icon', { name: 'arrow' }) %></span>
-        </a>
+      <p class="lede" data-hero-item>Custom software, CRM and ERP, AI automation and digital marketing for growing businesses. From our office in Sector 81, Faridabad, for clients across India.</p>
+      <div class="hero-actions" data-hero-item>
+        <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-ghost btn-lg" href="#services">See our services</a>
       </div>
+      <p class="hero-note" data-hero-item>A short call to understand your goals. A clear plan agreed before work begins.</p>
     </div>
 
     <div class="hero-visual" aria-hidden="true">
@@ -39,49 +30,18 @@
         <p class="board-title">From first call to handover.</p>
         <ol class="board-steps">
           <li class="is-done"><span class="bs-num">01</span><span class="bs-name">Listen<small>What is in the way</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
-          <li class="is-done"><span class="bs-num">02</span><span class="bs-name">Shape<small>Scope and price agreed</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
+          <li class="is-done"><span class="bs-num">02</span><span class="bs-name">Shape<small>A clear plan agreed</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
           <li class="is-active"><span class="bs-num">03</span><span class="bs-name">Build<small>Progress you can see</small></span><span class="bs-progress"><span></span></span></li>
           <li><span class="bs-num">04</span><span class="bs-name">Hand over<small>A short note on how to run it</small></span><span class="bs-state bs-wait"></span></li>
         </ol>
       </div>
-      <div class="chip chip-a" data-parallax="-0.06"><span class="chip-icon"><%- include('partials/icon', { name: 'tag' }) %></span><span>Clear price,<strong>agreed first</strong></span></div>
+      <div class="chip chip-a" data-parallax="-0.06"><span class="chip-icon"><%- include('partials/icon', { name: 'tag' }) %></span><span>Clear plan,<strong>agreed first</strong></span></div>
       <div class="chip chip-b" data-parallax="0.09"><span class="chip-icon"><%- include('partials/icon', { name: 'user' }) %></span><span>A person<strong>in the loop</strong></span></div>
     </div>
   </div>
 </section>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
-
-<section class="section section-tight" aria-labelledby="fit-h">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>For business owners</p>
-      <h2 id="fit-h" class="h2" data-reveal>The work a company <em>actually pays for.</em></h2>
-    </div>
-    <ul class="fit-grid" data-reveal-group>
-      <li data-reveal>
-        <span class="fit-icon"><%- include('partials/icon', { name: 'code' }) %></span>
-        <h3>Custom software</h3>
-        <p>A site or an internal tool for one job your team does every day. Booking, orders, or a dashboard. Designed and built for how your team works.</p>
-      </li>
-      <li data-reveal>
-        <span class="fit-icon"><%- include('partials/icon', { name: 'database' }) %></span>
-        <h3>CRM and ERP</h3>
-        <p>Leads, customers, stock and follow-ups in one place, named in your words. One clear system the whole team works from.</p>
-      </li>
-      <li data-reveal>
-        <span class="fit-icon"><%- include('partials/icon', { name: 'megaphone' }) %></span>
-        <h3>Marketing and ads</h3>
-        <p>A page people can find, a Google profile that is finished, and ads only after the budget is agreed and sits in your own account.</p>
-      </li>
-      <li data-reveal>
-        <span class="fit-icon"><%- include('partials/icon', { name: 'gear' }) %></span>
-        <h3>Automation</h3>
-        <p>The message you send every day, sent on time. A person on your team still approves what goes out.</p>
-      </li>
-    </ul>
-  </div>
-</section>
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
@@ -93,10 +53,10 @@
   <div class="wrap">
     <div class="section-head split-head">
       <div>
-        <p class="eyebrow" data-reveal>What we do</p>
-        <h2 id="services-h" class="h2" data-reveal>Four ways we <em>build the business.</em></h2>
+        <p class="eyebrow" data-reveal>Services</p>
+        <h2 id="services-h" class="h2" data-reveal>What we <em>do for you.</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Each project starts small. Pick one area, or tell us the problem and we will say which one fits. Select a service for the details.</p>
+      <p class="section-intro" data-reveal>Four core services. Pick one, or tell us the challenge and we will recommend the right fit.</p>
     </div>
     <ul class="service-grid" data-reveal-group data-zoom>
       <% SERVICES.forEach((svc, i) => { %>
@@ -117,98 +77,35 @@
   </div>
 </section>
 
-<section class="navy-band" aria-labelledby="systems-h">
-  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
-  <div class="wrap navy-grid">
-    <div>
-      <p class="eyebrow eyebrow-light" data-reveal>Business systems, made simple</p>
-      <h2 id="systems-h" class="h2 h2-light" data-reveal>Make the moving parts feel like <em>one business.</em></h2>
-      <p class="navy-text" data-reveal>Bring every lead, record and follow-up together. We connect the tools you already use, so the whole team works from one place and every next step is clear.</p>
-      <ul class="navy-checks" data-reveal-group>
-        <% ['Lead records','Customer records','Follow-up reminders','Billing and stock','Instant enquiry alerts','Simple reports'].forEach(item => { %>
-        <li data-reveal><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li>
-        <% }) %>
-      </ul>
-      <a class="btn btn-gold btn-lg" href="/contact?service=<%= encodeURIComponent(SERVICES[1].name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= SERVICES[1].name %>" data-reveal>Talk about a system <%- include('partials/icon', { name: 'upright' }) %></a>
-    </div>
-    <div class="workspace" aria-hidden="true" data-reveal data-parallax="0.03">
-      <div class="ws-bar"><i></i><i></i><i></i><span>Your workspace &middot; illustration</span></div>
-      <div class="ws-body">
-        <p class="ws-eyebrow">Today, in one place</p>
-        <p class="ws-title">A calmer working day.</p>
-        <ul class="ws-list">
-          <li><span class="ws-n">01</span><span>New enquiries<small>From the website form</small></span><span class="ws-pill">Ready to follow up</span></li>
-          <li><span class="ws-n">02</span><span>Customer records<small>One list, not five</small></span><span class="ws-pill">Up to date</span></li>
-          <li><span class="ws-n">03</span><span>Reminders<small>Sent after a person approves</small></span><span class="ws-pill">Scheduled</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section section-alt" aria-labelledby="values-h">
-  <div class="wrap values-grid">
-    <div class="values-intro">
-      <p class="eyebrow" data-reveal>How we work with you</p>
-      <h2 id="values-h" class="h2" data-reveal>Built around your business, <em>not a template.</em></h2>
-      <p class="section-intro" data-reveal>Plain commitments for every project, written down before work starts.</p>
+<section class="section section-alt" id="industries" aria-labelledby="ind-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Industries we serve</p>
+      <h2 id="ind-h" class="h2" data-reveal>Who we <em>work with.</em></h2>
     </div>
-    <ul class="values" data-reveal-group>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Small scope, clear price</h3><p>One written scope and one price, agreed before anything is built.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'eye' }) %></span><h3>Progress you can see</h3><p>Work is shared as it happens, not saved for a big reveal at the end.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>A person in the loop</h3><p>Automations prepare the work. A person on your team approves what goes out.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Yours to run</h3><p>A handover your team can use, with a short note on how it works.</p></li>
+    <ul class="ind-grid" data-reveal-group>
+      <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'pin' }) %></span><h3>Real estate</h3><p>Websites, lead capture and a simple CRM, so every property enquiry gets a quick follow-up.</p></li>
+      <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'cap' }) %></span><h3>Schools</h3><p>A clear website, admission enquiries in one place, and timely updates for parents.</p></li>
+      <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'briefcase' }) %></span><h3>Growing businesses</h3><p>Custom tools, CRM and marketing that save time and bring in more customers.</p></li>
     </ul>
   </div>
 </section>
 
-<%- include('partials/how-we-work') %>
-
-<section class="section" aria-labelledby="scenes-h">
+<section class="section" aria-labelledby="proc-h">
   <div class="wrap">
-    <div class="section-head split-head">
-      <div>
-        <p class="eyebrow" data-reveal>Where projects start</p>
-        <h2 id="scenes-h" class="h2" data-reveal>Where a first project <em>makes a difference.</em></h2>
-      </div>
-      <p class="section-intro" data-reveal>Three common starting points, each delivering a visible result within weeks.</p>
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>How it works</p>
+      <h2 id="proc-h" class="h2" data-reveal>Four simple <em>steps.</em></h2>
     </div>
-    <ol class="scene-grid" data-reveal-group>
-      <li class="scene-card" data-reveal>
-        <span class="scene-num">01</span>
-        <h3>Every enquiry captured in one place</h3>
-        <p>Every message from your website and phone is saved as a lead, with a follow-up the whole team can see.</p>
-      </li>
-      <li class="scene-card" data-reveal>
-        <span class="scene-num">02</span>
-        <h3>One customer record for everyone</h3>
-        <p>All your customer details in one simple CRM, with the next step for each customer on one screen.</p>
-      </li>
-      <li class="scene-card" data-reveal>
-        <span class="scene-num">03</span>
-        <h3>Easy to find online</h3>
-        <p>A fast website, a complete Google profile and a clear landing page, so every rupee spent on ads works harder.</p>
-      </li>
+    <ol class="proc4" data-reveal-group>
+      <li data-reveal><span class="step-num">1</span><h3>Free consultation</h3><p>A short call to understand your business and goals.</p></li>
+      <li data-reveal><span class="step-num">2</span><h3>Clear plan</h3><p>A clear plan agreed before work begins.</p></li>
+      <li data-reveal><span class="step-num">3</span><h3>Build and review</h3><p>Regular demos you can see and approve.</p></li>
+      <li data-reveal><span class="step-num">4</span><h3>Launch and support</h3><p>Go live with a handover and 30 days of support.</p></li>
     </ol>
   </div>
 </section>
-
-<section class="section section-alt" aria-labelledby="start-h">
-  <div class="wrap start-split">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>An easy first step</p>
-      <h2 id="start-h" class="h2" data-reveal>A free check, <em>before any fee.</em></h2>
-      <p class="section-intro" data-reveal>Not sure where to begin? We look at your website, search visibility and enquiry flow, and tell you plainly what would help most.</p>
-    </div>
-    <article class="offer-card offer-solo" data-reveal>
-      <p class="mini-h">For a business</p>
-      <h3><%= OFFERS.check.name %></h3>
-      <p><%= OFFERS.check.text %></p>
-      <a class="btn btn-primary" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Ask for the check <%- include('partials/icon', { name: 'upright' }) %></a>
-    </article>
-  </div>
-</section>
-
 
 <%- include('partials/people', { instructors: [], testimonials: clientTestimonials, tesEyebrow: 'What clients say' }) %>
 
@@ -216,7 +113,7 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Why Goforge Digital</p>
-      <h2 id="why-h" class="h2" data-reveal>Less theatre, <em>a person you can call.</em></h2>
+      <h2 id="why-h" class="h2" data-reveal>Why clients <em>choose us.</em></h2>
     </div>
     <ul class="values" data-reveal-group>
       <% WHY_SMALL.forEach(item => { %>
@@ -226,7 +123,7 @@
   </div>
 </section>
 
-<section class="section section-alt about-home" aria-labelledby="about-h">
+<section class="section about-home" aria-labelledby="about-h">
   <div class="wrap about-home-grid">
     <div class="orbit" aria-hidden="true" data-reveal>
       <span class="orbit-ring r1"></span><span class="orbit-ring r2"></span><span class="orbit-ring r3"></span>
@@ -237,8 +134,8 @@
       </div>
     </div>
     <div>
-      <p class="eyebrow" data-reveal>A little about us</p>
-      <h2 id="about-h" class="h2" data-reveal>A focused team, <em>led by its founder.</em></h2>
+      <p class="eyebrow" data-reveal>About us</p>
+      <h2 id="about-h" class="h2" data-reveal>A registered team <em>you can meet.</em></h2>
       <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director. When you work with us, you speak with the people doing the work.</p>
       <dl class="about-facts" data-reveal-group>
         <div data-reveal><dt>Who you talk to</dt><dd>Rohit Sharma, Founder &amp; Director</dd></div>
@@ -249,15 +146,27 @@
   </div>
 </section>
 
+<section class="students-strip" aria-labelledby="stu-h">
+  <div class="wrap">
+    <a class="stu-card" href="/internship" data-reveal>
+      <span class="audience-k">For students</span>
+      <span id="stu-h" class="stu-t">Training and internship programmes</span>
+      <span class="stu-d">6 weeks of live training, then a 12-week internship on real projects.</span>
+      <span class="stu-go">Explore programmes <%- include('partials/icon', { name: 'arrow' }) %></span>
+    </a>
+  </div>
+</section>
+
 <section class="cta-band" aria-labelledby="cta-h">
   <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
   <div class="wrap cta-grid">
     <div>
-      <p class="eyebrow eyebrow-light" data-reveal>Your next good move</p>
-      <h2 id="cta-h" class="h2 h2-light" data-reveal>Have a business problem <em>to solve?</em></h2>
-      <p class="navy-text" data-reveal>Tell us what you are trying to do and what is in the way. A short call is usually enough to know whether we are the right fit.</p>
+      <p class="eyebrow eyebrow-light" data-reveal>Get started</p>
+      <h2 id="cta-h" class="h2 h2-light" data-reveal>Ready to grow <em>your business?</em></h2>
+      <p class="navy-text" data-reveal>Tell us your goals. We will suggest the right solution and a clear plan, free of charge.</p>
       <div class="hero-actions" data-reveal>
-        <a class="btn btn-gold btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+        <a class="btn btn-gold btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="text-link text-link-light" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Or ask for a free website check</a>
       </div>
     </div>
     <ul class="cta-contacts" data-reveal-group>
