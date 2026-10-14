@@ -137,7 +137,8 @@ function validateApplication(body, TRACKS) {
   field(errors, values, body, 'full_name', 'your full name', { required: true, min: 2, max: 80 });
   field(errors, values, body, 'college', 'your college', { required: true, min: 2, max: 120 });
   field(errors, values, body, 'course_year', 'your course and year', { required: true, min: 2, max: 60 });
-  phoneField(errors, values, body, 'whatsapp', 'phone number');
+  if (body.phone === undefined && body.whatsapp !== undefined) body.phone = body.whatsapp; // older cached forms
+  phoneField(errors, values, body, 'phone', 'phone number');
   values.track = text(body.track);
   if (!values.track) errors.track = 'Please choose a role.';
   else if (!TRACKS.includes(values.track)) errors.track = 'Please choose a role from the list.';
@@ -206,7 +207,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 app.use(express.json({ limit: '20kb' }));
 
-// Old cached copies of site.js (before WhatsApp was removed) navigated a new tab to data.whatsappUrl,
+// Old cached copies of site.js navigated a new tab to a legacy redirect URL,
 // which newer servers no longer send, giving /undefined. Send such tabs home instead of a 404.
 app.get(['/undefined', '/null'], (req, res) => res.redirect(302, '/'));
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -505,7 +506,7 @@ app.post('/internship', formLimiter, async (req, res) => {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.whatsapp, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1));
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1));
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.');
 });
 
@@ -748,7 +749,7 @@ app.use((req, res) => {
 app.use((err, req, res, _next) => {
   console.error(err);
   if (err.type === 'entity.too.large') return res.status(413).type('text').send('Too much data in one request.');
-  res.status(500).render('error', { ...pageMeta(req, 'Something went wrong', 'Error'), noindex: true, code: 500, heading: 'Something went wrong on our side', body: 'Please try again in a minute, or reach us by phone or WhatsApp.' });
+  res.status(500).render('error', { ...pageMeta(req, 'Something went wrong', 'Error'), noindex: true, code: 500, heading: 'Something went wrong on our side', body: 'Please try again in a minute, or reach us by phone or email.' });
 });
 
 if (!process.env.VERCEL) {

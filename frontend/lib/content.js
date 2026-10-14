@@ -9,7 +9,7 @@ const SERVICES = [
     includes: ['Business websites that load fast on a phone', 'Internal tools, dashboards and portals', 'Booking, order and enquiry flows'],
     questions: [
       'What job should this tool do every day, and who will use it?',
-      'What do you use now — paper, WhatsApp, a spreadsheet, or another site?',
+      'What do you use today: paper, a spreadsheet, an app or another site?',
       'What must the first version include, and what can wait?',
       'Who needs to sign in, and what should they not be able to see?'
     ],
@@ -42,11 +42,11 @@ const SERVICES = [
     key: 'blurb3', slug: 'automation', icon: 'gear',
     start: 'Usually starts with one repeat task, such as a follow-up or a form reply, automated with a person approving what goes out.',
     name: 'AI Automation & Workflows',
-    includes: ['Follow-up reminders that go out on time', 'Website forms that turn into WhatsApp or email messages', 'Drafts prepared by AI, approved by a person before they go out'],
+    includes: ['Follow-up reminders that go out on time', 'Instant enquiry alerts by email and SMS from your website forms', 'Drafts prepared by AI, approved by a person before they go out'],
     questions: [
       'Which message or task do you repeat most often?',
       'What must a person still approve before it goes out?',
-      'Where should the result land: WhatsApp, email, or a sheet?',
+      'Where should the result land: email, SMS, a sheet or your CRM?',
       'What should never be sent automatically?'
     ],
     handover: [

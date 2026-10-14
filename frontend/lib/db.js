@@ -78,7 +78,6 @@ const db = {
 const DEFAULT_SETTINGS = {
   phone1: '+91 84488 52971',
   phone2: '+91 89580 39354',
-  whatsapp: '+91 84488 52971',
   email: 'goforgedigital@gmail.com',
   blurb1: 'Tools and sites built around how the business actually works, not a stretched template.',
   blurb2: 'Leads, records, and the tools the team already uses, joined so work is not split across five places.',
@@ -100,6 +99,7 @@ async function init() {
   await db.batch([
     ...Object.entries(DEFAULT_SETTINGS).map(([k, v]) => ['INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', k, v]),
     ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"],
+    ["DELETE FROM settings WHERE key = 'whatsapp'"],
     ["UPDATE settings SET value = 'Contact for fees' WHERE key = 'intern_fee' AND value = 'Confirmed on the call'"]
   ]);
 }

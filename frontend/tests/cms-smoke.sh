@@ -2,10 +2,10 @@ B=http://localhost:4310; rm -f ck
 tok(){ curl -s -b ck -c ck $B$1 | grep -o 'name="_csrf" value="[a-f0-9]*"' | head -1 | sed 's/.*value="//;s/"//'; }
 chk(){ if [ "$2" = "$3" ]; then echo "PASS $1 ($3)"; else echo "FAIL $1 expected $2 got $3"; fi; }
 T=$(tok /internship)
-chk "apply no consent 422" 422 $(curl -s -b ck -c ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&whatsapp=9876543210&track=Web Developer" $B/internship)
-chk "apply json no consent has consent err" 1 $(curl -s -b ck -H 'Accept: application/json' --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&whatsapp=9876543210&track=Web Developer" $B/internship | grep -c '"consent"')
-chk "apply bad track 422" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&whatsapp=9876543210&track=Hacking&consent=yes" $B/internship)
-chk "apply ok 200" 200 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC College&course_year=BTech 3&whatsapp=9876543210&track=Web Developer&email=test@example.com&city=Faridabad&mode=Live online&source=Instagram&consent=yes&note=TEST" $B/internship)
+chk "apply no consent 422" 422 $(curl -s -b ck -c ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&phone=9876543210&track=Web Developer" $B/internship)
+chk "apply json no consent has consent err" 1 $(curl -s -b ck -H 'Accept: application/json' --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&phone=9876543210&track=Web Developer" $B/internship | grep -c '"consent"')
+chk "apply bad track 422" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC&course_year=BTech 3&phone=9876543210&track=Hacking&consent=yes" $B/internship)
+chk "apply ok 200" 200 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "full_name=TEST Student&college=ABC College&course_year=BTech 3&phone=9876543210&track=Web Developer&email=test@example.com&city=Faridabad&mode=Live online&source=Instagram&consent=yes&note=TEST" $B/internship)
 T=$(tok /admin/login); curl -s -b ck -c ck -o /dev/null --data-urlencode "_csrf=$T" -d "email=goforgedigital@gmail.com&password=TestPassw0rd-123" $B/admin/login
 chk "inbox shows app" 1 $(curl -s -b ck $B/admin/applications | grep -c 'TEST Student')
 for e in programs instructors stats testimonials credentials; do chk "admin list $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e); chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
@@ -69,5 +69,8 @@ chk "certificate image served" 200 $(curl -s -o /dev/null -w %{http_code} $B/img
 FQ=$(curl -s $B/faq)
 chk "faq accordion" 1 $(echo "$FQ" | grep -c 'class="faq-acc"' | sed 's/[2-9]/1/')
 chk "faq register question" 1 $(echo "$FQ" | grep -c 'How can I register for an internship?' | sed 's/[2-9]/1/')
-chk "faq no whatsapp text" 0 $(echo "$FQ" | grep -i 'whatsapp' | grep -v 'name="whatsapp"\|data-error-for="whatsapp"' | wc -l)
+chk "faq no whatsapp" 0 $(echo "$FQ" | grep -ci 'whatsapp')
 chk "desktop nav home active" 1 $(curl -s $B/ | grep -c "<li><a href=\"/\" aria-current=\"page\">Home</a></li>")
+# zero whatsapp anywhere in public output
+WA=0; for u in / /services /services/software /services/crm-erp /services/automation /services/marketing /work /internship /colleges /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
+chk "zero whatsapp in public output" 0 $WA

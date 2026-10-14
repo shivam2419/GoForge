@@ -68,7 +68,7 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   const afterEsc = await page.evaluate(() => ({ open: !!document.querySelector('dialog[open]'), locked: document.body.classList.contains('is-locked'), focus: document.activeElement.getAttribute('data-dialog') }));
   check('Esc closes modal, releases scroll lock, returns focus to opener', !afterEsc.open && !afterEsc.locked && afterEsc.focus === 'dlg-svc-crm-erp', JSON.stringify(afterEsc));
 
-  // hero "Talk about a project" -> contact modal -> submit -> WhatsApp
+  // hero "Talk about a project" -> contact modal -> submit -> saved
   await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(300);
   await page.click('.hero [data-dialog="dlg-contact"]');
   await page.waitForSelector('#dlg-contact[open]');
@@ -81,7 +81,7 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   const pagesBefore = ctx.pages().length;
   await page.click('#dlg-contact [data-submit]');
   await page.waitForSelector('#dlg-contact [data-form-success]:not([hidden])');
-  check('contact modal saves, no WhatsApp popup', ctx.pages().length === pagesBefore);
+  check('contact modal saves, no popup', ctx.pages().length === pagesBefore);
   await page.keyboard.press('Escape'); await page.waitForTimeout(400);
 
   // home role -> role modal -> Apply -> apply modal with role preselected
@@ -132,13 +132,13 @@ const waUrl = p => decodeURIComponent(p.url().replace(/\+/g, ' '));
   // similar role requires a note (server side)
   const simRes = await page.evaluate(async () => {
     const f = document.querySelector('form[data-form="apply"]'); const fd = new URLSearchParams(new FormData(f));
-    fd.set('name', 'X Test'); fd.set('college', 'Y College'); fd.set('course', 'BCA 2nd'); fd.set('whatsapp', '9876543210'); fd.set('track', [...f.querySelectorAll('#a-track option')].map(o => o.value).find(v => /^Similar/.test(v))); fd.set('note', '');
+    fd.set('name', 'X Test'); fd.set('college', 'Y College'); fd.set('course', 'BCA 2nd'); fd.set('phone', '9876543210'); fd.set('track', [...f.querySelectorAll('#a-track option')].map(o => o.value).find(v => /^Similar/.test(v))); fd.set('note', '');
     const r = await fetch(f.action, { method: 'POST', body: fd, headers: { Accept: 'application/json' } }); return { status: r.status, body: await r.text() };
   });
   check('server requires a note when "Similar role" is chosen', simRes.status === 422 && /note/i.test(simRes.body), simRes.status + ' ' + simRes.body.slice(0, 120));
   const badRole = await page.evaluate(async () => {
     const f = document.querySelector('form[data-form="apply"]'); const fd = new URLSearchParams(new FormData(f));
-    fd.set('name', 'X Test'); fd.set('college', 'Y College'); fd.set('course', 'BCA 2nd'); fd.set('whatsapp', '9876543210'); fd.set('track', 'AI automation & workflows');
+    fd.set('name', 'X Test'); fd.set('college', 'Y College'); fd.set('course', 'BCA 2nd'); fd.set('phone', '9876543210'); fd.set('track', 'AI automation & workflows');
     const r = await fetch(f.action, { method: 'POST', body: fd, headers: { Accept: 'application/json' } }); return r.status;
   });
   check('server rejects an unknown role', badRole === 422, String(badRole));
