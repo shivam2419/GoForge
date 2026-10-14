@@ -326,7 +326,7 @@ function jsonLd() {
       addressCountry: BRAND.address.country
     },
     founder: { '@type': 'Person', name: BRAND.founder, jobTitle: BRAND.founderRole, sameAs: [BRAND.linkedin] },
-    sameAs: [BRAND.instagram],
+    sameAs: [BRAND.instagram, getSettings().linkedin_company || BRAND.linkedinCompany].filter(Boolean),
     areaServed: [{ '@type': 'City', name: 'Faridabad' }, { '@type': 'AdministrativeArea', name: 'Delhi NCR' }, { '@type': 'Country', name: 'India' }],
     openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '10:00', closes: '18:30' }],
     knowsAbout: SERVICES.map(x => x.name),
@@ -644,6 +644,8 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   phoneField(errors, values, req.body, 'phone2', 'second phone number');
   values.email = text(req.body.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120) errors.email = 'Please enter a valid email address.';
+  values.linkedin_company = text(req.body.linkedin_company);
+  if (values.linkedin_company && (!/^https:\/\/(www\.)?linkedin\.com\/company\/[A-Za-z0-9_\-%.]+\/?$/.test(values.linkedin_company) || values.linkedin_company.length > 200)) errors.linkedin_company = 'Please enter a LinkedIn company page URL, for example https://www.linkedin.com/company/143989208';
   for (const k of ['blurb1', 'blurb2', 'blurb3', 'blurb4']) field(errors, values, req.body, k, 'the service line', { required: true, min: 10, max: 220 });
   field(errors, values, req.body, 'intern_training', 'the training length', { required: true, max: 40 });
   field(errors, values, req.body, 'intern_work', 'the internship length', { required: true, max: 40 });

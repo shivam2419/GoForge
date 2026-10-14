@@ -74,3 +74,9 @@ chk "desktop nav home active" 1 $(curl -s $B/ | grep -c "<li><a href=\"/\" aria-
 # zero whatsapp anywhere in public output
 WA=0; for u in / /services /services/software /services/crm-erp /services/automation /services/marketing /work /internship /colleges /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
 chk "zero whatsapp in public output" 0 $WA
+# company LinkedIn
+LI='https://www.linkedin.com/company/143989208'
+chk "footer follow linkedin" 1 $(curl -s $B/faq | grep -c "href=\"$LI\" target=\"_blank\" rel=\"noopener\"><svg" | sed 's/[2-9]/1/')
+chk "contact linkedin detail" 1 $(curl -s $B/contact | grep -c 'Follow us on LinkedIn</a></span>')
+chk "about linkedin button" 1 $(curl -s $B/about | grep -c 'Follow Goforge Digital on LinkedIn')
+chk "jsonld sameAs company" 1 $(curl -s $B/ | grep -c "\"sameAs\":\[\"https://www.instagram.com/goforgedigital/\",\"$LI\"\]")

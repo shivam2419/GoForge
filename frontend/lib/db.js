@@ -79,6 +79,7 @@ const DEFAULT_SETTINGS = {
   phone1: '+91 84488 52971',
   phone2: '+91 89580 39354',
   email: 'goforgedigital@gmail.com',
+  linkedin_company: 'https://www.linkedin.com/company/143989208',
   blurb1: 'Tools and sites built around how the business actually works, not a stretched template.',
   blurb2: 'Leads, records, and the tools the team already uses, joined so work is not split across five places.',
   blurb3: 'Repeat follow-ups and form-to-message flows, with a person still in the loop.',
