@@ -1264,3 +1264,22 @@ img.login-mark { width: 96px; margin: 0 auto 16px; }
 .board > .corner, .service-link > .corner { width: 48px; height: 48px; opacity: .65; }
 .footer-logo .wordmark-dark, .footer-tag { white-space: nowrap; }
 @media (max-width: 600px) { .footer-brand { grid-column: 1 / -1; } }
+
+/* about: brand card + leadership strip */
+.brand-card { position: sticky; top: 110px; overflow: hidden; margin: 0; background: var(--sheet); border: 1px solid rgba(202, 164, 101, .32); border-radius: 22px; padding: 48px 32px 32px; text-align: center; box-shadow: var(--shadow-lg); }
+img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 18px; }
+.brand-card-words { margin: 0 0 28px; font-size: 10px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: var(--ink-3); }
+.principles { list-style: none; margin: 0; padding: 0; text-align: left; border-top: 1px solid var(--line); }
+.principles li { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.principles li:last-child { border-bottom: 0; padding-bottom: 0; }
+.principles strong { display: block; font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); line-height: 1.2; margin-bottom: 2px; }
+.p-num { font-family: var(--serif); font-size: 15px; color: var(--gold-deep); padding-top: 4px; flex: none; }
+.leadership-strip { padding: 0 0 clamp(40px, 5vw, 64px); }
+.leadership-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding-top: 24px; border-top: 1px solid var(--line-2); }
+.leadership-label { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-deep); }
+.leadership-name { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); }
+.leadership-role { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-family: var(--sans); }
+.leadership-link { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-2); color: var(--ink); transition: border-color .25s, color .25s, background .25s; }
+.leadership-link:hover, .leadership-link:focus-visible { border-color: var(--gold); color: var(--gold-deep); background: var(--gold-wash); }
+.leadership-link .icon { width: 18px; height: 18px; }
+@media (max-width: 1000px) { .brand-card { position: static; max-width: 520px; } }
