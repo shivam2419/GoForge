@@ -9,6 +9,7 @@
     </a>
     <nav class="nav-desktop" aria-label="Main">
       <ul>
+        <li><a href="/"<% if (path === '/') { %> aria-current="page"<% } %>>Home</a></li>
         <% nav.forEach(([href, label]) => { const cur = path === href || path.startsWith(href + '/'); %>
         <li><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><%= label %></a></li>
         <% }) %>
