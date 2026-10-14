@@ -505,7 +505,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .footer-social a { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(240, 236, 227, .25); transition: border-color .25s, color .25s, background .25s; }
 .footer-social a:hover, .footer-social a:focus-visible { border-color: var(--gold); color: var(--gold); background: rgba(201, 162, 77, .08); }
 .social-dark a { border-color: var(--line-2); }
-.social-dark a:hover { border-color: var(--ink); color: var(--ink); }
+.social-dark a:hover, .social-dark a:focus-visible { border-color: var(--gold); color: var(--gold-deep); background: var(--gold-wash); }
 .footer-social .icon { width: 18px; height: 18px; }
 .footer-follow { margin-top: 22px; }
 .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 20px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(240, 236, 227, .12); font-size: 13px; color: rgba(240, 236, 227, .55); }

@@ -38,10 +38,7 @@
         <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
       </ul>
       <p class="footer-h footer-follow">Follow us</p>
-      <ul class="footer-social">
-        <% if (s.linkedin_company) { %><li><a href="<%= s.linkedin_company %>" target="_blank" rel="noopener" aria-label="Goforge Digital on LinkedIn" title="LinkedIn"><%- include('icon', { name: 'linkedin' }) %></a></li><% } %>
-        <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram" title="Instagram"><%- include('icon', { name: 'instagram' }) %></a></li>
-      </ul>
+      <%- include('social-row', { s }) %>
     </div>
   </div>
   <div class="wrap footer-bottom">
