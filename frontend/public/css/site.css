@@ -501,12 +501,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .footer-list { display: grid; gap: 6px; }
 .footer-list a { display: inline-block; text-decoration: none; font-weight: 560; font-size: 14px; line-height: 1.4; color: rgba(244, 239, 230, .82); }
 .footer-list a:hover { color: var(--gold); }
-.footer-social { display: flex; gap: 8px; margin-top: 12px; }
-.footer-social a { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(244, 239, 230, .25); }
-.footer-social a:hover { border-color: var(--gold); color: var(--gold); }
+.footer-social { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.footer-social a { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(244, 239, 230, .25); transition: border-color .25s, color .25s, background .25s; }
+.footer-social a:hover, .footer-social a:focus-visible { border-color: var(--gold); color: var(--gold); background: rgba(201, 162, 77, .08); }
 .social-dark a { border-color: var(--line-2); }
 .social-dark a:hover { border-color: var(--ink); color: var(--ink); }
-.footer-social .icon { width: 16px; height: 16px; }
+.footer-social .icon { width: 18px; height: 18px; }
+.footer-follow { margin-top: 22px; }
 .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 20px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(244, 239, 230, .12); font-size: 13px; color: rgba(244, 239, 230, .55); }
 .to-top { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--paper); }
 .to-top .icon { width: 14px; height: 14px; color: var(--gold); }
@@ -1241,9 +1242,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .motion-paused .journey .journey-steps::before { background-size: 100% 100%, auto !important; }
 
 /* Company LinkedIn */
-.li-follow { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 14px; padding: 0 16px 0 6px; border-radius: 999px; border: 1px solid rgba(244, 239, 230, .25); font-weight: 650; font-size: 14px; text-decoration: none; transition: border-color .25s, background .25s; }
-.li-follow .icon { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: #0a66c2; color: #fff; }
-.li-follow:hover { border-color: #0a66c2; background: rgba(10, 102, 194, .14); }
 .li-btn .icon { color: #0a66c2; }
 .li-btn:hover { border-color: #0a66c2; }
 /* Original raster GF logo */
