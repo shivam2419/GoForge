@@ -1,0 +1,12 @@
+<% const g = group; %>
+<div class="next-card" data-next-card>
+  <p class="next-eyebrow">Your next step</p>
+  <h3 class="next-title">Join the <span data-next-program><%= g.program %></span> group</h3>
+  <p class="next-text">Batch updates, class timings and announcements for your programme are shared in this group.</p>
+  <a class="btn btn-primary next-btn" data-next-link href="<%= g.url %>" target="_blank" rel="noopener noreferrer">Join the WhatsApp group <%- include('icon', { name: 'arrow' }) %></a>
+  <ol class="next-steps">
+    <li>Tap the button and join the group on WhatsApp.</li>
+    <li>Our team calls or emails you to confirm your batch.</li>
+    <li>Your live training starts with the next batch.</li>
+  </ol>
+</div>

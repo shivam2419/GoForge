@@ -6,6 +6,7 @@
       <span class="success-icon"><%- include('partials/icon', { name: 'check' }) %></span>
       <h1 class="h2">Sent</h1>
       <p><%= message %></p>
+      <% if (locals.group) { %><%- include('partials/group-card', { group }) %><% } %>
       <div class="hero-actions">
         <a class="btn btn-ghost" href="/">Back to home</a>
       </div>

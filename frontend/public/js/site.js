@@ -283,6 +283,9 @@
           return;
         }
         success.querySelector('[data-success-text]').textContent = data.message;
+        var oldCard = success.querySelector('[data-next-card]');
+        if (oldCard) oldCard.remove();
+        if (data.nextHtml) success.insertAdjacentHTML('beforeend', data.nextHtml);
         success.hidden = false;
         form.classList.add('is-sent');
         form.reset();

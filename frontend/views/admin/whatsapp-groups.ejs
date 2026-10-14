@@ -1,0 +1,20 @@
+<%- include('top') %>
+<div class="admin-head">
+  <h1 class="admin-title">Programme WhatsApp groups</h1>
+  <p class="admin-sub">Paste one group invite link per programme. A student sees only their own programme's link, and only after their application is saved. Leave a box empty to hide the group card for that programme.</p>
+</div>
+<% if (flash) { %><div class="flash" role="status"><%= flash %></div><% } %>
+<% if (Object.keys(errors).length) { %><div class="form-alert" role="alert">Please check the highlighted fields.</div><% } %>
+<form method="post" action="/admin/whatsapp-groups" class="form settings-form" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <fieldset class="panel">
+    <legend>Group invite links</legend>
+    <div class="form-grid">
+      <% programs.forEach((name, i) => { %>
+      <%- include('../partials/field', { values: { ['g' + i]: values[name] || '' }, f: { id: 'wg-' + i, name: 'g' + i, label: name, type: 'url', max: 300, wide: true, hint: 'Starts with https://chat.whatsapp.com/' } }) %>
+      <% }) %>
+    </div>
+  </fieldset>
+  <div class="form-foot"><button class="btn btn-primary" type="submit">Save links</button></div>
+</form>
+<%- include('bottom') %>
