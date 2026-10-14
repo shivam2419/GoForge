@@ -1246,3 +1246,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .li-follow:hover { border-color: #0a66c2; background: rgba(10, 102, 194, .14); }
 .li-btn .icon { color: #0a66c2; }
 .li-btn:hover { border-color: #0a66c2; }
+/* Original raster GF logo */
+img.brand-mark, img.footer-logo-mark, img.board-mark, img.work-mark, img.orbit-mark, img.founder-mark, img.login-mark { height: auto; object-fit: contain; display: block; }
+img.footer-logo-mark { width: 40px; height: auto; }
+.work-mark, .founder-mark { display: block; }
+img.login-mark { width: 96px; margin: 0 auto 16px; }
