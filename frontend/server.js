@@ -540,13 +540,20 @@ app.post('/internship', formLimiter, async (req, res) => {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1));
-  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.');
+  const groupUrl = await cms.whatsappGroupFor(values.track);
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1, groupUrl ? 1 : 0));
+  // The group link is only ever sent in this response, after the application is saved.
+  respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
 
-function respondOk(req, res, kind, message) {
-  if (wantsJson(req)) return res.json({ ok: true, message });
-  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message });
+function respondOk(req, res, kind, message, group = null) {
+  if (group) res.set('Cache-Control', 'no-store');
+  if (wantsJson(req)) {
+    if (!group) return res.json({ ok: true, message });
+    // Rendered server-side so no invite link or card markup sits in the public form page.
+    return res.render('partials/group-card', { group }, (err, nextHtml) => res.json(err ? { ok: true, message } : { ok: true, message, nextHtml }));
+  }
+  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message, group });
 }
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
@@ -693,6 +700,26 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   }
   await saveSettings(values);
   res.redirect(303, '/admin/settings?saved=1');
+});
+
+// ---------- admin: programme WhatsApp groups ----------
+function groupPrograms(res) { return res.locals.PROGRAMS.map(p => p.name); }
+app.get('/admin/whatsapp-groups', requireAdmin, async (req, res) => {
+  res.render('admin/whatsapp-groups', { ...pageMeta(req, 'WhatsApp groups', 'Admin'), programs: groupPrograms(res), values: await cms.whatsappGroups(), errors: {}, flash: req.query.saved ? 'Saved. New applicants now see these links after they apply.' : null });
+});
+app.post('/admin/whatsapp-groups', requireAdmin, async (req, res) => {
+  const programs = groupPrograms(res);
+  const errors = {}, values = {};
+  programs.forEach((name, i) => {
+    const url = text(req.body['g' + i]).slice(0, 300);
+    values[name] = url;
+    if (url && !cms.WA_GROUP_RE.test(url)) errors['g' + i] = 'Paste a WhatsApp group invite link that starts with https://chat.whatsapp.com/';
+  });
+  if (Object.keys(errors).length) {
+    return res.status(422).render('admin/whatsapp-groups', { ...pageMeta(req, 'WhatsApp groups', 'Admin'), programs, values, errors, flash: null });
+  }
+  await cms.saveWhatsappGroups(values);
+  res.redirect(303, '/admin/whatsapp-groups?saved=1');
 });
 
 app.get('/admin/password', requireAdmin, (req, res) => {

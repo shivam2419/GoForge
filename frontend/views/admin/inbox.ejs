@@ -50,6 +50,7 @@
       <% } else { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.whatsapp) %>"><%= r.whatsapp %></a> &middot; <a href="<%= telHref(r.whatsapp) %>">Call</a></dd></div>
         <div><dt>Programme</dt><dd><%= r.track %></dd></div>
+        <% if (r.group_link_shown) { %><div><dt>WhatsApp group</dt><dd>Link shown</dd></div><% } %>
         <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
         <% if (r.city) { %><div><dt>City</dt><dd><%= r.city %></dd></div><% } %>
         <% if (r.mode) { %><div><dt>Mode</dt><dd><%= r.mode %></dd></div><% } %>

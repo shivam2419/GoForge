@@ -186,7 +186,7 @@ async function seedProgramsV2() {
 }
 
 // Applications table gained columns; add them to existing databases.
-const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER' };
+const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0' };
 async function migrate() {
   await db.batch(schemaSql().map(sql => [sql]));
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
@@ -195,7 +195,30 @@ async function migrate() {
   const contactCols = new Set((await db.all('PRAGMA table_info(contacts)')).map(r => r.name));
   if (!contactCols.has('kind')) await db.run("ALTER TABLE contacts ADD COLUMN kind TEXT NOT NULL DEFAULT 'client'");
   if (!contactCols.has('email')) await db.run('ALTER TABLE contacts ADD COLUMN email TEXT');
+  await db.run(`CREATE TABLE IF NOT EXISTS whatsapp_groups (
+    program TEXT PRIMARY KEY,
+    url TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+  )`);
   await seed();
+}
+
+// ---------- programme WhatsApp groups (only revealed after a saved application) ----------
+const WA_GROUP_RE = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9_-]{10,40}\/?(\?[A-Za-z0-9_=&.-]*)?$/;
+async function whatsappGroups() {
+  const out = {};
+  for (const r of await db.all('SELECT program, url FROM whatsapp_groups')) out[r.program] = r.url;
+  return out;
+}
+async function whatsappGroupFor(program) {
+  const r = await db.get('SELECT url FROM whatsapp_groups WHERE program = ?', program);
+  return r && WA_GROUP_RE.test(r.url) ? r.url : null;
+}
+async function saveWhatsappGroups(map) {
+  const stmts = Object.entries(map).map(([program, url]) => url
+    ? ["INSERT INTO whatsapp_groups (program, url, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now')) ON CONFLICT(program) DO UPDATE SET url = excluded.url, updated_at = excluded.updated_at", program, url]
+    : ['DELETE FROM whatsapp_groups WHERE program = ?', program]);
+  if (stmts.length) await db.batch(stmts);
 }
 
 // ---------- reads ----------
@@ -272,4 +295,4 @@ async function save(entity, id, values) {
 }
 const remove = (entity, id) => db.run(`DELETE FROM ${ENTITIES[entity].table} WHERE id = ?`, id);
 
-module.exports = { ENTITIES, migrate, listAll, listPublished, getById, publishedPrograms, programBySlug, validate, save, remove, slugify };
+module.exports = { WA_GROUP_RE, whatsappGroups, whatsappGroupFor, saveWhatsappGroups, ENTITIES, migrate, listAll, listPublished, getById, publishedPrograms, programBySlug, validate, save, remove, slugify };
