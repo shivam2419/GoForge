@@ -467,7 +467,7 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
 app.get('/about', async (req, res) => {
   const { credentials } = await trustData();
   res.render('about', { credentials, ...pageMeta(req, 'About',
-    'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder and Director.',
+    'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder & Director.',
     { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() }) });
 });
 
