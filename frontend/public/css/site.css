@@ -1311,3 +1311,15 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
 @media (max-width: 1000px) { .ind-grid { grid-template-columns: 1fr; } .proc4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .proc4 { grid-template-columns: 1fr; } .stu-card { grid-template-columns: 1fr; grid-template-areas: "k" "t" "d" "go"; gap: 6px; } .stu-go { margin-top: 8px; } }
 .hero-title { font-size: clamp(44px, 5.2vw, 76px); }
+.header-cta { flex: none; white-space: nowrap; }
+@media (min-width: 1001px) and (max-width: 1240px) {
+  .nav-desktop ul { gap: 0; }
+  .nav-desktop a { padding: 0 10px; font-size: 14.5px; }
+  .nav-desktop a::after { left: 10px; right: 10px; }
+  .header-cta { padding: 0 18px; }
+}
+@media (min-width: 1001px) and (max-width: 1100px) {
+  .nav-desktop a { padding: 0 8px; font-size: 14px; }
+  .nav-desktop a::after { left: 8px; right: 8px; }
+  .brand-tag { display: none; }
+}
