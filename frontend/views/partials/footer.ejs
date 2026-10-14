@@ -37,9 +37,9 @@
         <li><a href="<%= telHref(s.phone2) %>"><%= s.phone2 %></a></li>
         <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
       </ul>
+      <% if (s.linkedin_company) { %><a class="li-follow" href="<%= s.linkedin_company %>" target="_blank" rel="noopener"><%- include('icon', { name: 'linkedin' }) %><span>Follow us on LinkedIn</span></a><% } %>
       <ul class="footer-social">
         <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram"><%- include('icon', { name: 'instagram' }) %></a></li>
-        <li><a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener" aria-label="Rohit Sharma on LinkedIn"><%- include('icon', { name: 'linkedin' }) %></a></li>
       </ul>
     </div>
   </div>

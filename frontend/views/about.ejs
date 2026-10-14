@@ -49,7 +49,7 @@
   <div class="wrap about-grid">
     <figure class="founder-card" data-reveal>
       <%- include('partials/corners') %>
-      <%- include('partials/mark', { cls: 'founder-mark', decorative: true, uid: 'about' }) %>
+      <%- include('partials/mark', { cls: 'founder-mark', decorative: true, uid: 'about', sizes: '240px', lazy: true }) %>
       <figcaption>
         <span class="founder-name">Rohit Sharma</span>
         <span class="founder-role">Founder &amp; Director</span>
@@ -71,6 +71,7 @@
       <address class="about-address" data-reveal><%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
       <div class="hero-actions" data-reveal>
         <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+        <% if (s.linkedin_company) { %><a class="btn btn-ghost li-btn" href="<%= s.linkedin_company %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'linkedin' }) %> Follow Goforge Digital on LinkedIn</a><% } %>
         <a class="btn btn-ghost" href="/services">See services</a>
       </div>
     </div>

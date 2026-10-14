@@ -164,6 +164,7 @@ const BRAND = {
   address: { line1: 'D125b, 1st floor, Puri Highstreet', line2: 'Sector-81, Faridabad', locality: 'Faridabad', region: 'Haryana', country: 'IN' },
   instagram: 'https://www.instagram.com/goforgedigital/',
   linkedin: 'https://www.linkedin.com/in/rohit-sharma-bb9983258/',
+  linkedinCompany: 'https://www.linkedin.com/company/143989208',
   mapQuery: 'Puri Highstreet, Sector 81, Faridabad, Haryana',
   hours: [
     ['Monday to Saturday', '10:00 to 18:30'],

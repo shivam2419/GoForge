@@ -1239,3 +1239,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .motion-paused .journey .road-draw { animation: none !important; transition: none !important; stroke-dashoffset: 0 !important; }
 .motion-paused .journey .jpin, .motion-paused .journey .jstep, .motion-paused .journey .jnum { opacity: 1 !important; scale: 1 !important; translate: none !important; transition: none !important; }
 .motion-paused .journey .journey-steps::before { background-size: 100% 100%, auto !important; }
+
+/* Company LinkedIn */
+.li-follow { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 14px; padding: 0 16px 0 6px; border-radius: 999px; border: 1px solid rgba(244, 239, 230, .25); font-weight: 650; font-size: 14px; text-decoration: none; transition: border-color .25s, background .25s; }
+.li-follow .icon { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: #0a66c2; color: #fff; }
+.li-follow:hover { border-color: #0a66c2; background: rgba(10, 102, 194, .14); }
+.li-btn .icon { color: #0a66c2; }
+.li-btn:hover { border-color: #0a66c2; }
+/* Original raster GF logo */
+img.brand-mark, img.footer-logo-mark, img.board-mark, img.work-mark, img.orbit-mark, img.founder-mark, img.login-mark { height: auto; object-fit: contain; display: block; }
+img.footer-logo-mark { width: 40px; height: auto; }
+.work-mark, .founder-mark { display: block; }
+img.login-mark { width: 96px; margin: 0 auto 16px; }

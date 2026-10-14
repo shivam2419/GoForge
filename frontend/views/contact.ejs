@@ -23,6 +23,10 @@
           <span class="detail-icon"><%- include('partials/icon', { name: 'globe' }) %></span>
           <span><small>Website</small><a href="https://<%= BRAND.website %>"><%= BRAND.website %></a></span>
         </li>
+        <% if (s.linkedin_company) { %><li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'linkedin' }) %></span>
+          <span><small>LinkedIn</small><a href="<%= s.linkedin_company %>" target="_blank" rel="noopener">Follow us on LinkedIn</a></span>
+        </li><% } %>
         <li data-reveal>
           <span class="detail-icon"><%- include('partials/icon', { name: 'pin' }) %></span>
           <span><small>Office</small><address><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
@@ -31,7 +35,7 @@
       </ul>
       <ul class="footer-social social-dark">
         <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram"><%- include('partials/icon', { name: 'instagram' }) %></a></li>
-        <li><a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener" aria-label="Rohit Sharma on LinkedIn"><%- include('partials/icon', { name: 'linkedin' }) %></a></li>
+        <% if (s.linkedin_company) { %><li><a href="<%= s.linkedin_company %>" target="_blank" rel="noopener" aria-label="Goforge Digital on LinkedIn"><%- include('partials/icon', { name: 'linkedin' }) %></a></li><% } %>
       </ul>
     </div>
     <div class="form-card" id="message" data-reveal>
