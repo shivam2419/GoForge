@@ -33,10 +33,7 @@
           <a class="small-link" href="https://www.google.com/maps/search/?api=1&amp;query=<%= encodeURIComponent('Puri Highstreet Sector 81 Faridabad') %>" target="_blank" rel="noopener">Open in Google Maps</a></span>
         </li>
       </ul>
-      <ul class="footer-social social-dark">
-        <li><a href="<%= BRAND.instagram %>" target="_blank" rel="noopener" aria-label="Goforge Digital on Instagram"><%- include('partials/icon', { name: 'instagram' }) %></a></li>
-        <% if (s.linkedin_company) { %><li><a href="<%= s.linkedin_company %>" target="_blank" rel="noopener" aria-label="Goforge Digital on LinkedIn"><%- include('partials/icon', { name: 'linkedin' }) %></a></li><% } %>
-      </ul>
+      <%- include('partials/social-row', { s, dark: true }) %>
     </div>
     <div class="form-card" id="message" data-reveal>
       <div class="form-card-head"><p class="mini-h">Project enquiry</p><h2 class="h3 form-title">Send a message</h2></div>
