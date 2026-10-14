@@ -1324,3 +1324,74 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
   .brand-tag { display: none; }
 }
 @media (min-width: 601px) and (max-width: 1000px) { .ind-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- for schools ---------- */
+.school-hero { position: relative; overflow: hidden; }
+.school-hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.school-badges { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; }
+.school-badges li { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border: 1px solid var(--gold-soft); border-radius: 999px; background: var(--gold-wash); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep); }
+.school-badges .icon { width: 16px; height: 16px; }
+.sv-card { position: relative; overflow: hidden; background: var(--sheet); border: 1px solid rgba(202, 164, 101, .32); border-radius: 22px; padding: 28px 26px; box-shadow: var(--shadow-lg); rotate: 1.5deg; }
+.sv-eyebrow { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
+.sv-steps { list-style: none; margin: 0; padding: 0; position: relative; }
+.sv-steps::before { content: ""; position: absolute; left: 17px; top: 18px; bottom: 18px; width: 1.5px; background: linear-gradient(var(--gold), var(--gold-soft)); transform-origin: top; animation: sv-line 1.6s var(--ease-out) .4s both; }
+@keyframes sv-line { from { transform: scaleY(0); } }
+.sv-steps li { position: relative; display: flex; align-items: center; gap: 16px; padding: 10px 0; animation: rise .7s var(--ease-out) both; }
+.sv-steps li:nth-child(1) { animation-delay: .5s; } .sv-steps li:nth-child(2) { animation-delay: .75s; } .sv-steps li:nth-child(3) { animation-delay: 1s; } .sv-steps li:nth-child(4) { animation-delay: 1.25s; }
+.sv-dot { position: relative; display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 50%; background: var(--ink); color: var(--gold); font-family: var(--serif); font-size: 17px; font-weight: 600; }
+.sv-steps strong { display: block; font-family: var(--serif); font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.15; }
+.sv-steps small { font-size: 12.5px; color: var(--ink-3); font-weight: 600; letter-spacing: .04em; }
+.school-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; }
+.school-stats div { position: relative; text-align: center; padding: 28px 16px 24px; border-radius: 18px; background: var(--ink); box-shadow: 0 16px 30px -22px rgba(20, 28, 48, .8); }
+.school-stats dt { font-family: var(--serif); font-size: clamp(40px, 4.4vw, 60px); font-weight: 600; line-height: 1; color: var(--gold); }
+.school-stats dd { margin: 10px 0 0; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(240, 236, 227, .8); }
+.school-mission { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+.school-mission .prose p:last-child { margin-bottom: 0; }
+.levels { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.levels::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 26px; height: 2px; background: linear-gradient(90deg, var(--gold-soft), var(--gold), var(--gold-soft)); transform-origin: left; }
+.level { position: relative; text-align: center; padding: 0 6px; }
+.level-node { position: relative; z-index: 1; display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: var(--ink); color: var(--gold); border: 4px solid var(--paper); box-shadow: 0 0 0 1px var(--gold-soft); font-family: var(--serif); font-size: 24px; font-weight: 600; }
+.level-k { margin: 16px 0 4px; font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-deep); }
+.level h3 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin: 0 0 14px; }
+.level-topics { list-style: none; margin: 0; padding: 16px 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; }
+.level-topics li { padding: 5px 11px; border-radius: 999px; background: var(--gold-wash); font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.reveal-on .levels::before { transform: scaleX(0); transition: transform 1.8s var(--ease-out) .2s; }
+.reveal-on .levels.is-in::before { transform: scaleX(1); }
+.reveal-on .levels .level { opacity: 0; translate: 0 14px; transition: opacity .5s, translate .6s var(--ease-out); }
+.reveal-on .levels.is-in .level { opacity: 1; translate: 0 0; }
+.reveal-on .levels .level:nth-child(2) { transition-delay: .35s; } .reveal-on .levels .level:nth-child(3) { transition-delay: .7s; } .reveal-on .levels .level:nth-child(4) { transition-delay: 1.05s; }
+.reveal-on .levels.is-in { opacity: 1; transform: none; }
+.school-needs { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 22px; margin-top: 40px; padding: 18px 22px; border: 1px dashed var(--gold-soft); border-radius: 16px; }
+.school-needs .mini-h { margin: 0; }
+.school-needs ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding: 0; font-size: 14.5px; font-weight: 600; color: var(--ink-2); }
+.school-needs li::before { content: "✦"; margin-right: 8px; color: var(--gold); font-size: 11px; }
+.ssw-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.ssw-list li { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid var(--cream-line); color: rgba(240, 236, 227, .76); font-size: 15px; line-height: 1.5; }
+.ssw-list li:last-child { border-bottom: 0; }
+.ssw-list strong { display: block; color: var(--paper); font-size: 16.5px; margin-bottom: 2px; }
+.ssw-icon { display: inline-grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 12px; border: 1px solid rgba(202, 164, 101, .4); color: var(--gold); }
+.ssw-icon .icon { width: 20px; height: 20px; }
+.ind-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 700; text-decoration: none; color: var(--gold-deep); }
+.ind-link .icon { width: 16px; height: 16px; transition: transform .25s var(--ease); }
+.ind-link:hover .icon { transform: translateX(3px); }
+@media (max-width: 1000px) {
+  .school-hero-grid, .school-mission { grid-template-columns: 1fr; }
+  .school-visual { max-width: 420px; }
+  .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 36px; }
+  .levels::before { display: none; }
+}
+@media (max-width: 600px) {
+  .school-stats { grid-template-columns: 1fr; }
+  .levels { grid-template-columns: 1fr; }
+  .level { text-align: left; padding-left: 70px; }
+  .level-node { position: absolute; left: 0; top: 0; }
+  .level-k { margin-top: 4px; }
+  .level-topics { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .sv-steps::before, .sv-steps li { animation: none; } }
+@media (min-width: 1001px) and (max-width: 1100px) {
+  .nav-desktop a { padding: 0 6px; font-size: 13.5px; }
+  .nav-desktop a::after { left: 6px; right: 6px; }
+  .header-cta { padding: 0 16px; }
+}
+.school-hero .hero-title-sm { font-size: clamp(38px, 4.6vw, 66px); max-width: none; }

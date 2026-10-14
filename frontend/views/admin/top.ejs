@@ -10,6 +10,7 @@
     <nav class="admin-nav" aria-label="Admin">
       <a href="/admin/contacts"<% if (path.startsWith('/admin/contacts')) { %> aria-current="page"<% } %>>Enquiries<% if (newCounts.contacts) { %> <span class="count"><%= newCounts.contacts %></span><% } %></a>
       <a href="/admin/colleges"<% if (path.startsWith('/admin/colleges')) { %> aria-current="page"<% } %>>Colleges<% if (newCounts.colleges) { %> <span class="count"><%= newCounts.colleges %></span><% } %></a>
+      <a href="/admin/schools"<% if (path.startsWith('/admin/schools')) { %> aria-current="page"<% } %>>Schools<% if (newCounts.schools) { %> <span class="count"><%= newCounts.schools %></span><% } %></a>
       <a href="/admin/applications"<% if (path.startsWith('/admin/applications')) { %> aria-current="page"<% } %>>Internship<% if (newCounts.applications) { %> <span class="count"><%= newCounts.applications %></span><% } %></a>
       <a href="/admin/programs"<% if (path.startsWith('/admin/programs')) { %> aria-current="page"<% } %>>Programmes</a>
       <a href="/admin/instructors"<% if (path.startsWith('/admin/instructors')) { %> aria-current="page"<% } %>>Instructors</a>
