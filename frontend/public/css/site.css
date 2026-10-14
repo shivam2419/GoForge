@@ -1283,3 +1283,43 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
 .leadership-link:hover, .leadership-link:focus-visible { border-color: var(--gold); color: var(--gold-deep); background: var(--gold-wash); }
 .leadership-link .icon { width: 18px; height: 18px; }
 @media (max-width: 1000px) { .brand-card { position: static; max-width: 520px; } }
+
+/* home clarity */
+.hero-note { margin: 14px 0 0; font-size: 14px; color: var(--ink-3); }
+.hero-note[data-hero-item] { animation-delay: .52s; }
+.ind-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ind-card { position: relative; overflow: hidden; background: var(--sheet); border: 1px solid var(--line); border-radius: 20px; padding: 26px 24px; transition: transform .3s var(--ease), border-color .3s; }
+.ind-card:hover { transform: translateY(-4px); border-color: var(--gold-soft); }
+.ind-card > .corner { width: 44px; height: 44px; opacity: .6; }
+.ind-card .service-icon { margin-bottom: 16px; }
+.ind-card h3 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin: 0 0 6px; }
+.ind-card p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.55; }
+.proc4 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.proc4 li { position: relative; padding: 22px 20px; border-top: 2px solid var(--gold-soft); }
+.proc4 .step-num { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: var(--gold); font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.proc4 h3 { font-size: 19px; margin: 0 0 6px; }
+.proc4 p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.students-strip { padding: 0 0 clamp(40px, 5vw, 64px); }
+.stu-card { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "k t go" "k d go"; align-items: center; gap: 2px 24px; padding: 20px 26px; border: 1px solid var(--line-2); border-radius: 18px; background: var(--sheet); text-decoration: none; color: var(--ink); transition: border-color .3s, transform .3s var(--ease); }
+.stu-card:hover { border-color: var(--gold-soft); transform: translateY(-2px); }
+.stu-card .audience-k { grid-area: k; }
+.stu-t { grid-area: t; font-family: var(--serif); font-size: 22px; font-weight: 600; }
+.stu-d { grid-area: d; font-size: 14px; color: var(--ink-2); }
+.stu-go { grid-area: go; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+.stu-go .icon { width: 16px; height: 16px; }
+.text-link-light { color: var(--paper); border-color: rgba(240, 236, 227, .35); align-self: center; }
+@media (max-width: 1000px) { .ind-grid { grid-template-columns: 1fr; } .proc4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .proc4 { grid-template-columns: 1fr; } .stu-card { grid-template-columns: 1fr; grid-template-areas: "k" "t" "d" "go"; gap: 6px; } .stu-go { margin-top: 8px; } }
+.hero-title { font-size: clamp(44px, 5.2vw, 76px); }
+.header-cta { flex: none; white-space: nowrap; }
+@media (min-width: 1001px) and (max-width: 1240px) {
+  .nav-desktop ul { gap: 0; }
+  .nav-desktop a { padding: 0 10px; font-size: 14.5px; }
+  .nav-desktop a::after { left: 10px; right: 10px; }
+  .header-cta { padding: 0 18px; }
+}
+@media (min-width: 1001px) and (max-width: 1100px) {
+  .nav-desktop a { padding: 0 8px; font-size: 14px; }
+  .nav-desktop a::after { left: 8px; right: 8px; }
+  .brand-tag { display: none; }
+}

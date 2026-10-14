@@ -6,24 +6,14 @@
       <% const img = c.image_url || (/msme|udyam/i.test(c.title + ' ' + (c.issuer || '')) ? '/img/badges/msme-registered.svg' : ''); %>
       <div class="badge-card" data-reveal>
         <span class="badge-tile"><% if (img) { %><img src="<%= img %>" alt="<%= c.title %><%= c.image_url ? ' certificate' : '' %>" loading="lazy" width="120" height="72"><% } else { %><%- include('icon', { name: 'check' }) %><% } %></span>
-        <span class="badge-text"><strong><%= c.title %></strong><% if (c.issuer) { %><span><%= c.issuer %></span><% } %><% if (c.number) { %><span class="badge-num">No. <%= c.number %></span><% } %><% if (c.link_url) { %><a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify <%- include('icon', { name: 'upright' }) %></a><% } %></span>
+        <span class="badge-text"><strong><%= c.title %></strong><% if (c.issuer) { %><span><%= c.issuer %></span><% } %><% if (c.number) { %><span class="badge-num">No. <%= c.number %></span><% } %><% if (c.link_url) { %><a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify on Udyam</a><% } %></span>
       </div>
       <% }) %>
     </div>
     <div class="tb-copy">
       <p class="eyebrow" data-reveal>A registered, accountable partner</p>
       <h2 id="tb-h" class="h2" data-reveal>A Government-registered business <em>you can visit in Faridabad.</em></h2>
-      <p class="section-intro" data-reveal>Goforge Digital is an MSME (Udyam) registered company with an office at <%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>. One team takes your project from the first call to launch and beyond, with a written scope and price before work begins.</p>
-      <ul class="tb-points" data-reveal-group>
-        <li data-reveal><%- include('icon', { name: 'code' }) %><span><strong>Custom software</strong>Web apps, portals and internal tools</span></li>
-        <li data-reveal><%- include('icon', { name: 'database' }) %><span><strong>CRM &amp; ERP</strong>Leads, customers, stock and billing in one place</span></li>
-        <li data-reveal><%- include('icon', { name: 'megaphone' }) %><span><strong>Websites &amp; marketing</strong>Fast sites, SEO and ads you can measure</span></li>
-        <li data-reveal><%- include('icon', { name: 'gear' }) %><span><strong>End-to-end support</strong>Design, build, launch and ongoing care</span></li>
-      </ul>
-      <div class="hero-actions" data-reveal>
-        <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('icon', { name: 'arrow' }) %></a>
-        <a class="btn btn-ghost" href="/about">About us</a>
-      </div>
+      <p class="section-intro" data-reveal>Goforge Digital is an MSME (Udyam) registered company with an office in Sector 81, Faridabad. One team takes your project from the first call to launch and beyond, with a clear plan agreed before work begins.</p>
     </div>
   </div>
 </section>

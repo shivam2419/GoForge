@@ -24,7 +24,7 @@
           <strong><%= c.title %></strong>
           <% if (c.issuer) { %><span><%= c.issuer %></span><% } %>
           <% if (c.number) { %><span class="badge-num">No. <%= c.number %></span><% } %>
-          <% if (c.link_url) { %><a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify <%- include('icon', { name: 'upright' }) %></a><% } %>
+          <% if (c.link_url) { %><a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify on Udyam</a><% } %>
         </span>
       </li>
       <% }) %>
