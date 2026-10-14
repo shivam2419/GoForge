@@ -72,7 +72,7 @@ chk "faq register question" 1 $(echo "$FQ" | grep -c 'How can I register for an 
 chk "faq no whatsapp" 0 $(echo "$FQ" | grep -ci 'whatsapp')
 chk "desktop nav home active" 1 $(curl -s $B/ | grep -c "<li><a href=\"/\" aria-current=\"page\">Home</a></li>")
 # zero whatsapp anywhere in public output
-WA=0; for u in / /services /services/software /services/crm-erp /services/automation /services/marketing /work /internship /colleges /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
+WA=0; for u in / /services /services/software /services/crm-erp /services/automation /services/marketing /work /internship /colleges /schools /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
 chk "zero whatsapp in public output" 0 $WA
 # company LinkedIn
 LI='https://www.linkedin.com/company/143989208'
@@ -81,3 +81,17 @@ chk "social mail icon (footer+contact)" 2 $(curl -s $B/contact | grep -c "aria-l
 chk "contact linkedin detail" 1 $(curl -s $B/contact | grep -c 'Follow us on LinkedIn</a></span>')
 chk "about linkedin button" 1 $(curl -s $B/about | grep -c 'Follow Goforge Digital on LinkedIn')
 chk "jsonld sameAs company" 1 $(curl -s $B/ | grep -c "\"sameAs\":\[\"https://www.instagram.com/goforgedigital/\",\"$LI\"\]")
+# schools page
+chk "schools 200" 200 $(curl -s -o /dev/null -w %{http_code} $B/schools)
+chk "schools in nav" 1 $(curl -s $B/ | grep -c 'href="/schools">Schools</a>')
+chk "schools in footer" 1 $(curl -s $B/ | grep -c 'href="/schools">For schools</a>')
+chk "schools in sitemap" 1 $(curl -s $B/sitemap.xml | grep -c '/schools</loc>')
+chk "schools breadcrumb" 1 $(curl -s $B/schools | grep -c '"BreadcrumbList"')
+chk "schools stats" 3 $(curl -s $B/schools | grep -cE '<dd>(Students trained|Partner schools|NEP 2020 aligned)</dd>')
+chk "schools no fee figures" 0 $(curl -s $B/schools | grep -c '₹')
+ST=$(curl -s -c ck2 $B/schools | grep -o 'name="_csrf" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
+chk "school bad interest 422" 422 $(curl -s -b ck2 -o /dev/null -w %{http_code} --data-urlencode "_csrf=$ST" -d "school=Test Public School&name=TEST Principal&phone=9876543210&interest=Other" $B/schools)
+chk "school ok 200" 200 $(curl -s -b ck2 -o /dev/null -w %{http_code} --data-urlencode "_csrf=$ST" -d "school=Test Public School&name=TEST Principal&role=Principal&phone=9876543210&email=p@example.com&city=Faridabad&size=300–800 students&interest=Both" $B/schools)
+chk "school in schools inbox" 1 $(curl -s -b ck $B/admin/schools | grep -c 'Test Public School')
+chk "school not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 'Test Public School')
+rm -f ck2

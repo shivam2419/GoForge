@@ -1,0 +1,221 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<% const vision = [
+  ['spark', 'Learning by doing', 'Students build, test and improve real projects instead of memorising steps for an exam.'],
+  ['check', 'NEP 2020 aligned skills', 'Coding, computational thinking and AI introduced at the right age, as the policy recommends.'],
+  ['eye', 'Critical thinking', 'Every project starts with a question, so students learn to break problems down and reason clearly.'],
+  ['briefcase', 'Career readiness', 'Students meet the tools and roles of the modern workplace long before they choose a stream.']
+];
+const provide = [
+  ['book', 'NEP-aligned curriculum', 'A structured, grade-wise curriculum for Classes 5 to 12, with lesson plans and activity sheets.'],
+  ['code', 'Industry project orientation', 'Hands-on projects modelled on real products our team builds for clients.'],
+  ['user', 'Expert mentorship', 'Live sessions with working developers and data professionals who guide every project.'],
+  ['browser', 'Online and hybrid delivery', 'Sessions in your computer lab, live online, or a mix that fits your timetable.'],
+  ['chart', 'Progress and impact reports', 'Clear reports on attendance, skills and project work for every class each term.'],
+  ['cap', 'Teacher support', 'Orientation and resources before each unit, so your faculty can lead with confidence.']
+];
+const levels = [
+  ['Level 1', 'Foundations', 'Classes 5–8', ['Python basics', 'Web basics', 'Robotics', 'IoT']],
+  ['Level 2', 'Intelligent systems', 'Classes 8–10', ['Data science', 'Machine learning', 'Data visualisation']],
+  ['Level 3', 'Applied AI', 'Classes 10–12', ['AI ethics', 'Natural language processing', 'Computer vision']],
+  ['Level 4', 'Specialised skills', 'Class 12+', ['App development', 'Cybersecurity', 'Cloud', 'Blockchain']]
+];
+const software = [
+  ['browser', 'School website', 'A fast, elegant website that parents trust and can find on Google.'],
+  ['database', 'Admission enquiry system', 'Every enquiry captured in one place, with follow-ups the office can track.'],
+  ['gear', 'School ERP', 'Students, fees records, attendance and staff in one simple system.'],
+  ['mail', 'Parent updates', 'Timely notices, results and reminders sent to parents automatically.'],
+  ['spark', 'AI tools for administration', 'Drafts, reports and replies prepared by AI and approved by your staff.']
+];
+const steps = [
+  ['Discovery call', 'We learn about your school, classes and goals.'],
+  ['Tailored plan', 'A programme and schedule shaped to your timetable.'],
+  ['Launch', 'Teacher orientation, then the first sessions begin.'],
+  ['Review', 'Termly reports and a showcase of student projects.']
+];
+const faqs = [
+  ['Which classes is the programme for?', 'Classes 5 to 12, in four levels. We recommend a starting level for each class during the discovery call.'],
+  ['Does it fit into our timetable?', 'Yes. Most schools use one or two periods a week in the computer lab. We plan the schedule around your academic calendar.'],
+  ['Do our teachers need a technical background?', 'No. Our mentors lead the sessions, and teachers receive orientation and resources before each unit.'],
+  ['Can we take the software and the skills programme together?', 'Yes. Many schools start with one and add the other. Choose “Both” in the form and we will plan them together.'],
+  ['How are fees decided?', 'Fees depend on the classes, number of students and the services you choose. They are shared on a call, once we understand your needs.']
+]; %>
+<section class="page-hero school-hero">
+  <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="wrap school-hero-grid">
+    <div>
+      <p class="eyebrow" data-hero-item>For schools</p>
+      <h1 class="h1 hero-title-sm"><span class="line"><span>Skill-driven learning</span></span> <span class="line"><span><em>for future-ready schools.</em></span></span></h1>
+      <p class="lede" data-hero-item>NEP 2020 aligned coding, AI and technology programmes for Classes 5 to 12, plus the software that helps your school run smoothly. Delivered by a team that builds real products every day.</p>
+      <ul class="school-badges" data-hero-item>
+        <li><%- include('partials/icon', { name: 'check' }) %>NEP 2020 aligned</li>
+        <li><%- include('partials/icon', { name: 'shield' }) %>MSME registered</li>
+      </ul>
+      <div class="hero-actions" data-hero-item>
+        <a class="btn btn-primary btn-lg" href="#school-enquiry">Bring Goforge to your school <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-ghost btn-lg" href="#framework">Learn more</a>
+      </div>
+    </div>
+    <div class="school-visual" aria-hidden="true" data-hero-item>
+      <div class="sv-card">
+        <%- include('partials/corners') %>
+        <p class="sv-eyebrow">The learning path</p>
+        <ol class="sv-steps">
+          <% levels.forEach((l, i) => { %><li><span class="sv-dot"><%= i + 1 %></span><span><strong><%= l[1] %></strong><small><%= l[2] %></small></span></li><% }) %>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight" aria-label="Goforge for schools in numbers">
+  <div class="wrap">
+    <dl class="school-stats" data-reveal-group data-zoom>
+      <div data-reveal><dt><span data-count="100">100</span>+</dt><dd>Students trained</dd></div>
+      <div data-reveal><dt><span data-count="5">5</span>+</dt><dd>Partner schools</dd></div>
+      <div data-reveal><dt><span data-count="100">100</span>%</dt><dd>NEP 2020 aligned</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="mission-h">
+  <div class="wrap school-mission">
+    <div>
+      <p class="eyebrow" data-reveal>Our mission</p>
+      <h2 id="mission-h" class="h2" data-reveal>Technology skills, taught <em>the way they are used.</em></h2>
+    </div>
+    <div class="prose">
+      <p class="prose-lead" data-reveal>We help schools give every student practical experience with coding, data and AI, guided by people who build software for a living.</p>
+      <p data-reveal>Goforge Digital is an MSME-registered software company in Faridabad. The same team that builds websites, CRMs and AI tools for businesses designs our school programmes, so what students learn reflects how technology is really built today.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="vision-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Our vision</p>
+      <h2 id="vision-h" class="h2" data-reveal>From passive learners <em>to student innovators.</em></h2>
+    </div>
+    <ul class="who-grid" data-reveal-group>
+      <% vision.forEach(([icon, t, d]) => { %>
+      <li class="who-card" data-reveal><span class="service-icon"><%- include('partials/icon', { name: icon }) %></span><h3><%= t %></h3><p><%= d %></p></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="provide-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>What we provide</p>
+      <h2 id="provide-h" class="h2" data-reveal>Everything your school needs <em>to begin.</em></h2>
+    </div>
+    <ul class="values values-3" data-zoom data-reveal-group>
+      <% provide.forEach(([icon, t, d]) => { %>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: icon }) %></span><h3><%= t %></h3><p><%= d %></p></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="framework" aria-labelledby="fw-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Programme framework</p>
+      <h2 id="fw-h" class="h2" data-reveal>Four levels, <em>one clear path.</em></h2>
+      <p class="section-intro" data-reveal>Each level builds on the last, so students grow from first lines of code to specialised skills.</p>
+    </div>
+    <ol class="levels" data-reveal>
+      <% levels.forEach(([k, t, cls, topics], i) => { %>
+      <li class="level">
+        <span class="level-node"><%= i + 1 %></span>
+        <p class="level-k"><%= k %> &middot; <%= cls %></p>
+        <h3><%= t %></h3>
+        <ul class="level-topics"><% topics.forEach(x => { %><li><%= x %></li><% }) %></ul>
+      </li>
+      <% }) %>
+    </ol>
+    <div class="school-needs" data-reveal>
+      <p class="mini-h">To get started, you need</p>
+      <ul><li>A computer lab or smart classroom</li><li>Internet access</li><li>One or two periods a week</li><li>A coordinating teacher</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="navy-band" aria-labelledby="ssw-h">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap navy-grid">
+    <div>
+      <p class="eyebrow eyebrow-light" data-reveal>Software for schools</p>
+      <h2 id="ssw-h" class="h2 h2-light" data-reveal>A smoother school office, <em>built by us.</em></h2>
+      <p class="navy-text" data-reveal>Beyond the classroom, we build the software that runs a modern school, from the first admission enquiry to the last parent notice.</p>
+      <a class="btn btn-gold btn-lg" href="/services/software" data-reveal>See our software services <%- include('partials/icon', { name: 'upright' }) %></a>
+    </div>
+    <ul class="ssw-list" data-reveal-group>
+      <% software.forEach(([icon, t, d]) => { %>
+      <li data-reveal><span class="ssw-icon"><%- include('partials/icon', { name: icon }) %></span><span><strong><%= t %></strong><%= d %></span></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="sproc-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>How a partnership starts</p>
+      <h2 id="sproc-h" class="h2" data-reveal>Four simple <em>steps.</em></h2>
+    </div>
+    <ol class="proc4" data-reveal-group>
+      <% steps.forEach((st, i) => { %><li data-reveal><span class="step-num"><%= i + 1 %></span><h3><%= st[0] %></h3><p><%= st[1] %></p></li><% }) %>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt" id="school-enquiry" aria-labelledby="sform-h">
+  <div class="wrap split split-form">
+    <div>
+      <p class="eyebrow" data-reveal>School enquiry</p>
+      <h2 id="sform-h" class="h2" data-reveal>Bring Goforge <em>to your school.</em></h2>
+      <p class="section-intro" data-reveal>Tell us a little about your school. Our schools team replies within one working day to plan a discovery call.</p>
+      <ul class="contact-mini" data-reveal>
+        <li><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a></li>
+        <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
+      </ul>
+    </div>
+    <div class="form-card" data-reveal>
+      <form class="form" data-form="school" method="post" action="/schools" novalidate data-ajax-form>
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <div class="hp" aria-hidden="true"><label for="sc-website">Leave this empty</label><input id="sc-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="form-alert" role="alert" data-form-alert<% if (!Object.keys(errors).length) { %> hidden<% } %>><%= Object.keys(errors).length ? 'Please check the highlighted fields.' : '' %></div>
+        <div class="form-grid">
+          <%- include('partials/field', { f: { id: 'sc-school', name: 'school', label: 'School name', required: true, min: 3, max: 160, autocomplete: 'organization', wide: true } }) %>
+          <%- include('partials/field', { f: { id: 'sc-name', name: 'name', label: 'Contact person', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-role', name: 'role', label: 'Role', max: 80, hint: 'For example: Principal, Director, Coordinator' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-phone', name: 'phone', label: 'Phone', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-city', name: 'city', label: 'City', max: 60, autocomplete: 'address-level2' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-size', name: 'size', label: 'Student strength', as: 'select', options: SCHOOL_SIZES, placeholder: 'Choose a range' } }) %>
+          <%- include('partials/field', { f: { id: 'sc-interest', name: 'interest', label: 'Interested in', as: 'select', required: true, options: SCHOOL_INTERESTS, placeholder: 'Choose one', wide: true } }) %>
+          <%- include('partials/field', { f: { id: 'sc-message', name: 'message', label: 'Anything else we should know', as: 'textarea', max: 2000, wide: true, hint: 'Classes, preferred start date or the software you need.' } }) %>
+        </div>
+        <div class="form-foot">
+          <button class="btn btn-primary" type="submit" data-submit>Send enquiry <%- include('partials/icon', { name: 'arrow' }) %></button>
+          <p class="form-note">We use these details only to reply about a school programme. <a href="/privacy">Privacy notice</a>.</p>
+        </div>
+        <%- include('partials/form-success') %>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="sfaq-h">
+  <div class="wrap faq-wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Questions schools ask</p>
+      <h2 id="sfaq-h" class="h2" data-reveal>School <em>FAQ.</em></h2>
+    </div>
+    <%- include('partials/faq-accordion', { items: faqs.map(([q, a]) => ({ q, a })), name: 'faq-schools', openFirst: true }) %>
+  </div>
+</section>
+<%- include('partials/footer') %>

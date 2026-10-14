@@ -130,6 +130,24 @@ function validateCollege(body) {
   field(errors, values, body, 'message', 'a short message', { max: 2000 });
   return { errors, values };
 }
+const SCHOOL_INTERESTS = ['Skills programme for students', 'School software', 'Both'];
+const SCHOOL_SIZES = ['Under 300 students', '300–800 students', '800–1,500 students', '1,500+ students'];
+function validateSchool(body) {
+  const errors = {}, values = {};
+  field(errors, values, body, 'school', 'the school name', { required: true, min: 3, max: 160 });
+  field(errors, values, body, 'name', 'the contact person', { required: true, min: 2, max: 80 });
+  field(errors, values, body, 'role', 'your role', { max: 80 });
+  phoneField(errors, values, body, 'phone', 'phone number');
+  values.email = text(body.email);
+  if (values.email && (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120)) errors.email = 'Please enter a valid email address.';
+  field(errors, values, body, 'city', 'the city', { max: 60 });
+  values.size = text(body.size);
+  if (values.size && !SCHOOL_SIZES.includes(values.size)) errors.size = 'Please choose from the list.';
+  values.interest = text(body.interest);
+  if (!SCHOOL_INTERESTS.includes(values.interest)) errors.interest = 'Please choose what you are interested in.';
+  field(errors, values, body, 'message', 'a short message', { max: 2000 });
+  return { errors, values };
+}
 const MODES = ['Live online', 'Either is fine'];
 const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'Other'];
 function validateApplication(body, TRACKS) {
@@ -421,6 +439,22 @@ app.post('/colleges', formLimiter, async (req, res) => {
   respondOk(req, res, 'college', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our partnerships team will contact you within one working day.');
 });
 
+const SCHOOLS_DESC = 'NEP 2020 aligned skills programmes for Classes 5 to 12 (coding, AI, data science, robotics) and school software: websites, admission enquiry systems, ERP and parent updates. Goforge Digital, Faridabad.';
+const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For Schools: NEP 2020 Skills Programmes & School Software | Goforge Digital' });
+app.get('/schools', (req, res) => res.render('schools', { values: {}, errors: {}, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) }));
+app.post('/schools', formLimiter, async (req, res) => {
+  if (text(req.body.website)) return respondOk(req, res, 'school', 'Thanks. Your enquiry has been sent.');
+  const { errors, values } = validateSchool(req.body);
+  if (Object.keys(errors).length) {
+    if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
+    return res.status(422).render('schools', { errors, values, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) });
+  }
+  const msg = [values.role && 'Role: ' + values.role, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'school')",
+    values.name, values.school, values.phone, values.interest, msg, values.email || null);
+  respondOk(req, res, 'school', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our schools team will contact you within one working day.');
+});
+
 async function trustData() {
   const [stats, credentials, instructors, testimonials] = await Promise.all([
     cms.listPublished('stats'), cms.listPublished('credentials'), cms.listPublished('instructors'), cms.listPublished('testimonials')
@@ -517,7 +551,7 @@ function respondOk(req, res, kind, message) {
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
-  const pages = ['/', '/services', '/work', '/internship', '/colleges', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
+  const pages = ['/', '/services', '/work', '/internship', '/colleges', '/schools', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
     .concat(SERVICES.map(item => '/services/' + item.slug))
     .concat(res.locals.PROGRAMS.map(item => '/internship/programs/' + item.slug));
   const today = new Date().toISOString().slice(0, 10);
@@ -553,7 +587,8 @@ async function requireAdmin(req, res, next) {
   res.set('Cache-Control', 'no-store');
   res.locals.noindex = true;
   res.locals.newCounts = {
-    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind <> 'college'")).n,
+    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind NOT IN ('college', 'school')")).n,
+    schools: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'school'")).n,
     colleges: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'college'")).n,
     applications: (await db.get("SELECT COUNT(*) n FROM applications WHERE status = 'New'")).n
   };
@@ -590,10 +625,13 @@ app.get('/admin', requireAdmin, (req, res) => res.redirect(303, '/admin/contacts
 
 const INBOXES = {
   contacts: {
-    table: 'contacts', title: 'Project enquiries', base: "kind <> 'college'", search: ['name', 'business', 'phone', 'service', 'message']
+    table: 'contacts', title: 'Project enquiries', base: "kind NOT IN ('college', 'school')", search: ['name', 'business', 'phone', 'service', 'message']
   },
   colleges: {
     table: 'contacts', title: 'College enquiries', base: "kind = 'college'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
+  },
+  schools: {
+    table: 'contacts', title: 'School enquiries', base: "kind = 'school'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
   },
   applications: {
     table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city']
