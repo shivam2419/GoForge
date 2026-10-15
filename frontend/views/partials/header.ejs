@@ -1,6 +1,8 @@
 <body class="<%= locals.bodyClass || '' %>">
 <a class="skip-link" href="#main">Skip to content</a>
-<% const nav = [['/services','Services'],['/work','Work'],['/internship','Internship'],['/schools','Schools'],['/colleges','Colleges'],['/about','About'],['/contact','Contact']]; %>
+<% const careers = [['/internship','Internship'],['/schools','Schools'],['/colleges','Colleges']];
+   const nav = [['/services','Services', SERVICE_PAGES.map(x => ['/services/' + x.slug, x.name])],['/work','Work'],['/about','About'],[null,'Careers', careers],['/contact','Contact']];
+   const isCur = href => href && (path === href || path.startsWith(href + '/')); %>
 <header class="site-header" data-header>
   <div class="wrap header-row">
     <a class="brand" href="/" aria-label="Goforge Digital home">
@@ -10,8 +12,17 @@
     <nav class="nav-desktop" aria-label="Main">
       <ul>
         <li><a href="/"<% if (path === '/') { %> aria-current="page"<% } %>>Home</a></li>
-        <% nav.forEach(([href, label]) => { const cur = path === href || path.startsWith(href + '/'); %>
+        <% nav.forEach(([href, label, sub]) => { const cur = isCur(href) || (sub || []).some(([h]) => isCur(h)); %>
+        <% if (sub) { %>
+        <li class="nav-drop">
+          <% if (href) { %><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><%= label %></a><% } else { %><a href="<%= sub[0][0] %>" aria-haspopup="true"<% if (cur) { %> aria-current="page"<% } %> data-nav-group><%= label %></a><% } %>
+          <ul>
+            <% sub.forEach(([h, l]) => { %><li><a href="<%= h %>"><%= l %></a></li><% }) %>
+          </ul>
+        </li>
+        <% } else { %>
         <li><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><%= label %></a></li>
+        <% } %>
         <% }) %>
       </ul>
     </nav>
@@ -25,8 +36,10 @@
     <nav class="wrap" aria-label="Mobile">
       <ul>
         <li><a href="/"<% if (path === '/') { %> aria-current="page"<% } %>><span class="mm-num">00</span>Home</a></li>
-        <% nav.forEach(([href, label], i) => { const cur = path === href; %>
-        <li><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><span class="mm-num">0<%= i + 1 %></span><%= label %></a></li>
+        <% nav.forEach(([href, label, sub], i) => { const cur = path === href; %>
+        <li><% if (href) { %><a href="<%= href %>"<% if (cur) { %> aria-current="page"<% } %>><span class="mm-num">0<%= i + 1 %></span><%= label %></a><% } else { %><span class="mm-group"><span class="mm-num">0<%= i + 1 %></span><%= label %></span><% } %>
+          <% if (sub && !href) { %><ul class="mm-sub"><% sub.forEach(([h, l]) => { %><li><a href="<%= h %>"<% if (path === h) { %> aria-current="page"<% } %>><%= l %></a></li><% }) %></ul><% } %>
+        </li>
         <% }) %>
       </ul>
       <div class="mobile-menu-foot">

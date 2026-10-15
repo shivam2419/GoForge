@@ -1,44 +1,113 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
+<% const sp = service; const related = sp.related.map(sl => SERVICE_PAGES.find(x => x.slug === sl)).filter(Boolean); %>
 <section class="page-hero">
   <div class="wrap">
     <p class="eyebrow" data-hero-item><a class="crumb" href="/services">Services</a></p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span><%= service.name %></span></span></h1>
-    <p class="lede" data-hero-item><%= s[service.key] %></p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span><%= sp.h1 %></span></span></h1>
+    <p class="lede" data-hero-item><%= sp.lede %></p>
     <div class="hero-actions" data-hero-item>
-      <a class="btn btn-primary btn-lg" href="/contact?service=<%= encodeURIComponent(service.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= service.name %>">Talk about this <%- include('partials/icon', { name: 'upright' }) %></a>
-      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.check.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.check.name %>">Free website check</a>
+      <a class="btn btn-primary btn-lg" href="/contact?service=<%= encodeURIComponent(sp.contact) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= sp.contact %>">Book a free consultation <%- include('partials/icon', { name: 'upright' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="#svc-faq">Common questions</a>
     </div>
   </div>
 </section>
-<section class="section section-tight">
-  <div class="wrap detail-grid">
-    <article class="detail-block" data-reveal>
-      <p class="mini-h">This can include</p>
-      <ul class="check-list">
-        <% service.includes.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
-      </ul>
-      <p class="row-start"><%= service.start %></p>
-    </article>
-    <article class="detail-block" data-reveal>
-      <p class="mini-h">What we ask on a first call</p>
-      <ol class="plain-ol">
-        <% service.questions.forEach(item => { %><li><%= item %></li><% }) %>
-      </ol>
-    </article>
-    <article class="detail-block" data-reveal>
-      <p class="mini-h">What you get at handover</p>
-      <ul class="check-list">
-        <% service.handover.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
-      </ul>
-    </article>
+
+<section class="section section-tight" aria-labelledby="svc-intro-h">
+  <div class="wrap svc-intro">
+    <h2 id="svc-intro-h" class="h2" data-reveal><%= sp.name %> <em>in Faridabad and Delhi NCR.</em></h2>
+    <div class="prose" data-reveal><% sp.intro.forEach(p => { %><p><%= p %></p><% }) %></div>
   </div>
 </section>
-<section class="section section-alt">
-  <div class="wrap prose">
-    <h2 class="h3">How the price is set</h2>
-    <p>After the call you get one written scope and one clear price, shaped to your budget. For ads, the media budget stays in your own ad account and is separate from the studio fee.</p>
-    <p><a class="text-link" href="/faq#clients">More answers for clients <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+
+<section class="section section-alt section-tight" aria-labelledby="svc-prob-h">
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow" data-reveal>Problems we solve</p><h2 id="svc-prob-h" class="h2" data-reveal>Common problems <em><%= sp.nav %> fixes.</em></h2></div>
+    <div class="detail-grid svc-grid3" data-reveal-group>
+      <% sp.problems.forEach(([t, d]) => { %><article class="detail-block" data-reveal><h3 class="svc-card-h"><%= t %></h3><p><%= d %></p></article><% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="svc-mod-h">
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow" data-reveal>Features and modules</p><h2 id="svc-mod-h" class="h2" data-reveal>What we <em>can build.</em></h2></div>
+    <ul class="svc-modules" data-reveal-group>
+      <% sp.modules.forEach(([t, d]) => { %><li data-reveal><%- include('partials/icon', { name: 'check' }) %><div><h3 class="svc-card-h"><%= t %></h3><p><%= d %></p></div></li><% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt section-tight" aria-labelledby="svc-proc-h">
+  <div class="wrap">
+    <div class="section-head center"><p class="eyebrow" data-reveal>Our process</p><h2 id="svc-proc-h" class="h2" data-reveal>Six clear steps, <em>from call to handover.</em></h2></div>
+    <ol class="steps7 steps6" data-reveal-group>
+      <% sp.process.forEach(([t, d], i) => { %><li data-reveal><span class="step-num"><%= i + 1 %></span><h3><%= t %></h3><p><%= d %></p></li><% }) %>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="svc-tech-h">
+  <div class="wrap svc-two">
+    <div data-reveal>
+      <p class="eyebrow">Technology</p>
+      <h2 id="svc-tech-h" class="h3">Tools and technology we use</h2>
+      <ul class="svc-chips"><% sp.tech.forEach(t => { %><li><%= t %></li><% }) %></ul>
+      <p class="prose"><%= sp.techNote %></p>
+    </div>
+    <div data-reveal>
+      <p class="eyebrow">Industries</p>
+      <h2 class="h3">Industries we work with</h2>
+      <ul class="check-list svc-ind"><% sp.industries.forEach(([t, d]) => { %><li><%- include('partials/icon', { name: 'check' }) %><span><strong><%= t %>:</strong> <%= d %></span></li><% }) %></ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt section-tight" aria-labelledby="svc-price-h">
+  <div class="wrap svc-two">
+    <div data-reveal>
+      <p class="eyebrow">Pricing</p>
+      <h2 id="svc-price-h" class="h3">What shapes the price</h2>
+      <p class="prose">Every project is different, so fees are shared on a call. After a free consultation you receive one written scope with one clear price. If you would like to start smaller, we plan a focused first phase. These are the main factors:</p>
+    </div>
+    <ul class="check-list" data-reveal><% sp.priceFactors.forEach(t => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= t %></span></li><% }) %></ul>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="svc-why-h">
+  <div class="wrap prose" data-reveal>
+    <h2 id="svc-why-h" class="h3">Why work with Goforge Digital</h2>
+    <p>Goforge Digital is an early-stage, MSME (Udyam) registered software company based at Puri Highstreet, Sector 81, Faridabad. We are a small team, which means you speak directly with the people doing the work, you see progress at every milestone and decisions are made quickly. Scope is agreed in writing before work starts, accounts and code are kept in your name, and we explain technical choices in plain language. You are welcome to visit our office to meet us.</p>
+  </div>
+</section>
+
+<section class="section section-alt section-tight" id="svc-faq" aria-labelledby="svc-faq-h">
+  <div class="wrap">
+    <div class="section-head center"><p class="eyebrow" data-reveal>FAQ</p><h2 id="svc-faq-h" class="h2" data-reveal><%= sp.name %> <em>questions.</em></h2></div>
+    <%- include('partials/faq-accordion', { items: sp.faqs.map(([q, a]) => ({ q, a })), name: 'svc-faq', openFirst: true }) %>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="svc-rel-h">
+  <div class="wrap">
+    <h2 id="svc-rel-h" class="h3" data-reveal>Related services</h2>
+    <ul class="svc-related" data-reveal>
+      <% related.forEach(r => { %><li><a href="/services/<%= r.slug %>"><span class="service-icon"><%- include('partials/icon', { name: r.icon }) %></span><span><%= r.name %> in Faridabad</span><%- include('partials/icon', { name: 'arrow' }) %></a></li><% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="cta-band cta-compact">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap cta-grid">
+    <div>
+      <p class="eyebrow eyebrow-light" data-reveal>Next step</p>
+      <h2 class="h2 h2-light" data-reveal>Talk to us about <em><%= sp.nav %>.</em></h2>
+    </div>
+    <div class="navy-text-col" data-reveal>
+      <p class="navy-text">Tell us what you need in a few lines. We reply by phone or email, and the first consultation is free.</p>
+      <a class="btn btn-gold btn-lg" href="/contact?service=<%= encodeURIComponent(sp.contact) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= sp.contact %>">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+    </div>
   </div>
 </section>
 <%- include('partials/footer') %>

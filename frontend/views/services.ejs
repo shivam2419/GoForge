@@ -3,8 +3,8 @@
 <section class="page-hero">
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Services</p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span>Four services,</span></span> <span class="line"><span><em>kept small enough to finish.</em></span></span></h1>
-    <p class="lede" data-hero-item>We would rather build one thing your team uses every day than ten things nobody opens.</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Software Development Services</span></span> <span class="line"><span><em>in Faridabad.</em></span></span></h1>
+    <p class="lede" data-hero-item>Custom software, CRM and ERP development, AI automation, websites and digital marketing from an MSME-registered studio in Sector 81. We would rather build one thing your team uses every day than ten things nobody opens.</p>
   </div>
 </section>
 <section class="section section-tight">
@@ -32,6 +32,12 @@
       </li>
       <% }) %>
     </ol>
+    <div class="more-services-wrap" data-reveal>
+      <h2 class="h3">Specialised software we build</h2>
+      <ul class="svc-related">
+        <% SERVICE_PAGES.filter(x => !SERVICES.some(c => c.slug === x.slug)).forEach(r => { %><li><a href="/services/<%= r.slug %>"><span class="service-icon"><%- include('partials/icon', { name: r.icon }) %></span><span><%= r.name %> in Faridabad</span><%- include('partials/icon', { name: 'arrow' }) %></a></li><% }) %>
+      </ul>
+    </div>
   </div>
 </section>
 <%- include('partials/how-we-work', { alt: true }) %>

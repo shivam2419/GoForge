@@ -6,12 +6,13 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="eyebrow" data-hero-item>Trusted by real estate firms and schools</p>
-      <h1 class="hero-title">
-        <span class="line"><span>Software and</span></span>
-        <span class="line"><span>marketing that grow</span></span>
-        <span class="line"><span><em class="hl">your business.</em></span></span>
+      <h1 class="hero-title hero-title-seo">
+        <span class="line"><span>Custom Software</span></span>
+        <span class="line"><span>Development Company</span></span>
+        <span class="line"><span><em class="hl">in Faridabad</em></span></span>
       </h1>
-      <p class="lede" data-hero-item>Custom software, CRM and ERP, AI automation and digital marketing for growing businesses. From our office in Sector 81, Faridabad, for clients across India.</p>
+      <p class="hero-sub" data-hero-item>Software and marketing that grow your business.</p>
+      <p class="lede" data-hero-item>Goforge Digital is an MSME-registered software development company in Sector 81, Faridabad. We build <a href="/services/custom-software-development">custom software</a> and web apps, <a href="/services/crm-development">CRM</a> and <a href="/services/erp-development">ERP systems</a>, <a href="/services/ai-automation">AI automation</a>, <a href="/services/website-development">business websites</a> and <a href="/services/digital-marketing">digital marketing</a> for growing businesses in Faridabad, Delhi NCR and across India.</p>
       <div class="hero-actions" data-hero-item>
         <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
         <a class="btn btn-ghost btn-lg" href="#services">See our services</a>
@@ -74,6 +75,12 @@
       </li>
       <% }) %>
     </ul>
+    <div class="more-services-wrap" data-reveal>
+      <p class="mini-h">More software services</p>
+      <ul class="svc-related">
+        <% SERVICE_PAGES.filter(x => !SERVICES.some(c => c.slug === x.slug)).forEach(r => { %><li><a href="/services/<%= r.slug %>"><span class="service-icon"><%- include('partials/icon', { name: r.icon }) %></span><span><%= r.name %></span><%- include('partials/icon', { name: 'arrow' }) %></a></li><% }) %>
+      </ul>
+    </div>
   </div>
 </section>
 

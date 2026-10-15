@@ -78,7 +78,7 @@ const db = {
 const DEFAULT_SETTINGS = {
   phone1: '+91 84488 52971',
   phone2: '+91 89580 39354',
-  email: 'goforgedigital@gmail.com',
+  email: 'info@goforgedigital.com',
   linkedin_company: 'https://www.linkedin.com/company/143989208',
   blurb1: 'Tools and sites built around how the business actually works, not a stretched template.',
   blurb2: 'Leads, records, and the tools the team already uses, joined so work is not split across five places.',
@@ -101,6 +101,8 @@ async function init() {
     ...Object.entries(DEFAULT_SETTINGS).map(([k, v]) => ['INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', k, v]),
     ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"],
     ["DELETE FROM settings WHERE key = 'whatsapp'"],
+    // Public contact email moved to the company domain. The admin login email is separate (ADMIN_EMAIL) and unchanged.
+    ["UPDATE settings SET value = 'info@goforgedigital.com' WHERE key = 'email' AND value = 'goforgedigital@gmail.com'"],
     ["UPDATE settings SET value = 'Contact for fees' WHERE key = 'intern_fee' AND value = 'Confirmed on the call'"]
   ]);
 }

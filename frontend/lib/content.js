@@ -3,7 +3,7 @@
 // settings table so they can be edited from the admin panel.
 const SERVICES = [
   {
-    key: 'blurb1', slug: 'software', icon: 'code',
+    key: 'blurb1', slug: 'custom-software-development', icon: 'code',
     start: 'Usually starts with one tool or one site, scoped to a single job the business does every day.',
     name: 'Custom Software & Web Apps',
     includes: ['Business websites that load fast on a phone', 'Internal tools, dashboards and portals', 'Booking, order and enquiry flows'],
@@ -21,7 +21,7 @@ const SERVICES = [
     ]
   },
   {
-    key: 'blurb2', slug: 'crm-erp', icon: 'database',
+    key: 'blurb2', slug: 'crm-development', icon: 'database',
     start: 'Usually starts by listing where leads and records live today, then joining the two or three places that matter most.',
     name: 'CRM, ERP & Integrations',
     includes: ['Lead and customer records in one place', 'Stock, billing and operations set up to match the business', 'Connections between the tools the team already uses'],
@@ -39,7 +39,7 @@ const SERVICES = [
     ]
   },
   {
-    key: 'blurb3', slug: 'automation', icon: 'gear',
+    key: 'blurb3', slug: 'ai-automation', icon: 'gear',
     start: 'Usually starts with one repeat task, such as a follow-up or a form reply, automated with a person approving what goes out.',
     name: 'AI Automation & Workflows',
     includes: ['Follow-up reminders that go out on time', 'Instant enquiry alerts by email and SMS from your website forms', 'Drafts prepared by AI, approved by a person before they go out'],
@@ -57,7 +57,7 @@ const SERVICES = [
     ]
   },
   {
-    key: 'blurb4', slug: 'marketing', icon: 'megaphone',
+    key: 'blurb4', slug: 'digital-marketing', icon: 'megaphone',
     start: 'Usually starts with the basics: a clear profile, pages that can be found, and a small ad budget agreed with you.',
     name: 'Digital Marketing, SEO & Ads',
     includes: ['Google Business Profile and social pages set up properly', 'Search basics: page titles, speed, local listings', 'Ad campaigns with a budget agreed up front and reported plainly'],
@@ -160,6 +160,7 @@ const BRAND = {
   tagline: 'Digital Solutions & Growth',
   founder: 'Rohit Sharma',
   founderRole: 'Founder & Director',
+  founderEmail: 'rohit@goforgedigital.com',
   website: 'goforgedigital.com',
   address: { line1: 'D125b, 1st floor, Puri Highstreet', line2: 'Sector-81, Faridabad', locality: 'Faridabad', region: 'Haryana', country: 'IN' },
   instagram: 'https://www.instagram.com/goforgedigital/',

@@ -72,7 +72,7 @@ chk "faq register question" 1 $(echo "$FQ" | grep -c 'How can I register for an 
 chk "faq no whatsapp" 0 $(echo "$FQ" | grep -ci 'whatsapp')
 chk "desktop nav home active" 1 $(curl -s $B/ | grep -c "<li><a href=\"/\" aria-current=\"page\">Home</a></li>")
 # zero whatsapp anywhere in public output
-WA=0; for u in / /services /services/software /services/crm-erp /services/automation /services/marketing /work /internship /colleges /schools /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
+WA=0; for u in / /services /services/custom-software-development /services/crm-development /services/erp-development /services/ai-automation /services/website-development /services/digital-marketing /services/real-estate-crm /services/school-management-software /work /internship /colleges /schools /verify /about /contact /faq /privacy /terms /refund /internship/overview /internship/programs/data-science /sitemap.xml /css/site.css /js/site.js; do n=$(curl -s $B$u | grep -ci whatsapp); WA=$((WA+n)); done
 chk "zero whatsapp in public output" 0 $WA
 # company LinkedIn
 LI='https://www.linkedin.com/company/143989208'
@@ -83,7 +83,7 @@ chk "about linkedin button" 1 $(curl -s $B/about | grep -c 'Follow Goforge Digit
 chk "jsonld sameAs company" 1 $(curl -s $B/ | grep -c "\"sameAs\":\[\"https://www.instagram.com/goforgedigital/\",\"$LI\"\]")
 # schools page
 chk "schools 200" 200 $(curl -s -o /dev/null -w %{http_code} $B/schools)
-chk "schools in nav" 1 $(curl -s $B/ | grep -c 'href="/schools">Schools</a>')
+chk "schools in Careers nav (desktop+mobile)" 2 $(curl -s $B/ | grep -c 'href="/schools">Schools</a>')
 chk "schools in footer" 1 $(curl -s $B/ | grep -c 'href="/schools">For schools</a>')
 chk "schools in sitemap" 1 $(curl -s $B/sitemap.xml | grep -c '/schools</loc>')
 chk "schools breadcrumb" 1 $(curl -s $B/schools | grep -c '"BreadcrumbList"')

@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
 const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
+const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
 const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
@@ -243,7 +244,7 @@ app.use(async (req, res, next) => {
   const TRACKS = PROGRAMS.map(p => p.name).concat([SIMILAR_ROLE]);
   Object.assign(res.locals, {
     PROGRAMS, TRACKS, MODES, SOURCES,
-    s, BRAND, SERVICES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
+    s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
     WHY_SMALL, FAQ, OFFERS, TECH_STACK,
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
@@ -321,15 +322,9 @@ function pageMeta(req, title, desc, extra = {}) {
   };
 }
 
-function jsonLd() {
-  const s = getSettings();
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': ['ProfessionalService', 'EducationalOrganization'],
-    '@id': SITE_URL + '/#organization',
+function orgBase(s) {
+  return {
     name: BRAND.name,
-    description: 'MSME-registered software development company and IT training institute in Faridabad, Haryana: custom software, CRM, ERP, websites and digital marketing for businesses, and paid training with an included internship for students.',
-    slogan: BRAND.tagline,
     url: SITE_URL + '/',
     logo: SITE_URL + '/img/gf-512.png',
     image: SITE_URL + '/img/og.png',
@@ -337,23 +332,58 @@ function jsonLd() {
     telephone: [s.phone1, s.phone2].map(p => '+' + digits(p)),
     address: {
       '@type': 'PostalAddress',
-      streetAddress: BRAND.address.line1 + ', Sector-81',
+      streetAddress: 'D125b, 1st Floor, Puri Highstreet, Sector 81',
       addressLocality: BRAND.address.locality,
       postalCode: '121004',
       addressRegion: BRAND.address.region,
       addressCountry: BRAND.address.country
     },
+    sameAs: [BRAND.instagram, s.linkedin_company || BRAND.linkedinCompany].filter(Boolean)
+  };
+}
+// Home, About and Contact describe the business as a software company (ProfessionalService + LocalBusiness).
+function jsonLd() {
+  const s = getSettings();
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': ['ProfessionalService', 'LocalBusiness'],
+    '@id': SITE_URL + '/#organization',
+    ...orgBase(s),
+    description: 'MSME-registered custom software development company in Faridabad, Haryana: custom software, CRM and ERP development, AI automation, website development and digital marketing for businesses in Faridabad, Delhi NCR and across India.',
+    slogan: BRAND.tagline,
+    priceRange: 'Shared on a call',
+    hasMap: 'https://maps.google.com/?q=' + encodeURIComponent(BRAND.mapQuery),
     founder: { '@type': 'Person', name: BRAND.founder, jobTitle: BRAND.founderRole, sameAs: [BRAND.linkedin] },
-    sameAs: [BRAND.instagram, getSettings().linkedin_company || BRAND.linkedinCompany].filter(Boolean),
     areaServed: [{ '@type': 'City', name: 'Faridabad' }, { '@type': 'AdministrativeArea', name: 'Delhi NCR' }, { '@type': 'Country', name: 'India' }],
     openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '10:00', closes: '18:30' }],
-    knowsAbout: SERVICES.map(x => x.name),
+    knowsAbout: SERVICE_PAGES.map(x => x.name),
     hasOfferCatalog: {
-      '@type': 'OfferCatalog', name: 'Services and training programmes',
-      itemListElement: SERVICES.map(x => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: x.name, url: SITE_URL + '/services/' + x.slug } }))
+      '@type': 'OfferCatalog', name: 'Software development and digital services',
+      itemListElement: SERVICE_PAGES.map(x => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: x.name, url: SITE_URL + '/services/' + x.slug } }))
     }
   };
   return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+// Training schema lives on /internship only.
+function eduJsonLd() {
+  const s = getSettings();
+  return JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'EducationalOrganization',
+    '@id': SITE_URL + '/internship#training', ...orgBase(s), url: SITE_URL + '/internship',
+    name: BRAND.name + ' Training & Internship',
+    parentOrganization: { '@id': SITE_URL + '/#organization' },
+    description: 'Live online training with an included internship in software engineering, AI/ML, data analytics, data science, full stack web development, business analysis and digital marketing.'
+  }).replace(/</g, '\\u003c');
+}
+function serviceJsonLd(sp) {
+  const url = SITE_URL + '/services/' + sp.slug;
+  return JSON.stringify([
+    { '@context': 'https://schema.org', '@type': 'Service', name: sp.name, serviceType: sp.name, description: sp.desc, url,
+      provider: { '@type': ['ProfessionalService', 'LocalBusiness'], '@id': SITE_URL + '/#organization', name: BRAND.name, url: SITE_URL + '/' },
+      areaServed: [{ '@type': 'City', name: 'Faridabad' }, { '@type': 'AdministrativeArea', name: 'Delhi NCR' }, { '@type': 'Country', name: 'India' }],
+      hasOfferCatalog: { '@type': 'OfferCatalog', name: sp.name, itemListElement: sp.modules.map(([n, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n, description: d } })) } },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: sp.faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
+  ]).replace(/</g, '\\u003c');
 }
 
 function courseJsonLd(p) {
@@ -397,24 +427,25 @@ app.get('/', async (req, res) => {
   // Only business-facing stats (e.g. labels mentioning clients or businesses); student/programme stats stay on /internship.
   const stats = t.stats.filter(x => /client|business/i.test(x.label) && !/student|intern|project|instructor|success/i.test(x.label));
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Software development company in Faridabad, Haryana: custom software, CRM and ERP development, AI automation, websites and digital marketing for growing businesses.', { jsonld: jsonLd(), seoTitle: 'Software Development Company in Faridabad | CRM & ERP | Goforge' }) });
+    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), seoTitle: 'Custom Software Development Company in Faridabad | Goforge Digital' }) });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
   res.render('verify', { certId: id, ...pageMeta(req, 'Verify a certificate',
-    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
+    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: true, seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
 });
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
-  'Custom software development, CRM and ERP development, AI automation, website design and digital marketing services in Faridabad and Delhi NCR. See what each service includes.',
-  { seoTitle: 'Software, CRM & ERP Development in Faridabad | Goforge Digital' })));
+  'Software development services in Faridabad and Delhi NCR: custom software, CRM and ERP development, AI automation, website development, digital marketing, real estate CRM and school software.',
+  { seoTitle: 'Software Development Services in Faridabad | CRM, ERP & Web | Goforge Digital' })));
 
 app.get('/services/:slug', (req, res, next) => {
-  const service = SERVICES.find(item => item.slug === req.params.slug);
+  const to = SERVICE_REDIRECTS[req.params.slug];
+  if (to) return res.redirect(301, '/services/' + to);
+  const service = SERVICE_PAGES.find(item => item.slug === req.params.slug);
   if (!service) return next();
-  res.render('service', pageMeta(req, service.name,
-    service.name + ' from Goforge Digital in Faridabad. What it includes, the questions on a first call, and what you receive at handover.',
-    { seoTitle: service.name + ' in Faridabad | Goforge Digital', service, crumbs: [['Home', '/'], ['Services', '/services'], [service.name, '/services/' + service.slug]] }));
+  res.render('service', pageMeta(req, service.name, service.desc,
+    { seoTitle: service.seoTitle, service, jsonld: serviceJsonLd(service), crumbs: [['Home', '/'], ['Services', '/services'], [service.name, '/services/' + service.slug]] }));
 });
 
 app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
@@ -465,7 +496,7 @@ const INTERNSHIP_DESC = 'Internship with training in Faridabad and online: live 
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training in Faridabad | Goforge Digital' })
+  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training in Faridabad | Goforge Digital', jsonld: eduJsonLd(), training: true })
 }));
 
 app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
@@ -501,8 +532,8 @@ app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
 app.get('/about', async (req, res) => {
   const { credentials } = await trustData();
   res.render('about', { credentials, ...pageMeta(req, 'About',
-    'Goforge Digital is an MSME-registered software, marketing and training company in Sector 81, Faridabad, led by Rohit Sharma, Founder & Director.',
-    { seoTitle: 'About Goforge Digital | MSME IT Company, Faridabad', jsonld: jsonLd() }) });
+    'Goforge Digital is an MSME-registered custom software development company in Sector 81, Faridabad, building software, CRM, ERP and websites, led by Rohit Sharma, Founder & Director.',
+    { seoTitle: 'About Goforge Digital | Software Development Company, Faridabad', jsonld: jsonLd() }) });
 });
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
@@ -557,12 +588,17 @@ function respondOk(req, res, kind, message, group = null) {
 }
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
+// Priorities put the business pages first. lastmod is the date the page content last changed
+// (SITE_UPDATED, bump when copy changes) rather than the request date.
+const SITE_UPDATED = '2026-10-15';
+const PAGE_UPDATED = { '/internship': '2026-10-14', '/colleges': '2026-10-12', '/schools': '2026-10-13', '/faq': '2026-10-12', '/privacy': '2026-10-15', '/terms': '2026-10-15', '/refund': '2026-10-15', '/internship/overview': '2026-10-12' };
 app.get('/sitemap.xml', (req, res) => {
-  const pages = ['/', '/services', '/work', '/internship', '/colleges', '/schools', '/verify', '/internship/overview', '/about', '/contact', '/faq', '/privacy', '/terms', '/refund']
-    .concat(SERVICES.map(item => '/services/' + item.slug))
-    .concat(res.locals.PROGRAMS.map(item => '/internship/programs/' + item.slug));
-  const today = new Date().toISOString().slice(0, 10);
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+  const pages = [['/', '1.0'], ['/services', '0.9']]
+    .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
+    .concat([['/work', '0.8'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
+    .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
+    .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || SITE_UPDATED}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });
 app.get('/js/analytics.js', (req, res) => {
   if (!GA_ID) return res.status(404).type('text').send('');
