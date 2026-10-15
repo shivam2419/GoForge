@@ -24,7 +24,7 @@
     <p>You can ask for a copy, a correction, or deletion, and you can withdraw consent for us to keep using the details to contact you. Email <%= s.email %> or write to the address above. We aim to answer within 30 days. If you are not satisfied, you can complain to the Data Protection Board of India once that route is open to you.</p>
     <p>This programme is designed for college students aged 18 and above.</p>
     <h2 class="h3">Grievance contact</h2>
-    <p><%= BRAND.founder %>, <%= BRAND.founderRole %>, <%= s.email %>, <%= s.phone1 %>.</p>
+    <p><%= BRAND.founder %>, <%= BRAND.founderRole %>, <a href="mailto:<%= BRAND.founderEmail %>"><%= BRAND.founderEmail %></a>, <%= s.phone1 %>.</p>
     <% } else if (kind === 'terms') { %>
     <p class="eyebrow">Terms</p>
     <h1 class="h2">Terms of use</h1>

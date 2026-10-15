@@ -6,18 +6,24 @@
         <%- include('mark', { cls: 'footer-logo-mark', decorative: true, uid: 'fw' }) %>
         <span class="footer-wordmark"><span class="wordmark-dark">Goforge Digital</span><span class="footer-tag">Digital solutions &amp; growth</span></span>
       </a>
-      <p>A digital studio in Faridabad. Software, systems and marketing for businesses, and a live online internship for students.</p>
+      <p>A custom software development company in Sector 81, Faridabad. Software, CRM, ERP, websites and digital marketing for growing businesses.</p>
     </div>
     <div>
-      <h2 class="footer-h">Explore</h2>
+      <h2 class="footer-h">Services</h2>
+      <ul class="footer-list">
+        <% SERVICE_PAGES.forEach(x => { %><li><a href="/services/<%= x.slug %>"><%= x.name %></a></li><% }) %>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-h">Company</h2>
       <ul class="footer-list">
         <li><a href="/services">Services</a></li>
-        <li><a href="/internship">Internship</a></li>
-        <li><a href="/schools">For schools</a></li>
-        <li><a href="/colleges">For colleges</a></li>
         <li><a href="/work">Work</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
+        <li><a href="/internship">Careers &amp; internship</a></li>
+        <li><a href="/schools">For schools</a></li>
+        <li><a href="/colleges">For colleges</a></li>
       </ul>
     </div>
     <div>

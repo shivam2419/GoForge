@@ -6,7 +6,8 @@
     <%- include('contact-form', { px: 'mc', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
-<% if (path !== '/internship' && path !== '/') { %>
+<% const trainingPage = /^\/(internship(\/|$)|schools$|colleges$|faq$|about$|verify$)/.test(path); %>
+<% if (trainingPage && path !== '/internship') { %>
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
