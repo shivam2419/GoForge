@@ -1,0 +1,13 @@
+<% const gl = locals.gallery || []; if (gl.length) { %>
+<section class="section section-tight" aria-labelledby="gal-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Inside Goforge</p>
+      <h2 id="gal-h" class="h2" data-reveal>Our office <em>and classes.</em></h2>
+    </div>
+    <ul class="gallery-grid" data-reveal-group>
+      <% gl.forEach(g => { %><li data-reveal><figure><img src="<%= g.image_url %>" alt="<%= g.caption %>" loading="lazy" width="640" height="460"><figcaption><%= g.caption %></figcaption></figure></li><% }) %>
+    </ul>
+  </div>
+</section>
+<% } %>

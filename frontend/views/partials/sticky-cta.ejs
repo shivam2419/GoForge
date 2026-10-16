@@ -1,4 +1,4 @@
 <div class="sticky-cta" role="region" aria-label="Quick actions">
   <% if (locals.track) { %><a class="btn btn-primary btn-sm" href="#apply">Apply now</a><% } else { %><a class="btn btn-primary btn-sm" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now</a><% } %>
-  <a class="btn btn-ghost btn-sm" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Enquire</a>
+  <a class="btn btn-ghost btn-sm" href="/counselling<%= locals.track ? '?program=' + encodeURIComponent(track) : '' %>" data-dialog="dlg-counsel" data-fallback-form="counsel"<% if (locals.track) { %> data-prefill-name="program" data-prefill-value="<%= track %>"<% } %>>Book a free call</a>
 </div>

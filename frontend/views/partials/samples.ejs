@@ -1,0 +1,16 @@
+<% const docs = locals.sampleDocs || { certificate: '/img/samples/sample-certificate.png', letter: '/img/samples/sample-internship-letter.png' }; %>
+<section class="section<%= locals.alt ? ' section-alt' : '' %> section-tight" aria-labelledby="smp-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>What you receive</p>
+        <h2 id="smp-h" class="h2" data-reveal>Your certificate <em>and internship letter.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Samples shown. Each real document carries your name, programme, dates and a unique certificate ID. Enter the ID on our <a href="/verify">verification page</a> to confirm it.</p>
+    </div>
+    <div class="samples-grid" data-reveal-group>
+      <figure class="sample-doc" data-reveal><a href="<%= docs.certificate %>" target="_blank" rel="noopener"><img src="<%= docs.certificate %>" alt="Sample Goforge Digital training certificate with certificate ID GF-SAMPLE-0001" loading="lazy" width="1600" height="1131"></a><figcaption>Training certificate (sample)</figcaption></figure>
+      <figure class="sample-doc" data-reveal><a href="<%= docs.letter %>" target="_blank" rel="noopener"><img src="<%= docs.letter %>" alt="Sample Goforge Digital internship offer letter with reference GF-SAMPLE-0001" loading="lazy" width="1131" height="1600"></a><figcaption>Internship offer letter (sample)</figcaption></figure>
+    </div>
+  </div>
+</section>

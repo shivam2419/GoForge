@@ -3,15 +3,15 @@
 <section class="section section-alt" aria-labelledby="ins-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>Instructors</p>
-      <h2 id="ins-h" class="h2" data-reveal>The people who <em>teach and review.</em></h2>
+      <p class="eyebrow" data-reveal>Mentors</p>
+      <h2 id="ins-h" class="h2" data-reveal>Learn from people <em>who do the work.</em></h2>
     </div>
     <ul class="people-grid" data-reveal-group>
       <% ins.forEach(p => { %>
       <li class="person-card" data-reveal>
         <% if (p.photo_url) { %><img class="person-photo" src="<%= p.photo_url %>" alt="<%= p.name %>" loading="lazy" width="96" height="96"><% } else { %><span class="person-photo person-initials" aria-hidden="true"><%= p.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() %></span><% } %>
         <h3><%= p.name %></h3>
-        <% if (p.title) { %><p class="person-title"><%= p.title %></p><% } %>
+        <% if (p.title || p.company) { %><p class="person-title"><%= [p.title, p.company].filter(Boolean).join(' · ') %></p><% } %>
         <% if (p.bio) { %><p><%= p.bio %></p><% } %>
         <% if (p.skills) { %><ul class="chips"><% p.skills.split(',').map(x => x.trim()).filter(Boolean).forEach(k => { %><li><%= k %></li><% }) %></ul><% } %>
         <% if (p.linkedin) { %><a class="person-link" href="<%= p.linkedin %>" target="_blank" rel="noopener"><%- include('icon', { name: 'linkedin' }) %> LinkedIn</a><% } %>

@@ -28,7 +28,7 @@
   <% STATUSES.forEach(st => { %><a role="listitem" href="/admin/<%= slug %>?status=<%= st %>"<% if (status === st) { %> aria-current="true"<% } %>><%= st %> <span><%= counts[st] %></span></a><% }) %>
 </div>
 <% if (!rows.length) { %>
-  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : (slug === 'colleges' ? 'No college enquiries yet. Enquiries from the For colleges page will appear here.' : slug === 'schools' ? 'No school enquiries yet. Enquiries from the For schools page will appear here.' : cfg.table === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
+  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : (slug === 'colleges' ? 'No college enquiries yet. Enquiries from the For colleges page will appear here.' : slug === 'schools' ? 'No school enquiries yet. Enquiries from the For schools page will appear here.' : slug === 'counselling' ? 'No counselling call requests yet. Requests from the internship and programme pages will appear here.' : cfg.table === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
 <% } else { %>
 <ul class="items">
   <% rows.forEach(r => { %>
@@ -37,7 +37,7 @@
       <div>
         <h2 class="item-name"><%= cfg.table === 'contacts' ? r.name : r.full_name %></h2>
         <p class="item-meta">
-          <% if (cfg.table === 'contacts') { %><%= r.business || ((slug === 'colleges' || slug === 'schools') ? 'No institution given' : 'No business name given') %><% } else { %><%= r.college %> &middot; <%= r.course_year %><% } %>
+          <% if (cfg.table === 'contacts') { %><%= slug === 'counselling' ? (r.email || 'Student') : (r.business || ((slug === 'colleges' || slug === 'schools') ? 'No institution given' : 'No business name given')) %><% } else { %><%= r.college %> &middot; <%= r.course_year %><% } %>
         </p>
       </div>
       <span class="pill pill-<%= r.status.toLowerCase() %>"><%= r.status %></span>

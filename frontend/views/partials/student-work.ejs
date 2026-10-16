@@ -1,0 +1,23 @@
+<% const pr = locals.projects || []; if (pr.length) { %>
+<section class="section" aria-labelledby="work-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Student work</p>
+      <h2 id="work-h" class="h2" data-reveal>Built by our <em>students.</em></h2>
+    </div>
+    <ul class="work-grid" data-reveal-group>
+      <% pr.forEach(w => { %>
+      <li class="work-card" data-reveal>
+        <% if (w.image_url) { %><img src="<%= w.image_url %>" alt="Screenshot of <%= w.title %>" loading="lazy" width="640" height="400"><% } %>
+        <div class="work-body">
+          <h3><%= w.title %></h3>
+          <% if (w.summary) { %><p><%= w.summary %></p><% } %>
+          <p class="work-by"><%= [w.student, w.college, w.program].filter(Boolean).join(' · ') %></p>
+          <% if (w.github_url || w.demo_url) { %><p class="work-links"><% if (w.github_url) { %><a class="text-link" href="<%= w.github_url %>" target="_blank" rel="noopener">GitHub</a><% } %><% if (w.demo_url) { %><a class="text-link" href="<%= w.demo_url %>" target="_blank" rel="noopener">Live demo</a><% } %></p><% } %>
+        </div>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<% } %>
