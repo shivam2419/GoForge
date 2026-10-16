@@ -1445,3 +1445,17 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
 .svc-grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 960px) { .svc-grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .svc-grid3 { grid-template-columns: 1fr; } }
+/* equal-height secondary service cards */
+.svc-more4 { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; }
+.svc-more4 li { display: flex; }
+.svc-more4 a { flex: 1; min-height: 64px; line-height: 1.3; }
+@media (max-width: 1000px) { .svc-more4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .svc-more4 { grid-template-columns: 1fr; } }
+/* equal-size main service cards: reserve two title lines and four blurb lines */
+.service-grid { align-items: stretch; }
+.service-link { width: 100%; }
+.service-name { min-height: 2.16em; }
+.service-blurb { min-height: 6.4em; }
+.svc-more4 a > span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.svc-more4 li, .svc-more4 a, .svc-more4 a > span:nth-child(2) { min-width: 0; }
+.svc-more4 a { gap: 10px; padding: 14px; font-size: 15px; }

@@ -60,7 +60,7 @@ const SERVICES = [
     key: 'blurb4', slug: 'digital-marketing', icon: 'megaphone',
     start: 'Usually starts with the basics: a clear profile, pages that can be found, and a small ad budget agreed with you.',
     name: 'Digital Marketing, SEO & Ads',
-    includes: ['Google Business Profile and social pages set up properly', 'Search basics: page titles, speed, local listings', 'Ad campaigns with a budget agreed up front and reported plainly'],
+    includes: ['Google Business Profile and social pages set up properly', 'Search engine optimisation: page titles, speed and local listings', 'Targeted ad campaigns with an agreed budget and clear reports'],
     questions: [
       'Who should find you, and in which area?',
       'Do you already have a Google Business Profile, a site, and a page people can message?',
