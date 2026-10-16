@@ -33,11 +33,12 @@ const ENTITIES = {
     ]
   },
   instructors: {
-    table: 'instructors', title: 'Instructors', singular: 'instructor', nameField: 'name',
-    intro: 'The instructors section on the internship page stays hidden until at least one instructor is published.',
+    table: 'instructors', title: 'Mentors & instructors', singular: 'mentor', nameField: 'name',
+    intro: 'The mentors section on the internship and programme pages stays hidden until at least one mentor is published. Publish only real people, with their permission.',
     fields: [
       { name: 'name', label: 'Name', type: 'text', required: true, max: 80 },
       { name: 'title', label: 'Title / role', type: 'text', max: 100, hint: 'For example: Full-stack developer, 6 years' },
+      { name: 'company', label: 'Company', type: 'text', max: 100, hint: 'Where they work now. Optional.' },
       { name: 'photo_url', label: 'Photo', type: 'image' },
       { name: 'bio', label: 'Short bio', type: 'textarea', rows: 3, max: 600 },
       { name: 'skills', label: 'Skills', type: 'text', max: 200, hint: 'Comma separated.' },
@@ -68,6 +69,44 @@ const ENTITIES = {
       { name: 'quote', label: 'Quote', type: 'textarea', rows: 4, required: true, max: 800 },
       { name: 'photo_url', label: 'Photo', type: 'image' },
       { name: 'rating', label: 'Rating (1–5)', type: 'number', min: 0, max: 5, hint: '0 or empty hides stars.' },
+      { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
+      { name: 'published', label: 'Show on the site', type: 'bool' }
+    ]
+  },
+  projects: {
+    table: 'projects', title: 'Student work', singular: 'project', nameField: 'title',
+    intro: 'Real projects by students, shown on /internship. Ask the student first. The section hides itself when none are published.',
+    fields: [
+      { name: 'title', label: 'Project title', type: 'text', required: true, max: 100 },
+      { name: 'image_url', label: 'Screenshot', type: 'image' },
+      { name: 'summary', label: 'One-line description', type: 'textarea', rows: 2, max: 240 },
+      { name: 'student', label: 'Student first name', type: 'text', max: 60 },
+      { name: 'college', label: 'College', type: 'text', max: 120 },
+      { name: 'program', label: 'Programme', type: 'text', max: 80, hint: 'For example: Data Analyst' },
+      { name: 'github_url', label: 'GitHub link', type: 'url', max: 300 },
+      { name: 'demo_url', label: 'Live demo link', type: 'url', max: 300 },
+      { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
+      { name: 'published', label: 'Show on the site', type: 'bool' }
+    ]
+  },
+  gallery: {
+    table: 'gallery', title: 'Photos', singular: 'photo', nameField: 'caption',
+    intro: 'Real photos of the office, team and classes. Shown on /internship and About. The section hides itself when none are published.',
+    fields: [
+      { name: 'caption', label: 'Caption', type: 'text', required: true, max: 120, hint: 'For example: Our office at Puri Highstreet, Sector 81' },
+      { name: 'image_url', label: 'Photo', type: 'image', required: true },
+      { name: 'placement', label: 'Show on', type: 'select', options: ['Internship and About', 'Internship only', 'About only'], required: true },
+      { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
+      { name: 'published', label: 'Show on the site', type: 'bool' }
+    ]
+  },
+  samples: {
+    table: 'samples', title: 'Sample certificate & letter', singular: 'sample', nameField: 'title',
+    intro: 'Replaces the built-in sample certificate or internship letter shown on /internship and /verify. Upload a watermarked SAMPLE, never a real student document.',
+    fields: [
+      { name: 'title', label: 'Title', type: 'text', required: true, max: 80 },
+      { name: 'kind', label: 'Type', type: 'select', options: ['certificate', 'letter'], required: true },
+      { name: 'image_url', label: 'Image', type: 'image', required: true },
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
     ]
@@ -195,6 +234,8 @@ async function migrate() {
   const contactCols = new Set((await db.all('PRAGMA table_info(contacts)')).map(r => r.name));
   if (!contactCols.has('kind')) await db.run("ALTER TABLE contacts ADD COLUMN kind TEXT NOT NULL DEFAULT 'client'");
   if (!contactCols.has('email')) await db.run('ALTER TABLE contacts ADD COLUMN email TEXT');
+  const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
+  if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
   await db.run(`CREATE TABLE IF NOT EXISTS whatsapp_groups (
     program TEXT PRIMARY KEY,
     url TEXT NOT NULL,

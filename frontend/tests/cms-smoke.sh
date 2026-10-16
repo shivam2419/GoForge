@@ -33,7 +33,7 @@ PID=$(curl -s -b ck $B/admin/programs | grep -o '/admin/programs/[0-9]*"' | head
 EDIT=$(curl -s -b ck $B/admin/programs/$PID); NAME=$(echo "$EDIT" | grep -o 'name="name" type="text" value="[^"]*"' | sed 's/.*value="//;s/"//'); echo "editing $PID $NAME"
 T=$(tok /admin/programs/$PID)
 R=$(curl -s -b ck -o /dev/null -w %{http_code} -F "_csrf=$T" -F "name=$NAME" -F "slug=software-engineering" -F "icon=code" -F "summary=Build features in a real codebase." -F "fee=₹4,999 + GST" -F "batches=2 Nov 2026 | Mon–Fri, 7–9 PM IST | 20 seats" -F "curriculum=Week 1: Foundations | Git, CLI" -F "published=1" -F "sort_order=10" $B/admin/programs/$PID); chk "program save 303" 303 $R
-P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "batch row" 1 $(echo "$P" | grep -c '2 Nov 2026'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
+P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "batch row (next-batch strip + table)" 2 $(echo "$P" | grep -c '2 Nov 2026'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
 chk "no fee text on programme" 0 $(curl -s $B/internship/programs/data-analyst | grep -ci 'contact for fees\|training fee')
 chk "no fee text on internship" 0 $(curl -s $B/internship | grep -ci 'contact for fees\|training fee')
 # programmes v2
@@ -58,7 +58,7 @@ chk "sitemap programs" 6 $(curl -s $B/sitemap.xml | grep -c '/internship/program
 chk "card apply links to programme page" 1 $(curl -s $B/internship | grep -c 'btn-apply" href="/internship/programs/data-science"')
 PG=$(curl -s $B/internship/programs/data-science)
 chk "programme page apply button scrolls" 1 $(echo "$PG" | grep -c 'href="#apply">Apply now' | sed 's/[2-9]/1/')
-chk "programme page form preselected" 1 $(echo "$PG" | grep -c '<option value="Data Science" selected')
+chk "programme page apply + counselling forms preselected" 2 $(echo "$PG" | grep -c '<option value="Data Science" selected')
 chk "programme page no fees" 0 $(echo "$PG" | grep -ci 'contact for fees\|training fee')
 # about: journey, benefits, achievements; faq accordion
 AB=$(curl -s $B/about)
@@ -95,3 +95,22 @@ chk "school ok 200" 200 $(curl -s -b ck2 -o /dev/null -w %{http_code} --data-url
 chk "school in schools inbox" 1 $(curl -s -b ck $B/admin/schools | grep -c 'Test Public School')
 chk "school not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 'Test Public School')
 rm -f ck2
+# student trust: counselling calls, why-trust band, samples, hidden-until-filled sections
+CT=$(curl -s -c ck3 $B/counselling | grep -o 'name="_csrf" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
+chk "counselling ok 200" 200 $(curl -s -b ck3 -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" -d "name=TEST Counsel&phone=9876543210&program=Data Analyst&time=Any time" $B/counselling)
+chk "counselling bad time 422" 422 $(curl -s -b ck3 -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" -d "name=TEST Counsel&phone=9876543210&time=Midnight" $B/counselling)
+chk "counselling in its inbox" 1 $(curl -s -b ck $B/admin/counselling | grep -c 'TEST Counsel')
+chk "counselling not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 'TEST Counsel')
+IN=$(curl -s $B/internship)
+chk "internship counselling button" 1 $(echo "$IN" | grep -c 'Book a free counselling call</a>')
+chk "internship why-trust band" 1 $(echo "$IN" | grep -c 'id="why-h"')
+chk "internship sample certificate" 1 $(echo "$IN" | grep -c 'sample-certificate.png" alt')
+chk "verify sample certificate" 1 $(curl -s $B/verify | grep -c 'sample-certificate.png" alt')
+chk "no unprovable recognition claim" 0 $(echo "$IN" | grep -ci 'recognised by industry')
+chk "student work hidden when empty" 0 $(echo "$IN" | grep -c 'id="work-h"')
+chk "gallery hidden when empty" 0 $(echo "$IN" | grep -c 'id="gal-h"')
+chk "parents faq" 1 $(echo "$IN" | grep -c 'For parents</h3>')
+chk "home student band" 1 $(curl -s $B/ | grep -c 'class="student-band"')
+chk "careers & training nav" 1 $(curl -s $B/ | grep -c 'data-nav-group>Careers &amp; Training</a>')
+for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
+rm -f ck3

@@ -218,8 +218,8 @@ const FAQ = [
         a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
       },
       {
-        q: 'Is the certificate accepted by colleges?',
-        a: 'Yes. Goforge Digital is an MSME-registered company, and our training certificate and internship letter are accepted by colleges for internship requirements and recognised by industry. The letter is signed and carries contact details, so your college or a future employer can confirm it. If your college needs a specific format, a set number of hours, or an NOC, tell us on the counselling call and we will prepare it.'
+        q: 'Will my college accept the certificate?',
+        a: 'Each college sets its own rules, so check yours. Goforge Digital is an MSME-registered company. Our letter names your role, dates and work, is signed, and carries contact details and a certificate ID, so your college or a future employer can verify it online. If your college needs a specific format, a set number of hours, or an NOC, tell us on the counselling call and we will prepare it.'
       },
       {
         q: 'What does the letter include?',
@@ -241,6 +241,17 @@ const FAQ = [
         q: 'Is the demo class the same as joining?',
         a: 'The demo class is one free live session so you can experience the training first. After it, a counselling call confirms your programme and batch, and you enrol when you are ready.'
       },
+    ]
+  },
+  {
+    id: 'parents',
+    title: 'For parents',
+    items: [
+      { q: 'How much does the programme cost?', a: 'Fees depend on the programme and batch, so we share them on a free counselling call, along with what is included. Nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'] },
+      { q: 'What if my child needs to stop or change plans?', a: 'Our refund policy is written down and available before you enrol. It explains when a refund applies and how long it takes, so you know the terms in advance.', link: ['/refund', 'Read the refund policy'] },
+      { q: 'What does the certificate prove?', a: 'The training certificate confirms that your child completed the named programme on the stated dates. The internship letter names the role, dates and the work done. Each document carries a unique ID that colleges and employers can check with us.', link: ['/verify', 'How verification works'] },
+      { q: 'Is it safe, and who supervises the students?', a: 'Classes are live and online, taught and reviewed by our instructors and mentors. During the internship each student works on assigned tasks with a named supervisor and regular check-ins. We contact students only through the details they share with us.' },
+      { q: 'Can we visit or speak to someone first?', a: 'Yes. Our office is at Puri Highstreet, Sector 81, Faridabad, and you are welcome to call before visiting or book a counselling call to ask any question.', link: ['/contact', 'Contact details'] }
     ]
   },
   {

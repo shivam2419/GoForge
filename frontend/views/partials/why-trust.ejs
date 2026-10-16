@@ -1,0 +1,17 @@
+<% const msme = (locals.credentials || []).find(c => /msme/i.test(c.title)); %>
+<section class="section section-tight trust-why" aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Why trust us</p>
+      <h2 id="why-h" class="h2" data-reveal>Everything here <em>you can check.</em></h2>
+    </div>
+    <ul class="why-grid" data-reveal-group>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'check' }) %></span><h3>MSME registered</h3><p>Udyam <%= msme && msme.number ? msme.number : 'registered' %>. <a href="<%= (msme && msme.link_url) || 'https://udyamregistration.gov.in/Udyam_Verify.aspx' %>" target="_blank" rel="noopener">Verify on Udyam</a></p></li>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'key' }) %></span><h3>Verifiable certificates</h3><p>Every certificate has an ID you can <a href="/verify">verify online</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'user' }) %></span><h3>A named founder</h3><p>Led by <%= BRAND.founder %>, <%= BRAND.founderRole %>.<% if (BRAND.linkedin) { %> <a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener">LinkedIn</a><% } %></p></li>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'globe' }) %></span><h3>An office you can visit</h3><p><%= BRAND.address.line1 %>, Sector 81, Faridabad. <a href="/contact">Call before you visit</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'tag' }) %></span><h3>A written refund policy</h3><p>Clear terms before you enrol. <a href="/refund">Read the refund policy</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('icon', { name: 'browser' }) %></span><h3>Free demo before you pay</h3><p>Sit one live class first, then decide. <a href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a demo class</a></p></li>
+    </ul>
+  </div>
+</section>

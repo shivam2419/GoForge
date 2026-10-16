@@ -7,6 +7,14 @@
 <%- include('dialog-close') %>
 <% } %>
 <% const trainingPage = /^\/(internship(\/|$)|schools$|colleges$|faq$|about$|verify$)/.test(path); %>
+<% if (trainingPage && path !== '/counselling') { %>
+<%- include('dialog-open', { id: 'dlg-counsel', wide: true }) %>
+    <p class="eyebrow">Free, 15 minutes</p>
+    <h2 class="modal-title" id="dlg-counsel-title">Book a free counselling call</h2>
+    <p class="modal-lede">Tell us when to call. We help you choose a programme and share batch dates and fees on the call.</p>
+    <%- include('counsel-form', { px: 'mcc', values: { program: locals.counselProgram || '' }, errors: {} }) %>
+<%- include('dialog-close') %>
+<% } %>
 <% if (trainingPage && path !== '/internship') { %>
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
@@ -46,7 +54,7 @@
     <ul class="check-list">
       <% t.coversList.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
     </ul>
-    <p class="modal-note"><%= t.training %> of live training, then a <%= t.internship %> internship. You finish with projects you can explain, a training certificate and an internship letter. Accepted by colleges and recognised by industry.</p>
+    <p class="modal-note"><%= t.training %> of live training, then a <%= t.internship %> internship. You finish with projects you can explain, a training certificate and an internship letter. Every certificate has an ID you can verify online.</p>
     <div class="modal-actions">
       <a class="btn btn-primary" href="/internship/programs/<%= t.slug %>">Apply for this programme <%- include('icon', { name: 'arrow' }) %></a>
     </div>

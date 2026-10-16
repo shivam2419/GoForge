@@ -3,12 +3,13 @@
 <section class="page-hero">
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Training + internship</p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span>Learn it live,</span></span> <span class="line"><span><em>then work on it for real.</em></span></span></h1>
-    <p class="lede" data-hero-item>Paid live training with study material, assignments and projects, then an internship offer with Goforge Digital. For BTech, BCA, MCA and similar students. Certificates are accepted by colleges and recognised by industry.</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Paid Training + Internship</span></span> <span class="line"><span><em>for College Students &amp; Graduates</em></span></span></h1>
+    <p class="lede" data-hero-item>Learn live for <%= s.intern_training %>, then complete a supervised internship of <%= s.intern_work %> with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
+    <p class="lede hero-trust-line" data-hero-item>Every certificate has an ID you can <a href="/verify">verify online</a>.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
       <a class="btn btn-ghost btn-lg" href="#programs">See programmes</a>
-      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
     </div>
     <dl class="facts" data-reveal-group>
       <div data-reveal><dt>Training</dt><dd><%= s.intern_training %>, live online</dd></div>
@@ -93,6 +94,10 @@
 </section>
 
 <%- include('partials/people', { instructors, testimonials }) %>
+<%- include('partials/why-trust', { credentials }) %>
+<%- include('partials/samples', { sampleDocs, alt: true }) %>
+<%- include('partials/student-work', { projects }) %>
+<%- include('partials/gallery', { gallery }) %>
 
 <section class="section section-alt" aria-labelledby="rules-h">
   <div class="wrap">
@@ -112,10 +117,10 @@
         </ul>
       </div>
       <div class="rules-col rules-yes" data-reveal>
-        <h3>Recognised and accepted</h3>
+        <h3>Easy to verify</h3>
         <ul>
           <li><%- include('partials/icon', { name: 'check' }) %><span>Issued by an MSME-registered company</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Accepted by colleges for internship requirements and recognised by industry</span></li>
+          <li><%- include('partials/icon', { name: 'check' }) %><span>Suitable for college internship requirements, with the dates, hours and work written down</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>A signed letter with contact details, so colleges and employers can confirm it</span></li>
           <li><%- include('partials/icon', { name: 'check' }) %><span>College-specific formats, hours or NOC support on request</span></li>
         </ul>
@@ -131,6 +136,8 @@
       <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
     <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.slice(0, 8), name: 'faq-internship', openFirst: true }) %>
+    <h3 class="h3 faq-sub" data-reveal>For parents</h3>
+    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'parents').items, name: 'faq-parents' }) %>
     <p class="faq-more"><a class="text-link" href="/faq#students">All student questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
 </section>

@@ -4,12 +4,20 @@
 <section class="page-hero">
   <div class="wrap">
     <p class="eyebrow" data-hero-item><a class="crumb" href="/internship">Training + internship</a></p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span><%= p.name %></span></span></h1>
+    <h1 class="h1 hero-title-sm"><span class="line"><span><%= p.name %></span></span> <span class="line"><span><em>Training with Internship</em></span></span></h1>
     <p class="lede" data-hero-item><%= p.summary %></p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
-      <a class="btn btn-ghost btn-lg" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a free demo class</a>
+      <a class="btn btn-ghost btn-lg" href="/counselling?program=<%= encodeURIComponent(p.name) %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="program" data-prefill-value="<%= p.name %>">Book a free counselling call</a>
     </div>
+    <div class="prog-links" data-hero-item>
+      <a class="btn btn-ghost btn-sm" href="/internship/overview.pdf" target="_blank" rel="noopener">Syllabus &amp; overview (PDF) <%- include('partials/icon', { name: 'upright' }) %></a>
+      <a class="btn btn-ghost btn-sm" href="/refund">Refund policy <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-sm" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Free demo class</a>
+    </div>
+    <% const nb = p.batchesList[0]; if (nb && nb.start) { %>
+    <p class="next-batch" data-hero-item><strong>Next batch</strong><span>Starts <%= nb.start %></span><% if (nb.timing) { %><span><%= nb.timing %></span><% } %><% if (nb.seats) { %><span><%= nb.seats %></span><% } %></p>
+    <% } %>
     <dl class="facts" data-reveal-group>
       <div data-reveal><dt>Training</dt><dd><%= p.training %></dd></div>
       <div data-reveal><dt>Internship</dt><dd><%= p.internship %>, supervised</dd></div>
@@ -115,7 +123,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Apply for <em><%= p.name %></em></h2>
-      <p class="section-intro" data-reveal>Our certificate and internship letter are accepted by colleges and recognised by industry. Share the <a href="/internship/overview.pdf">programme overview</a> with your college, and read the <a href="/faq#students">student FAQ</a> for details.</p>
+      <p class="section-intro" data-reveal>Every certificate and internship letter has an ID you can <a href="/verify">verify online</a>. Share the <a href="/internship/overview.pdf">programme overview</a> with your college, and read the <a href="/faq#students">student FAQ</a> for details.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form', { px: 'p' }) %>
