@@ -57,7 +57,7 @@
         <p class="eyebrow" data-reveal>Services</p>
         <h2 id="services-h" class="h2" data-reveal>What we <em>do for you.</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Four core services. Pick one, or tell us the challenge and we will recommend the right fit.</p>
+      <p class="section-intro" data-reveal>Four core services for growing businesses. Choose one, or share your goal and we will recommend the right fit.</p>
     </div>
     <ul class="service-grid" data-reveal-group data-zoom>
       <% SERVICES.forEach((svc, i) => { %>
@@ -70,15 +70,15 @@
           </span>
           <h3 class="service-name"><%= svc.name %></h3>
           <p class="service-blurb"><%= s[svc.key] %></p>
-          <span class="service-more">Let's explore <%- include('partials/icon', { name: 'upright' }) %></span>
+          <span class="service-more">Explore service <%- include('partials/icon', { name: 'upright' }) %></span>
         </a>
       </li>
       <% }) %>
     </ul>
     <div class="more-services-wrap" data-reveal>
       <p class="mini-h">More software services</p>
-      <ul class="svc-related">
-        <% SERVICE_PAGES.filter(x => !SERVICES.some(c => c.slug === x.slug)).forEach(r => { %><li><a href="/services/<%= r.slug %>"><span class="service-icon"><%- include('partials/icon', { name: r.icon }) %></span><span><%= r.name %></span><%- include('partials/icon', { name: 'arrow' }) %></a></li><% }) %>
+      <ul class="svc-related svc-more4">
+        <% SERVICE_PAGES.filter(x => !SERVICES.some(c => c.slug === x.slug)).forEach(r => { %><li><a href="/services/<%= r.slug %>"><span class="service-icon"><%- include('partials/icon', { name: r.icon }) %></span><span><%= r.short || r.name %></span><%- include('partials/icon', { name: 'arrow' }) %></a></li><% }) %>
       </ul>
     </div>
   </div>

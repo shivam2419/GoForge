@@ -80,10 +80,10 @@ const DEFAULT_SETTINGS = {
   phone2: '+91 89580 39354',
   email: 'info@goforgedigital.com',
   linkedin_company: 'https://www.linkedin.com/company/143989208',
-  blurb1: 'Tools and sites built around how the business actually works, not a stretched template.',
-  blurb2: 'Leads, records, and the tools the team already uses, joined so work is not split across five places.',
-  blurb3: 'Repeat follow-ups and form-to-message flows, with a person still in the loop.',
-  blurb4: 'A clear presence, search basics, and ads with a budget the client can see.',
+  blurb1: 'Web apps, portals and internal tools built around your workflow, so your team works faster from one secure system.',
+  blurb2: 'CRM and ERP systems that bring leads, customers, stock and billing together, connected with the tools you already use.',
+  blurb3: 'AI-powered workflows that send instant alerts, timely follow-ups and smart drafts, saving hours while your team stays in control.',
+  blurb4: 'Local SEO, Google Business Profile and targeted ads that bring more qualified enquiries, with clear monthly reports.',
   intern_training: '6 weeks',
   intern_work: '12 weeks',
   intern_fee: 'Contact for fees'
@@ -102,6 +102,11 @@ async function init() {
     ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"],
     ["DELETE FROM settings WHERE key = 'whatsapp'"],
     // Public contact email moved to the company domain. The admin login email is separate (ADMIN_EMAIL) and unchanged.
+    // Service card copy refreshed (only replaces the untouched old default).
+    ["UPDATE settings SET value = ? WHERE key = 'blurb1' AND value = ?", 'Web apps, portals and internal tools built around your workflow, so your team works faster from one secure system.', 'Tools and sites built around how the business actually works, not a stretched template.'],
+    ["UPDATE settings SET value = ? WHERE key = 'blurb2' AND value = ?", 'CRM and ERP systems that bring leads, customers, stock and billing together, connected with the tools you already use.', 'Leads, records, and the tools the team already uses, joined so work is not split across five places.'],
+    ["UPDATE settings SET value = ? WHERE key = 'blurb3' AND value = ?", 'AI-powered workflows that send instant alerts, timely follow-ups and smart drafts, saving hours while your team stays in control.', 'Repeat follow-ups and form-to-message flows, with a person still in the loop.'],
+    ["UPDATE settings SET value = ? WHERE key = 'blurb4' AND value = ?", 'Local SEO, Google Business Profile and targeted ads that bring more qualified enquiries, with clear monthly reports.', 'A clear presence, search basics, and ads with a budget the client can see.'],
     ["UPDATE settings SET value = 'info@goforgedigital.com' WHERE key = 'email' AND value = 'goforgedigital@gmail.com'"],
     ["UPDATE settings SET value = 'Contact for fees' WHERE key = 'intern_fee' AND value = 'Confirmed on the call'"]
   ]);

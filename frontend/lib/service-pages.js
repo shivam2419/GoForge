@@ -121,7 +121,7 @@ const PAGES = [
     related: ['real-estate-crm', 'erp-development', 'ai-automation', 'custom-software-development']
   },
   {
-    slug: 'erp-development', icon: 'database', contact: 'CRM, ERP & Integrations',
+    slug: 'erp-development', short: 'ERP Development', icon: 'database', contact: 'CRM, ERP & Integrations',
     name: 'ERP Development',
     nav: 'ERP development',
     seoTitle: 'ERP Software Development in Faridabad | Custom ERP | Goforge Digital',
@@ -237,7 +237,7 @@ const PAGES = [
     related: ['crm-development', 'custom-software-development', 'erp-development', 'digital-marketing']
   },
   {
-    slug: 'website-development', icon: 'browser', contact: 'Custom Software & Web Apps',
+    slug: 'website-development', short: 'Web Development', icon: 'browser', contact: 'Custom Software & Web Apps',
     name: 'Website Development',
     nav: 'Website development',
     seoTitle: 'Website Development Company in Faridabad | Business Websites | Goforge Digital',
@@ -353,7 +353,7 @@ const PAGES = [
     related: ['website-development', 'crm-development', 'ai-automation', 'real-estate-crm']
   },
   {
-    slug: 'real-estate-crm', icon: 'briefcase', contact: 'CRM, ERP & Integrations',
+    slug: 'real-estate-crm', short: 'Real Estate CRM', icon: 'briefcase', contact: 'CRM, ERP & Integrations',
     name: 'Real Estate CRM Software',
     nav: 'Real estate CRM',
     seoTitle: 'Real Estate CRM Software in Faridabad & Delhi NCR | Goforge Digital',
@@ -411,7 +411,7 @@ const PAGES = [
     related: ['crm-development', 'digital-marketing', 'ai-automation', 'website-development']
   },
   {
-    slug: 'school-management-software', icon: 'flask', contact: 'CRM, ERP & Integrations',
+    slug: 'school-management-software', short: 'School ERP', icon: 'flask', contact: 'CRM, ERP & Integrations',
     name: 'School Management Software',
     nav: 'School software',
     seoTitle: 'School Management Software & ERP in Faridabad | Goforge Digital',
