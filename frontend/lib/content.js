@@ -212,7 +212,7 @@ const FAQ = [
       },
       {
         q: 'Is there any fee for the internship programme?',
-        a: 'Fees are shared on a call with our counsellor. Projects and the internship are included in the programme.'
+        a: 'Yes, the training has a fee, shared on your free counselling call. Projects and the internship are included in the programme.'
       },
       {
         q: 'How does the programme work?',

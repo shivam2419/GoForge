@@ -562,7 +562,7 @@ async function trustData() {
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = 'Paid live training plus a supervised internship for college students and graduates, in Faridabad and online: software, AI/ML, data analytics, data science, web development, business analysis and digital marketing. Verifiable certificates.';
+const INTERNSHIP_DESC = 'Live industry training plus a supervised internship for college students and graduates, in Faridabad and online: software, AI/ML, data analytics, data science, web development, business analysis and digital marketing. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
