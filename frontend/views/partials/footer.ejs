@@ -43,6 +43,7 @@
         <li><a href="<%= telHref(s.phone1) %>"><%= s.phone1 %></a></li>
         <li><a href="<%= telHref(s.phone2) %>"><%= s.phone2 %></a></li>
         <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
+        <li><a href="<%= BRAND.googleProfile %>" target="_blank" rel="noopener">Find us on Google</a></li>
       </ul>
       <p class="footer-h footer-follow">Follow us</p>
       <%- include('social-row', { s }) %>
@@ -50,7 +51,7 @@
   </div>
   <div class="wrap footer-bottom">
     <span>&copy; <%= year %> Goforge Digital</span>
-    <span><%= BRAND.address.line2 %>, <%= BRAND.address.region %></span>
+    <span><%= BRAND.address.line2 %>, <%= BRAND.address.region %> <%= BRAND.address.postalCode %></span>
     <button type="button" class="motion-toggle" data-motion-toggle aria-pressed="false">Pause animations</button>
     <a class="to-top" href="#main">Back to top <%- include('icon', { name: 'up' }) %></a>
   </div>

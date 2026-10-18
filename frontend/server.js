@@ -334,11 +334,11 @@ function orgBase(s) {
       '@type': 'PostalAddress',
       streetAddress: 'D125b, 1st Floor, Puri Highstreet, Sector 81',
       addressLocality: BRAND.address.locality,
-      postalCode: '121004',
+      postalCode: BRAND.address.postalCode,
       addressRegion: BRAND.address.region,
       addressCountry: BRAND.address.country
     },
-    sameAs: [BRAND.instagram, s.linkedin_company || BRAND.linkedinCompany].filter(Boolean)
+    sameAs: [BRAND.instagram, s.linkedin_company || BRAND.linkedinCompany, BRAND.googleProfile].filter(Boolean)
   };
 }
 // Home, About and Contact describe the business as a software company (ProfessionalService + LocalBusiness).
@@ -370,7 +370,7 @@ const BRAND_ALT_NAMES = ['GoForge Digital', 'Go Forge Digital', 'Goforge'];
 function websiteJsonLd() {
   return JSON.stringify({
     '@context': 'https://schema.org', '@type': 'WebSite', '@id': SITE_URL + '/#website',
-    name: BRAND.name, alternateName: BRAND_ALT_NAMES, url: SITE_URL + '/',
+    name: BRAND.name, alternateName: [...BRAND_ALT_NAMES, 'goforgedigital.com'], url: SITE_URL + '/',
     publisher: { '@id': SITE_URL + '/#organization' }
   }).replace(/</g, '\\u003c');
 }

@@ -1,0 +1,27 @@
+<%
+// Real client site and clearly labelled sample (demo) school websites. Static on purpose: these are not admin-managed.
+const SHOWCASE = [
+  { kind: 'client', name: 'Vaishnavi Associates', sector: 'Real estate', url: 'https://vaishnaviassociates.com/', img: '/img/work/vaishnavi-associates.webp',
+    text: 'Live website for a real estate client, with properties, services, testimonials and a contact enquiry.' },
+  { kind: 'demo', name: 'Harold Public Senior Secondary School', sector: 'School', url: 'https://harold-demo.rohitsharma46100.workers.dev/', img: '/img/work/harold-school-demo.webp',
+    text: 'Sample school website with admission enquiries, academics, facilities, careers and a Hindi option.' },
+  { kind: 'demo', name: 'M.V.M. Sr. Sec. School (Modern Vidya Mandir)', sector: 'School', url: 'https://mvm-school-demo.netlify.app/', img: '/img/work/mvm-school-demo.webp',
+    text: 'Sample school website with an admissions notice, gallery, news and a parent portal link.' },
+  { kind: 'demo', name: 'Saini Public School', sector: 'School', url: 'https://sainischool.framer.website/', img: '/img/work/saini-school-demo.webp',
+    text: 'Sample school website covering the campus, school life and admission enquiries.' }
+];
+const items = SHOWCASE.filter(x => !locals.only || x.kind === locals.only);
+%>
+<ul class="work-grid showcase-grid showcase-<%= items.length %>" data-reveal-group>
+  <% items.forEach(w => { const demo = w.kind === 'demo'; %>
+  <li class="work-card showcase-card" data-reveal>
+    <img src="<%= w.img %>" alt="Home page of the <%= w.name %> <%= demo ? 'sample website' : 'website' %>" loading="lazy" width="800" height="500">
+    <div class="work-body">
+      <p class="work-tag<%= demo ? ' work-tag-demo' : '' %>"><%= demo ? 'Demo website' : 'Live client site' %></p>
+      <h3><%= w.name %></h3>
+      <p><%= w.text %></p>
+      <a class="text-link work-visit" href="<%= w.url %>" target="_blank" rel="noopener"><%= demo ? 'View demo' : 'Visit live site' %> <%- include('icon', { name: 'upright' }) %><span class="visually-hidden"> (opens in a new tab)</span></a>
+    </div>
+  </li>
+  <% }) %>
+</ul>

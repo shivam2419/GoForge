@@ -33,7 +33,7 @@
     <h3 class="h3"><%= role.name %></h3>
     <p><%= role.summary %> <% if (role.toolsList.length) { %>Tools usually include <%= role.toolsList.join(', ') %>.<% } %> <%= role.project || "" %></p>
     <% }) %>
-    <p>Studio: <%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %>. <%= BRAND.website %></p>
+    <p>Studio: <%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %> <%= BRAND.address.postalCode %>. <%= BRAND.website %></p>
   </div>
 </article>
 <%- include('partials/footer') %>
