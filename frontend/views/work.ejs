@@ -4,16 +4,12 @@
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Work</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Portfolio</span></span></h1>
-    <p class="lede" data-hero-item>Goforge Digital is a new studio. This page shows only finished work we are allowed to show, so it stays empty until there is some.</p>
+    <p class="lede" data-hero-item>Live client work we have permission to show, plus sample school websites we built to show schools what is possible. Every sample is clearly marked as a demo.</p>
   </div>
 </section>
 <section class="section section-tight">
   <div class="wrap">
-    <div class="work-frame work-frame-lg" data-reveal>
-      <%- include('partials/corners') %>
-      <%- include('partials/mark', { cls: 'work-mark', decorative: true, uid: 'work', sizes: '96px' }) %>
-      <p class="work-line">Selected work will be added here.</p>
-    </div>
+    <%- include('partials/showcase') %>
     <div class="work-cta" data-reveal>
       <p>Want to be one of the first projects?</p>
       <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>

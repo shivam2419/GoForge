@@ -29,8 +29,13 @@
         </li><% } %>
         <li data-reveal>
           <span class="detail-icon"><%- include('partials/icon', { name: 'pin' }) %></span>
-          <span><small>Office</small><address><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>, <%= BRAND.address.region %></address>
+          <span><small>Office</small><address><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>, <%= BRAND.address.region %> <%= BRAND.address.postalCode %></address>
           <a class="small-link" href="https://www.google.com/maps/search/?api=1&amp;query=<%= encodeURIComponent('Puri Highstreet Sector 81 Faridabad') %>" target="_blank" rel="noopener">Open in Google Maps</a></span>
+        </li>
+        <li data-reveal>
+          <span class="detail-icon"><%- include('partials/icon', { name: 'star' }) %></span>
+          <span><small>Google</small><a href="<%= BRAND.googleProfile %>" target="_blank" rel="noopener">Find us on Google</a>
+          <a class="small-link" href="<%= BRAND.googleProfile %>" target="_blank" rel="noopener">Read or leave a review</a></span>
         </li>
       </ul>
       <%- include('partials/social-row', { s, dark: true }) %>
@@ -46,7 +51,7 @@
     <div>
       <p class="eyebrow" data-reveal>Visit</p>
       <h2 id="visit-h" class="h2" data-reveal>Sector 81, <em>Faridabad.</em></h2>
-      <address class="about-address" data-reveal><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>,<br><%= BRAND.address.region %>, India</address>
+      <address class="about-address" data-reveal><%= BRAND.address.line1 %>,<br><%= BRAND.address.line2 %>,<br><%= BRAND.address.region %> <%= BRAND.address.postalCode %>, India</address>
       <dl class="hours" data-reveal>
         <% BRAND.hours.forEach(row => { %>
         <div><dt><%= row[0] %></dt><dd><%= row[1] %></dd></div>

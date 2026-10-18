@@ -1497,3 +1497,14 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
 .student-band a > span { white-space: nowrap; }
 @media (max-width: 560px) { .student-band a { flex-wrap: wrap; gap: 4px 8px; font-size: 14px; padding: 10px 16px; } }
 .samples-grid { align-items: center; }
+/* Work showcase: live client site + labelled demo school websites. Equal-height cards, link pinned to the bottom. */
+.showcase-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.showcase-grid.showcase-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.showcase-card img { height: auto; }
+.showcase-card .work-body { display: flex; flex-direction: column; flex: 1; }
+.showcase-card h3 { font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.2; }
+.work-tag { align-self: flex-start; margin: 0 0 10px !important; padding: 4px 10px; border-radius: 999px; font-size: 11px !important; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--paper) !important; background: var(--ink); }
+.work-tag-demo { color: var(--gold-deep) !important; background: var(--gold-wash); border: 1px solid var(--gold-soft); }
+.work-visit { margin-top: auto; align-self: flex-start; font-size: 14.5px; }
+@media (max-width: 1000px) { .showcase-grid, .showcase-grid.showcase-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .showcase-grid, .showcase-grid.showcase-3 { grid-template-columns: 1fr; } }
