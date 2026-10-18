@@ -1,0 +1,69 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Case study · Real estate</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Vaishnavi Associates</span></span> <span class="line"><span><em>website.</em></span></span></h1>
+    <p class="lede" data-hero-item>We designed and built the website for Vaishnavi Associates, a real estate advisory in Faridabad led by principal advisor Vicky Nayak.</p>
+    <div class="hero-actions" data-hero-item>
+      <a class="btn btn-primary" href="https://vaishnaviassociates.com/" target="_blank" rel="noopener">Visit the live site <%- include('partials/icon', { name: 'upright' }) %><span class="visually-hidden"> (opens in a new tab)</span></a>
+      <a class="btn btn-ghost" href="/work">All work</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="wrap">
+    <figure class="cs-shot" data-reveal>
+      <img src="/img/work/vaishnavi-associates.webp" alt="Home page of the Vaishnavi Associates website" width="800" height="500">
+      <figcaption>Home page of vaishnaviassociates.com</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section-alt section-tight" aria-labelledby="cs-brief-h">
+  <div class="wrap svc-two">
+    <div data-reveal>
+      <p class="eyebrow">The brief</p>
+      <h2 id="cs-brief-h" class="h3">A calm, premium home for a personal advisory</h2>
+      <p class="prose">Vaishnavi Associates needed one place to present its properties and services, introduce its principal advisor, and make it easy for buyers and sellers to start a private conversation by phone, email or a message.</p>
+    </div>
+    <div data-reveal>
+      <p class="eyebrow">What we did</p>
+      <h2 class="h3">Design and development</h2>
+      <p class="prose">We designed and built the website: page layouts, the property collection, the enquiry form and a responsive build that works on phones, tablets and desktops. The client provides and manages the listings, figures and testimonials shown on the site.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="cs-feat-h">
+  <div class="wrap">
+    <div data-reveal>
+      <p class="eyebrow">What the site includes</p>
+      <h2 id="cs-feat-h" class="h3">Pages and features</h2>
+    </div>
+    <ul class="check-list cs-features" data-reveal>
+      <% [
+        'Home page with clear calls to book a private consultation or explore the collection',
+        'Properties page with sorting by price and filters by type and price, plus a page for each property (location, beds, baths and area)',
+        'About page introducing the principal advisor',
+        'Services page covering buyer and seller representation',
+        'Testimonials page',
+        'Contact page with an enquiry form (name, email, phone, property interest and message), tap-to-call phone numbers, email and office address',
+        'Links to the client’s Instagram, LinkedIn and Facebook, plus privacy and terms pages',
+        'Responsive layout, a skip-to-content link and social sharing previews'
+      ].forEach(t => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= t %></span></li><% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt section-tight" aria-labelledby="cs-next-h">
+  <div class="wrap work-cta">
+    <div>
+      <h2 id="cs-next-h" class="h3">Need a website like this for your business?</h2>
+      <p class="prose">Tell us what you have in mind. Fees are shared on a call, once the scope is clear.</p>
+    </div>
+    <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
+  </div>
+</section>
+<%- include('partials/footer') %>

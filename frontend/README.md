@@ -53,6 +53,10 @@ See `.env.example`. The important ones:
 | `TRUST_PROXY` | `1` when behind Render, Railway, Nginx or Cloudflare |
 | `GA_MEASUREMENT_ID` | Optional. GA4 ID (`G-XXXXXXXX`). Off if empty. |
 | `PLAUSIBLE_DOMAIN` | Optional. Plausible domain. Off if empty. |
+| `ENABLE_VERCEL_ANALYTICS` | Optional. `1` loads Vercel Web Analytics (cookie-free, same-origin script). Enable Web Analytics in the Vercel project first. |
+| `RESEND_API_KEY` | Optional. Turns on email alerts for every form lead (see below). Off if empty. |
+| `LEAD_ALERT_TO` | Optional. Alert recipients, comma separated. Default `info@goforgedigital.com`. |
+| `LEAD_ALERT_FROM` | Optional. Sender on a Resend-verified domain. Default `Goforge Digital Website <alerts@goforgedigital.com>`. |
 | `ADMIN_INITIAL_PASSWORD` | Optional. Sets the first admin password instead of generating one (useful where you cannot read files on the server) |
 
 ## Deploy
@@ -65,6 +69,26 @@ Vercel functions have no persistent disk, so the database must be hosted. Schema
 
 
 Elsewhere the app is one Node process plus either Turso (set the two env vars) or a SQLite file on a persistent disk.
+
+#### Region
+`vercel.json` pins the function to `bom1` (Mumbai). The Turso database is in `aws-ap-south-1` (Mumbai), so database queries stay in-region and pages are served close to visitors in India. If the database ever moves, move the function region with it.
+
+#### Admin image uploads (Vercel Blob)
+Uploads in the admin panel need a Blob store; without one, the admin pastes image links instead.
+1. Vercel dashboard > project **goforge** > **Storage** > **Create Database** > **Blob** > name it `goforge-uploads`, region Mumbai (bom1), access **Public** > **Create**.
+2. Connect it to the project for **Production** and **Preview**. This adds `BLOB_READ_WRITE_TOKEN` automatically.
+3. Redeploy. Upload fields in the admin panel now accept JPG, PNG or WebP up to 2 MB.
+
+#### Lead email alerts (Resend)
+Every form (project enquiry, internship application, counselling call, school and college enquiry) is saved to the admin inbox first. If `RESEND_API_KEY` is set, a short summary email with a link to the inbox is also sent. Email problems are only logged; they never stop a form from being saved.
+1. Create a free account at [resend.com](https://resend.com).
+2. **Domains > Add domain** > `goforgedigital.com`. Add the DNS records Resend shows (SPF/DKIM TXT and MX on a `send` subdomain) at your DNS host, then click **Verify**.
+3. **API Keys > Create API key** with *Sending access* only.
+4. Vercel > Settings > Environment Variables (Production): `RESEND_API_KEY=<key>`, optionally `LEAD_ALERT_TO` and `LEAD_ALERT_FROM` (the sender must use the verified domain). Redeploy.
+
+#### Analytics
+- Google Analytics 4: create a GA4 property and web data stream for `https://www.goforgedigital.com`, copy the Measurement ID (`G-XXXXXXXX`), set `GA_MEASUREMENT_ID` and redeploy. The CSP allows Google's script and collection hosts only when it is set.
+- Vercel Web Analytics: project > **Analytics** > **Enable**, then set `ENABLE_VERCEL_ANALYTICS=1` and redeploy.
 
 ### Render
 1. Push this folder to a GitHub repo.

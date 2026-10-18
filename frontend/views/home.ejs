@@ -91,7 +91,7 @@
   <div class="wrap">
     <div class="section-head center">
       <p class="eyebrow" data-reveal>Industries we serve</p>
-      <h2 id="ind-h" class="h2" data-reveal>Who we <em>work with.</em></h2>
+      <h2 id="ind-h" class="h2" data-reveal>Who we <em>build for.</em></h2>
     </div>
     <ul class="ind-grid" data-reveal-group>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'pin' }) %></span><h3>Real estate</h3><p>Websites, lead capture and a simple CRM, so every property enquiry gets a quick follow-up.</p></li>
@@ -101,6 +101,19 @@
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><h3>Startups</h3><p>MVPs, web apps and launch marketing to get your product in front of customers.</p></li>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'briefcase' }) %></span><h3>Growing businesses</h3><p>Custom tools, CRM and marketing that save time and bring in more customers.</p></li>
     </ul>
+  </div>
+</section>
+
+<section class="section" id="recent-work" aria-labelledby="rw-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Recent work</p>
+        <h2 id="rw-h" class="h2" data-reveal>Websites we have <em>built.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>A live site for a real estate client, plus sample school websites, clearly marked as demos. <a href="/work">See all work</a>.</p>
+    </div>
+    <%- include('partials/showcase', { ids: ['vaishnavi', 'harold', 'mvm', 'saini'], cols: 4 }) %>
   </div>
 </section>
 
@@ -151,7 +164,7 @@
       <p class="section-intro" data-reveal>Goforge Digital is an MSME-registered company led by Rohit Sharma, Founder &amp; Director. When you work with us, you speak with the people doing the work.</p>
       <dl class="about-facts" data-reveal-group>
         <div data-reveal><dt>Who you talk to</dt><dd>Rohit Sharma, Founder &amp; Director</dd></div>
-        <div data-reveal><dt>Who we work with</dt><dd>Real estate, schools, colleges, universities, startups and growing businesses</dd></div>
+        <div data-reveal><dt>Who we build for</dt><dd>Real estate, schools, colleges, universities, startups and growing businesses</dd></div>
       </dl>
       <a class="text-link" href="/about" data-reveal>Get to know us <%- include('partials/icon', { name: 'arrow' }) %></a>
     </div>

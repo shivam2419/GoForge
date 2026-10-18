@@ -16,6 +16,7 @@ const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
 const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
 const multer = require('multer');
+const { notifyLead } = require('./lib/lead-alerts');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 32 * 1024 } });
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -29,6 +30,9 @@ const BCRYPT_COST = 12;
 const GA_ID = /^G-[A-Z0-9]+$/.test(process.env.GA_MEASUREMENT_ID || '') ? process.env.GA_MEASUREMENT_ID : '';
 const PLAUSIBLE_DOMAIN = (process.env.PLAUSIBLE_DOMAIN || '').replace(/[^a-z0-9.-]/gi, '');
 const PLAUSIBLE_SRC = process.env.PLAUSIBLE_SRC || 'https://plausible.io';
+// Vercel Web Analytics (cookie-free). Served same-origin from /_vercel/insights/*, so the CSP 'self' already allows it.
+// Only meaningful on Vercel with Web Analytics enabled in the project dashboard.
+const VERCEL_ANALYTICS = process.env.ENABLE_VERCEL_ANALYTICS === '1' && Boolean(process.env.VERCEL);
 
 // ---------- secrets ----------
 function loadSecret() {
@@ -203,12 +207,12 @@ app.use(helmet({
     useDefaults: true,
     directives: {
       'default-src': ["'self'"],
-      'script-src': ["'self'"].concat(GA_ID ? ['https://www.googletagmanager.com'] : [], PLAUSIBLE_DOMAIN ? [PLAUSIBLE_SRC] : []),
+      'script-src': ["'self'"].concat(GA_ID ? ['https://*.googletagmanager.com'] : [], PLAUSIBLE_DOMAIN ? [PLAUSIBLE_SRC] : []),
       'style-src': ["'self'"],
       'img-src': ["'self'", 'data:', 'https:'].concat(GA_ID ? ['https://www.google-analytics.com'] : []),
       'font-src': ["'self'"],
       'connect-src': ["'self'"].concat(
-        GA_ID ? ['https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://region1.google-analytics.com'] : [],
+        GA_ID ? ['https://*.google-analytics.com', 'https://*.analytics.google.com', 'https://*.googletagmanager.com'] : [],
         PLAUSIBLE_DOMAIN ? [PLAUSIBLE_SRC] : []
       ),
       'frame-src': ['https://www.google.com', 'https://maps.google.com'],
@@ -246,7 +250,7 @@ app.use(async (req, res, next) => {
     PROGRAMS, TRACKS, MODES, SOURCES,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
     WHY_SMALL, FAQ, OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
-    analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC },
+    analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC, vercel: VERCEL_ANALYTICS },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
     telHref, digits, fmtTime, errors: {}, values: {}
@@ -459,6 +463,21 @@ app.get('/services/:slug', (req, res, next) => {
     { seoTitle: service.seoTitle, service, jsonld: serviceJsonLd(service), crumbs: [['Home', '/'], ['Services', '/services'], [service.name, '/services/' + service.slug]] }));
 });
 
+// Case study: factual description of the live site; no invented metrics or quotes.
+function caseStudyJsonLd() {
+  const url = SITE_URL + '/work/vaishnavi-associates';
+  return JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'CreativeWork', '@id': url + '#work', url,
+    name: 'Vaishnavi Associates website', headline: 'Vaishnavi Associates website: case study',
+    description: 'Goforge Digital designed and built the website for Vaishnavi Associates, a real estate advisory in Faridabad.',
+    image: SITE_URL + '/img/work/vaishnavi-associates.webp', inLanguage: 'en-IN', dateModified: '2026-10-18',
+    creator: { '@id': SITE_URL + '/#organization' },
+    about: { '@type': 'RealEstateAgent', name: 'Vaishnavi Associates', url: 'https://vaishnaviassociates.com/' }
+  }).replace(/</g, '\\u003c');
+}
+app.get('/work/vaishnavi-associates', (req, res) => res.render('case-study', pageMeta(req, 'Vaishnavi Associates',
+  'Case study: Goforge Digital designed and built the Vaishnavi Associates real estate website, with property pages, filters, an enquiry form and a responsive layout.',
+  { seoTitle: 'Vaishnavi Associates Website: Case Study | Goforge Digital', jsonld: caseStudyJsonLd(), crumbs: [['Home', '/'], ['Work', '/work'], ['Vaishnavi Associates', '/work/vaishnavi-associates']] })));
 app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
   'Portfolio of software, CRM, website and marketing projects delivered by Goforge Digital, Faridabad.',
   { seoTitle: 'Software & Website Projects | Goforge Digital, Faridabad' })));
@@ -478,6 +497,8 @@ app.post('/colleges', formLimiter, async (req, res) => {
   const msg = [values.designation && 'Designation: ' + values.designation, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'college')",
     values.name, values.institution, values.phone, values.interest, msg, values.email || null);
+  notifyLead({ title: 'college enquiry', name: values.name, adminUrl: SITE_URL + '/admin/colleges', replyTo: values.email,
+    fields: [['Name', values.name], ['Institution', values.institution], ['Designation', values.designation], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['City', values.city], ['Students', values.size], ['Message', values.message]] });
   respondOk(req, res, 'college', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our partnerships team will contact you within one working day.');
 });
 
@@ -505,6 +526,8 @@ app.post('/counselling', formLimiter, async (req, res) => {
   const msg = 'Preferred time: ' + (values.time || 'Any time');
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'counselling')",
     values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null);
+  notifyLead({ title: 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
+    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Programme', values.program || 'Not sure yet'], ['Preferred time', values.time || 'Any time']] });
   respondOk(req, res, 'counselling', 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
 });
 
@@ -521,6 +544,8 @@ app.post('/schools', formLimiter, async (req, res) => {
   const msg = [values.role && 'Role: ' + values.role, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'school')",
     values.name, values.school, values.phone, values.interest, msg, values.email || null);
+  notifyLead({ title: 'school enquiry', name: values.name, adminUrl: SITE_URL + '/admin/schools', replyTo: values.email,
+    fields: [['Name', values.name], ['School', values.school], ['Role', values.role], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['City', values.city], ['Students', values.size], ['Message', values.message]] });
   respondOk(req, res, 'school', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our schools team will contact you within one working day.');
 });
 
@@ -531,8 +556,8 @@ async function trustData() {
   ]);
   const pick = kind => (samples.find(x => x.kind === kind) || {}).image_url;
   const sampleDocs = {
-    certificate: pick('certificate') || '/img/samples/sample-certificate.png',
-    letter: pick('letter') || '/img/samples/sample-internship-letter.png'
+    certificate: pick('certificate') || '/img/samples/sample-certificate.webp',
+    letter: pick('letter') || '/img/samples/sample-internship-letter.webp'
   };
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
@@ -605,6 +630,8 @@ app.post('/contact', formLimiter, async (req, res) => {
     return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact Goforge Digital'), errors, values });
   }
   (await db.run('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)', values.name, values.business || null, values.phone, values.service || null, values.message));
+  notifyLead({ title: 'project enquiry', name: values.name, adminUrl: SITE_URL + '/admin/contacts',
+    fields: [['Name', values.name], ['Business', values.business], ['Phone', values.phone], ['Service', values.service], ['Message', values.message]] });
   respondOk(req, res, 'contact', 'Thanks, ' + values.name.split(' ')[0] + '. Your message is saved and we will reply soon.');
 });
 
@@ -618,6 +645,8 @@ app.post('/internship', formLimiter, async (req, res) => {
   }
   const groupUrl = await cms.whatsappGroupFor(values.track);
   (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1, groupUrl ? 1 : 0));
+  notifyLead({ title: 'internship application', name: values.full_name, adminUrl: SITE_URL + '/admin/applications', replyTo: values.email,
+    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Heard about us', values.source], ['Note', values.note]] });
   // The group link is only ever sent in this response, after the application is saved.
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
@@ -635,12 +664,14 @@ function respondOk(req, res, kind, message, group = null) {
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 // Priorities put the business pages first. lastmod is the date the page content last changed
 // (SITE_UPDATED, bump when copy changes) rather than the request date.
-const SITE_UPDATED = '2026-10-15';
-const PAGE_UPDATED = { '/internship': '2026-10-14', '/colleges': '2026-10-12', '/schools': '2026-10-13', '/faq': '2026-10-12', '/privacy': '2026-10-15', '/terms': '2026-10-15', '/refund': '2026-10-15', '/internship/overview': '2026-10-12' };
+const SITE_UPDATED = '2026-10-18';
+// Every page changed on 2026-10-18 (address PIN in the footer, new work section), so all share SITE_UPDATED for now.
+// Add a path here when only that page changes later, e.g. { '/faq': '2026-11-02' }.
+const PAGE_UPDATED = {};
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
-    .concat([['/work', '0.8'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
+    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || SITE_UPDATED}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
