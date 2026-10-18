@@ -33,6 +33,7 @@
 <% if (locals.adminCss) { %><link rel="stylesheet" href="/css/admin.css?v=<%= assetV %>"><% } %>
 <script src="/js/site.js?v=<%= assetV %>" defer></script>
 <% if (locals.jsonld) { %><script type="application/ld+json"><%- jsonld %></script><% } %>
+<% if (locals.websiteLd) { %><script type="application/ld+json"><%- websiteLd %></script><% } %>
 <% if (locals.breadcrumbLd) { %><script type="application/ld+json"><%- breadcrumbLd %></script><% } %>
 <% if (analytics && analytics.ga) { %>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<%= analytics.ga %>"></script>

@@ -349,6 +349,7 @@ function jsonLd() {
     '@type': ['ProfessionalService', 'LocalBusiness'],
     '@id': SITE_URL + '/#organization',
     ...orgBase(s),
+    alternateName: BRAND_ALT_NAMES,
     description: 'MSME-registered custom software development company in Faridabad, Haryana: custom software, CRM and ERP development, AI automation, website development and digital marketing for businesses in Faridabad, Delhi NCR and across India.',
     slogan: BRAND.tagline,
     priceRange: 'Shared on a call',
@@ -363,6 +364,15 @@ function jsonLd() {
     }
   };
   return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+// WebSite schema (homepage only) tells Google the site name and its spelling variants.
+const BRAND_ALT_NAMES = ['GoForge Digital', 'Go Forge Digital', 'Goforge'];
+function websiteJsonLd() {
+  return JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'WebSite', '@id': SITE_URL + '/#website',
+    name: BRAND.name, alternateName: BRAND_ALT_NAMES, url: SITE_URL + '/',
+    publisher: { '@id': SITE_URL + '/#organization' }
+  }).replace(/</g, '\\u003c');
 }
 // Training schema lives on /internship only.
 function eduJsonLd() {
@@ -427,7 +437,7 @@ app.get('/', async (req, res) => {
   // Only business-facing stats (e.g. labels mentioning clients or businesses); student/programme stats stay on /internship.
   const stats = t.stats.filter(x => /client|business/i.test(x.label) && !/student|intern|project|instructor|success/i.test(x.label));
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), seoTitle: 'Custom Software Development Company in Faridabad | Goforge Digital' }) });
+    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
