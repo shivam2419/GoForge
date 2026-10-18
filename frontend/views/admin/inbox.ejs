@@ -45,7 +45,11 @@
     <dl class="item-grid">
       <% if (cfg.table === 'contacts') { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.phone) %>"><%= r.phone %></a></dd></div>
-        <div><dt><%= (slug === 'colleges' || slug === 'schools') ? 'Interested in' : 'Service' %></dt><dd><%= r.service || 'Not chosen' %></dd></div>
+        <div><dt><%= (slug === 'colleges' || slug === 'schools') ? 'Interested in' : slug === 'counselling' ? 'Programme' : 'Service' %></dt><dd><%= r.service || 'Not chosen' %></dd></div>
+        <% if (slug === 'counselling') { %>
+        <div><dt>Preferred track</dt><dd><%= r.track || 'Not sure yet' %></dd></div>
+        <% if (r.college_req) { %><div><dt>College requirement</dt><dd><%= r.college_req %></dd></div><% } %>
+        <% } %>
         <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
       <% } else { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.whatsapp) %>"><%= r.whatsapp %></a> &middot; <a href="<%= telHref(r.whatsapp) %>">Call</a></dd></div>

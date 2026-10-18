@@ -10,7 +10,7 @@ const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
-const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS } = require('./lib/content');
+const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel } = require('./lib/content');
 const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
@@ -249,6 +249,7 @@ app.use(async (req, res, next) => {
   Object.assign(res.locals, {
     PROGRAMS, TRACKS, MODES, SOURCES,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
+    CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel,
     WHY_SMALL, FAQ, OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC, vercel: VERCEL_ANALYTICS },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
@@ -408,7 +409,8 @@ function courseJsonLd(p) {
     educationalCredentialAwarded: 'Training certificate and internship letter',
     teaches: p.coversList.length ? p.coversList : undefined,
     syllabusSections: p.curriculumList.map(m => ({ '@type': 'Syllabus', name: (m.label ? m.label + ': ' : '') + m.title, description: m.topics.join('; ') })),
-    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'Online', courseWorkload: p.training, location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } }
+    // One CourseInstance per programme length (ISO 8601 durations: P4W, P6W, P12W, P18W).
+    hasCourseInstance: CAREER_TRACKS.map(t => ({ '@type': 'CourseInstance', name: t.name, courseMode: 'Online', courseWorkload: t.iso, location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } }))
   }).replace(/</g, '\\u003c');
 }
 function faqJsonLd() {
@@ -513,9 +515,13 @@ function validateCounsel(body, programs) {
   if (values.program && !programs.includes(values.program)) errors.program = 'Please choose from the list.';
   values.time = text(body.time);
   if (values.time && !COUNSEL_TIMES.includes(values.time)) errors.time = 'Please choose from the list.';
+  values.track = text(body.track);
+  if (values.track && !CAREER_TRACK_OPTIONS.includes(values.track)) errors.track = 'Please choose from the list.';
+  field(errors, values, body, 'college_req', 'your college requirement', { max: 160 });
   return { errors, values };
 }
-app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '' }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
+const trackFromQuery = slug => { const t = CAREER_TRACKS.find(x => x.slug === slug); return t ? careerTrackLabel(t) : ''; };
+app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
 app.post('/counselling', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'counselling', 'Thanks. Your request has been sent.');
   const { errors, values } = validateCounsel(req.body, res.locals.TRACKS);
@@ -524,10 +530,11 @@ app.post('/counselling', formLimiter, async (req, res) => {
     return res.status(422).render('counselling', { errors, values, ...pageMeta(req, 'Book a free counselling call', 'Counselling', { noindex: true }) });
   }
   const msg = 'Preferred time: ' + (values.time || 'Any time');
-  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'counselling')",
-    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null);
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
+    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null);
   notifyLead({ title: 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
-    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Programme', values.program || 'Not sure yet'], ['Preferred time', values.time || 'Any time']] });
+    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Programme', values.program || 'Not sure yet'], ['Preferred track', values.track || 'Not sure yet'],
+      ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time']] });
   respondOk(req, res, 'counselling', 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
 });
 
@@ -592,7 +599,7 @@ app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(re
 app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
   res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
-  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
+  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: CAREER_TRACKS, tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
@@ -754,7 +761,7 @@ const INBOXES = {
     table: 'contacts', title: 'School enquiries', base: "kind = 'school'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
   },
   counselling: {
-    table: 'contacts', title: 'Counselling calls', base: "kind = 'counselling'", search: ['name', 'phone', 'service', 'message', 'email']
+    table: 'contacts', title: 'Counselling calls', base: "kind = 'counselling'", search: ['name', 'phone', 'service', 'message', 'email', 'track', 'college_req']
   },
   applications: {
     table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city']

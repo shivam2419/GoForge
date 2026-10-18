@@ -234,6 +234,9 @@ async function migrate() {
   const contactCols = new Set((await db.all('PRAGMA table_info(contacts)')).map(r => r.name));
   if (!contactCols.has('kind')) await db.run("ALTER TABLE contacts ADD COLUMN kind TEXT NOT NULL DEFAULT 'client'");
   if (!contactCols.has('email')) await db.run('ALTER TABLE contacts ADD COLUMN email TEXT');
+  // Counselling: chosen programme length and the college's own rule (weeks or hours, deadline). Nullable, so old rows are untouched.
+  if (!contactCols.has('track')) await db.run('ALTER TABLE contacts ADD COLUMN track TEXT');
+  if (!contactCols.has('college_req')) await db.run('ALTER TABLE contacts ADD COLUMN college_req TEXT');
   const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
   if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
   await db.run(`CREATE TABLE IF NOT EXISTS whatsapp_groups (
