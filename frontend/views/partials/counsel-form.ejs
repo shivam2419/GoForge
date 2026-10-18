@@ -7,12 +7,14 @@
     <%- include('field', { f: { id: px + '-name', name: 'name', label: 'Your name', required: true, min: 2, max: 80, autocomplete: 'name' } }) %>
     <%- include('field', { f: { id: px + '-phone', name: 'phone', label: 'Phone', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' } }) %>
     <%- include('field', { f: { id: px + '-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email' } }) %>
-    <%- include('field', { f: { id: px + '-program', name: 'program', label: 'Programme', as: 'select', options: progs, placeholder: 'Not sure yet' } }) %>
-    <%- include('field', { f: { id: px + '-time', name: 'time', label: 'Preferred time to call', as: 'select', options: COUNSEL_TIMES, placeholder: 'Any time', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-time', name: 'time', label: 'Preferred time to call', as: 'select', options: COUNSEL_TIMES, placeholder: 'Any time' } }) %>
+    <%- include('field', { f: { id: px + '-program', name: 'program', label: 'Programme', as: 'select', options: progs, placeholder: 'Not sure yet', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-track', name: 'track', label: 'Preferred track', as: 'select', options: CAREER_TRACK_OPTIONS, placeholder: 'Not sure yet', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-creq', name: 'college_req', label: 'College requirement (weeks or hours, deadline)', max: 160, wide: true, hint: 'For example: 6 weeks or 240 hours, letter needed by 15 July.' } }) %>
   </div>
   <div class="form-foot">
     <button class="btn btn-primary" type="submit" data-submit>Book my call <%- include('icon', { name: 'arrow' }) %></button>
-    <p class="form-note">A free 15-minute call about the programme, batch dates, fees and your college requirements. No payment is taken on the call. <a href="/privacy">Privacy notice</a>.</p>
+    <p class="form-note">A free 15-minute call about the programme, the track that fits your college, batch dates and fees. No payment is taken on the call. <a href="/privacy">Privacy notice</a>.</p>
   </div>
   <%- include('form-success') %>
 </form>

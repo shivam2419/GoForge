@@ -4,22 +4,23 @@
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Training + internship</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Industry Training + Internship</span></span> <span class="line"><span><em>for College Students &amp; Graduates</em></span></span></h1>
-    <p class="lede" data-hero-item>Learn live for <%= s.intern_training %>, then complete a supervised internship of <%= s.intern_work %> with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
+    <p class="lede" data-hero-item>Choose a track <%= TRACK_RANGE %>: live online training with mentors, then supervised work on real projects with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
     <p class="lede hero-trust-line" data-hero-item>Every certificate has an ID you can <a href="/verify">verify online</a>.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
-      <a class="btn btn-ghost btn-lg" href="#programs">See programmes</a>
+      <a class="btn btn-ghost btn-lg" href="#tracks">Compare tracks</a>
     </div>
     <dl class="facts" data-reveal-group>
-      <div data-reveal><dt>Training</dt><dd><%= s.intern_training %>, live online</dd></div>
-      <div data-reveal><dt>Internship</dt><dd><%= s.intern_work %>, supervised</dd></div>
+      <div data-reveal><dt>Length</dt><dd>4 tracks: 4, 6, 12 or 18 weeks</dd></div>
+      <div data-reveal><dt>Format</dt><dd>Live online training, then a supervised internship</dd></div>
       <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
     </dl>
   </div>
 </section>
 
 <%- include('partials/trust', { stats, credentials }) %>
+<%- include('partials/track-story') %>
 <% const tools = TECH_STACK; %>
 <% if (tools.length) { %>
 <div class="ticker ticker-light" aria-label="Tools and technologies taught">
@@ -29,7 +30,7 @@
 </div>
 <% } %>
 
-<section class="section section-alt" aria-labelledby="inc-h">
+<section class="section" aria-labelledby="inc-h">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>What is included</p>
@@ -47,17 +48,6 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="path-h">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>How it works</p>
-      <h2 id="path-h" class="h2" data-reveal>Seven steps, <em>in this order.</em></h2>
-      <p class="section-intro" data-reveal>Training comes first. The internship offer comes after you finish it. The letter comes after the internship work is done.</p>
-    </div>
-    <%- include('partials/path') %>
-  </div>
-</section>
-
 <section class="section section-alt" id="programs" aria-labelledby="programs-h">
   <div class="wrap">
     <div class="section-head split-head">
@@ -65,7 +55,7 @@
         <p class="eyebrow" data-reveal>Programmes</p>
         <h2 id="programs-h" class="h2" data-reveal>Choose a <em>programme</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Open a programme for its curriculum, tools and batches. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
+      <p class="section-intro" data-reveal>Pick the role you want to learn, in any of the four tracks. Open a programme for its curriculum, tools and batches. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
     </div>
     <ul class="role-grid" data-reveal-group data-zoom>
       <% PROGRAMS.forEach((t, i) => { %>
@@ -75,7 +65,7 @@
           <h3 class="service-name"><a class="role-link" href="/internship/programs/<%= t.slug %>"><%= t.name %></a></h3>
           <p class="service-blurb"><%= t.summary %></p>
           <ul class="program-meta">
-            <li><%= t.training %> training</li><li><%= t.internship %> internship</li>
+            <li>4 to 18 weeks</li><li>Live + internship</li>
           </ul>
           <a class="btn btn-primary btn-apply" href="/internship/programs/<%= t.slug %>" aria-label="Apply now: <%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
         </div>

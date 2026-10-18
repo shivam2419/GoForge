@@ -1,0 +1,91 @@
+<%# Problem -> path -> tracks story for /internship. Track data lives in lib/content.js (CAREER_TRACKS). %>
+<% const pains = [
+  { icon: 'code', q: 'A degree in progress, but no real project to show.', a: 'You build projects in class, then on a supervised internship.' },
+  { icon: 'cap', q: 'My college needs an internship letter, by a deadline.', a: 'Pick the track that matches your weeks or hours. The letter states dates and hours.' },
+  { icon: 'eye', q: 'Web, data, AI, marketing... which one should I learn?', a: 'A free call with someone who does the work helps you choose.' },
+  { icon: 'briefcase', q: 'Every fresher job asks for experience.', a: 'Projects you can explain and a letter you can verify are your first proof.' }
+]; %>
+<section class="section pain-band" aria-labelledby="pain-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Sound familiar?</p>
+        <h2 id="pain-h" class="h2" data-reveal>Does one of these <em>sound like you?</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Each one has a practical answer. None of them needs a long course or a big promise.</p>
+    </div>
+    <ul class="pain-grid" data-reveal-group>
+      <% pains.forEach(p => { %>
+      <li class="pain-card" data-reveal>
+        <span class="service-icon"><%- include('icon', { name: p.icon }) %></span>
+        <p class="pain-q">&ldquo;<%= p.q %>&rdquo;</p>
+        <p class="pain-a"><span>Our answer</span><%= p.a %></p>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<% const path5 = [
+  { t: 'Free counselling call', d: '15 minutes on your goal, your college rule and your deadline.', tag: 'Free' },
+  { t: 'Pick your track and programme', d: 'Choose a role and a length that fits: 4, 6, 12 or 18 weeks.', tag: '4 to 18 weeks' },
+  { t: 'Live training with mentors', d: 'Live online classes, notes, weekly assignments and reviews.', tag: 'Live online' },
+  { t: 'Real-project internship', d: 'Supervised work on studio or industry-style projects, with check-ins.', tag: 'Supervised' },
+  { t: 'Certificate + letter', d: 'A training certificate and a letter with your dates, hours and work.', tag: 'Verifiable ID' }
+]; %>
+<section class="section section-alt" aria-labelledby="yp-h">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow" data-reveal>Your path with Goforge</p>
+      <h2 id="yp-h" class="h2 h2-wide" data-reveal>From first call <em>to a signed letter.</em></h2>
+      <p class="section-intro" data-reveal>Five steps, in this order. You speak to us before you commit to anything.</p>
+    </div>
+    <ol class="path5" data-reveal-group>
+      <% path5.forEach((st, i) => { %>
+      <li data-reveal<% if (i === path5.length - 1) { %> class="is-last"<% } %>>
+        <span class="path5-num"><%= i + 1 %></span>
+        <div class="path5-body"><span class="path5-tag"><%= st.tag %></span><h3><%= st.t %></h3><p><%= st.d %></p></div>
+      </li>
+      <% }) %>
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="tracks" aria-labelledby="tracks-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Choose your track</p>
+        <h2 id="tracks-h" class="h2" data-reveal>Four lengths, <em>one standard.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Every track has live training, mentor reviews and a verifiable letter. Pick the one that matches your college rule and your time. Fees are shared on the call.</p>
+    </div>
+    <ul class="track-grid" data-reveal-group>
+      <% CAREER_TRACKS.forEach(t => { const split = t.trainingWeeks && t.internshipWeeks; const label = careerTrackLabel(t); %>
+      <li data-reveal>
+        <article class="track-card<%= t.badge ? ' is-featured' : '' %>" aria-labelledby="track-<%= t.slug %>-h">
+          <% if (t.badge) { %><span class="track-badge"><%= t.badge %></span><% } %>
+          <p class="track-weeks"><strong><%= t.weeks %></strong> weeks</p>
+          <h3 id="track-<%= t.slug %>-h" class="track-name"><%= t.name %></h3>
+          <p class="track-best"><span>Best for</span> <%= t.bestFor %></p>
+          <svg class="track-split" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="<%= split ? t.trainingWeeks + ' weeks of training, then ' + t.internshipWeeks + ' weeks of internship' : 'Training and project work side by side for ' + t.weeks + ' weeks' %>">
+            <% if (split) { const tw = Math.round(100 * t.trainingWeeks / t.weeks); %>
+            <rect class="seg-train" x="0" y="0" width="<%= tw - 1 %>" height="10"/><rect class="seg-intern" x="<%= tw + 1 %>" y="0" width="<%= 99 - tw %>" height="10"/>
+            <% } else { %>
+            <defs><linearGradient id="blend-<%= t.slug %>"><stop offset="0" stop-color="#1B2744"/><stop offset="1" stop-color="#CAA465"/></linearGradient></defs>
+            <rect x="0" y="0" width="100" height="10" fill="url(#blend-<%= t.slug %>)"/>
+            <% } %>
+          </svg>
+          <p class="track-legend"><% if (split) { %><span class="lg lg-train"><%= t.trainingWeeks %> wks training</span><span class="lg lg-intern"><%= t.internshipWeeks %> wks internship</span><% } else { %><span class="lg lg-blend">Training + project, side by side</span><% } %></p>
+          <p class="track-who"><%= t.who %></p>
+          <ul class="track-inc">
+            <% t.includes.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
+          </ul>
+          <a class="btn <%= t.badge ? 'btn-primary' : 'btn-ghost' %> track-cta" href="/counselling?track=<%= t.slug %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="track" data-prefill-value="<%= label %>" aria-label="Book a free call about the <%= t.name %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
+        </article>
+      </li>
+      <% }) %>
+    </ul>
+    <p class="track-note" data-reveal>Not sure what your college accepts? Bring the number of weeks or hours and your deadline to the call. Only your college can confirm what it accepts, so check its rules too. <a href="/faq#students">Will my college accept this?</a></p>
+  </div>
+</section>

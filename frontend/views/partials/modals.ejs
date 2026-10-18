@@ -11,15 +11,15 @@
 <%- include('dialog-open', { id: 'dlg-counsel', wide: true }) %>
     <p class="eyebrow">Free, 15 minutes</p>
     <h2 class="modal-title" id="dlg-counsel-title">Book a free counselling call</h2>
-    <p class="modal-lede">Tell us when to call. We help you choose a programme and share batch dates and fees on the call.</p>
-    <%- include('counsel-form', { px: 'mcc', values: { program: locals.counselProgram || '' }, errors: {} }) %>
+    <p class="modal-lede">Tell us when to call. We help you choose a programme and a track, and share batch dates and fees on the call.</p>
+    <%- include('counsel-form', { px: 'mcc', values: { program: locals.counselProgram || '', track: locals.counselTrack || '' }, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
 <% if (trainingPage && path !== '/internship') { %>
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
-    <p class="modal-lede"><%= s.intern_training %> of live online training, then <%= s.intern_work %> of supervised work. Projects and internship included.</p>
+    <p class="modal-lede">Four tracks, <%= TRACK_RANGE %>: live online training, then supervised project work. Projects and internship included.</p>
     <%- include('apply-form', { px: 'ma', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
@@ -54,7 +54,7 @@
     <ul class="check-list">
       <% t.coversList.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
     </ul>
-    <p class="modal-note"><%= t.training %> of live training, then a <%= t.internship %> internship. You finish with projects you can explain, a training certificate and an internship letter. Every certificate has an ID you can verify online.</p>
+    <p class="modal-note">Choose a track <%= TRACK_RANGE %>, from a 1-month internship to the 4-month Career Programme (<%= t.training %> of live training, then a <%= t.internship %> internship). You finish with projects you can explain, a training certificate and an internship letter. Every certificate has an ID you can verify online.</p>
     <div class="modal-actions">
       <a class="btn btn-primary" href="/internship/programs/<%= t.slug %>">Apply for this programme <%- include('icon', { name: 'arrow' }) %></a>
     </div>

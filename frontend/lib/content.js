@@ -143,6 +143,44 @@ const TRACK_DETAILS = [
 const SIMILAR_ROLE = 'Similar role (describe it in your note)';
 const TRACKS = TRACK_DETAILS.map(t => t.name).concat([SIMILAR_ROLE]);
 
+// Programme lengths a student can choose. Edit here; the /internship cards, the
+// counselling form, the brochure, the FAQ and the Course JSON-LD all read this list.
+// trainingWeeks/internshipWeeks drive the split bar; leave them null when training
+// and project work run side by side.
+const CAREER_TRACKS = [
+  {
+    slug: '1-month', name: '1-Month Internship', short: '1 Month', weeks: 4, iso: 'P4W',
+    trainingWeeks: null, internshipWeeks: null,
+    bestFor: 'A short summer or winter requirement',
+    who: 'Students whose college asks for a 4-week internship, or who want a first taste of the role.',
+    includes: ['Live online classes with a mentor', 'One guided project in your role', 'Certificate + letter with dates and hours']
+  },
+  {
+    slug: '6-week', name: '6-Week Industrial Training + Internship', short: '6 Weeks', weeks: 6, iso: 'P6W',
+    trainingWeeks: null, internshipWeeks: null, badge: 'Most popular',
+    bestFor: 'The usual B.Tech / BCA summer training',
+    who: 'Students who need the common 6-week industrial or summer training for college credit.',
+    includes: ['Live classes, weekly assignments', 'An industry-style project, mentor-reviewed', 'Certificate + letter with dates and hours']
+  },
+  {
+    slug: '3-month', name: '3-Month Internship Programme', short: '3 Months', weeks: 12, iso: 'P12W',
+    trainingWeeks: 4, internshipWeeks: 8,
+    bestFor: 'A semester internship or a longer break',
+    who: 'Students who want real project time on top of training, full time or alongside a semester.',
+    includes: ['4 weeks of live training', '8-week supervised internship', 'Certificate + letter with dates and hours']
+  },
+  {
+    slug: '4-month', name: '4-Month Career Programme', short: '4 Months', weeks: 18, iso: 'P18W',
+    trainingWeeks: 6, internshipWeeks: 12,
+    bestFor: 'Final years and freshers building a portfolio',
+    who: 'Final-year students and graduates who want the deepest training and a portfolio to show employers.',
+    includes: ['6 weeks of live training', '12-week supervised internship on real projects', 'Capstone + certificate + letter']
+  }
+];
+const careerTrackLabel = t => t.name + ' (' + t.weeks + ' weeks)';
+const CAREER_TRACK_OPTIONS = CAREER_TRACKS.map(careerTrackLabel).concat(['Not sure yet, help me choose']);
+const TRACK_RANGE = 'from 4 weeks to 4 months';
+
 const PROCESS = [
   { name: 'Discovery call', text: 'A free call to understand your business, your users and the goal.', out: 'Goals and priorities agreed' },
   { name: 'Proposal', text: 'A written scope, timeline and one clear price, shaped to your budget.', out: 'Signed scope and quote' },
@@ -208,7 +246,8 @@ const FAQ = [
       },
       {
         q: 'What is the duration of the internship programmes?',
-        a: '6 weeks of live online training, followed by a 12-week supervised internship on real projects.'
+        a: 'You choose the length that fits your college and your goal: a 1-Month Internship (4 weeks), the 6-Week Industrial Training + Internship, a 3-Month Internship Programme (4 weeks of training, then an 8-week internship) or the 4-Month Career Programme (6 weeks of training, then a 12-week internship). Training is live and online.',
+        link: ['/internship#tracks', 'Compare the four tracks']
       },
       {
         q: 'Is there any fee for the internship programme?',
@@ -216,11 +255,11 @@ const FAQ = [
       },
       {
         q: 'How does the programme work?',
-        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. The lengths on each programme page are the current ones. Batch dates are confirmed on the call.'
+        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. How long training and internship run depends on the track you choose. Batch dates are confirmed on the call.'
       },
       {
-        q: 'Will my college accept the certificate?',
-        a: 'Each college sets its own rules, so check yours. Goforge Digital is an MSME-registered company. Our letter names your role, dates and work, is signed, and carries contact details and a certificate ID, so your college or a future employer can verify it online. If your college needs a specific format, a set number of hours, or an NOC, tell us on the counselling call and we will prepare it.'
+        q: 'Will my college accept this?',
+        a: 'Only your college can decide that, so please check its internship rules (the number of weeks or hours, the dates, and whether it needs an NOC or its own format) before you choose a track. What we can promise is the paperwork: your internship letter names Goforge Digital, an MSME (Udyam) registered company, your role, the exact start and end dates, the hours if your college counts them, and the work you did. It is signed by Rohit Sharma, Founder & Director, with a phone number, an email and a certificate ID that your college can verify. Tell us your requirement and deadline on the counselling call and we will suggest the track that matches it, or tell you honestly if none does.',
       },
       {
         q: 'What does the letter include?',
@@ -294,5 +333,5 @@ const TECH_STACK = ['Python', 'JavaScript', 'HTML & CSS', 'Node.js', 'React', 'S
 
 module.exports = {
   TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND,
-  WHY_SMALL, FAQ, OFFERS
+  WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel
 };
