@@ -17,6 +17,7 @@
   "dependencies": {
     "@libsql/client": "^0.15.0",
     "@vercel/blob": "^2.8.1",
+    "@vercel/functions": "^2.2.13",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",

@@ -39,6 +39,9 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=<%= analytics.ga %>"></script>
 <script src="/js/analytics.js" defer></script>
 <% } %>
+<% if (analytics && analytics.vercel) { %>
+<script src="/_vercel/insights/script.js" defer></script>
+<% } %>
 <% if (analytics && analytics.plausibleDomain) { %>
 <script defer data-domain="<%= analytics.plausibleDomain %>" src="<%= analytics.plausibleSrc %>/js/script.js"></script>
 <% } %>

@@ -1497,14 +1497,21 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
 .student-band a > span { white-space: nowrap; }
 @media (max-width: 560px) { .student-band a { flex-wrap: wrap; gap: 4px 8px; font-size: 14px; padding: 10px 16px; } }
 .samples-grid { align-items: center; }
-/* Work showcase: live client site + labelled demo school websites. Equal-height cards, link pinned to the bottom. */
+/* Work showcase: live client site, labelled demos and web apps. Equal-height cards, links pinned to the bottom. */
 .showcase-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.showcase-grid.showcase-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.showcase-grid.showcase-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .showcase-card img { height: auto; }
 .showcase-card .work-body { display: flex; flex-direction: column; flex: 1; }
 .showcase-card h3 { font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.2; }
 .work-tag { align-self: flex-start; margin: 0 0 10px !important; padding: 4px 10px; border-radius: 999px; font-size: 11px !important; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--paper) !important; background: var(--ink); }
-.work-tag-demo { color: var(--gold-deep) !important; background: var(--gold-wash); border: 1px solid var(--gold-soft); }
-.work-visit { margin-top: auto; align-self: flex-start; font-size: 14.5px; }
-@media (max-width: 1000px) { .showcase-grid, .showcase-grid.showcase-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .showcase-grid, .showcase-grid.showcase-3 { grid-template-columns: 1fr; } }
+.work-tag-demo, .work-tag-app { color: var(--gold-deep) !important; background: var(--gold-wash); border: 1px solid var(--gold-soft); }
+.work-actions { margin: auto 0 0 !important; padding-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.work-visit { font-size: 14.5px; color: var(--ink); }
+@media (max-width: 1000px) { .showcase-grid, .showcase-grid.showcase-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .showcase-grid, .showcase-grid.showcase-cols-3 { grid-template-columns: 1fr; } }
+.cs-shot { margin: 0; }
+.cs-shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.cs-shot figcaption { margin-top: 10px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); text-align: center; }
+.cs-features { margin-top: 20px; columns: 2; column-gap: 48px; }
+.cs-features li { break-inside: avoid; }
+@media (max-width: 760px) { .cs-features { columns: 1; } }
