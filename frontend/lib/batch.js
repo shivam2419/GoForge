@@ -20,12 +20,23 @@ const REFERRAL = {
   friend: 200, referrer: 200,
   terms: 'Refer a friend: your friend gets ₹200 off, and you get ₹200 by UPI once they complete their first week.'
 };
+// The free webinar. meetUrl is only ever shown to someone who has just registered (thank-you state, calendar
+// links and the signed .ics); it is kept out of res.locals, so no public page can print it. Override with WEBINAR_MEET_URL.
 const WEBINAR = {
-  title: 'Free orientation webinar',
-  date: 'Sat 24 Oct 2026', time: '11:00 AM to 12:00 PM IST', mode: 'Live online',
+  title: 'Free Webinar: College-Accepted Internship + AI Tools for Your Career',
+  short: 'Free live webinar',
+  date: 'Sat 24 Oct 2026', dateShort: 'Sat 24 Oct', time: '11:00 AM–12:00 PM IST', timeShort: '11 AM',
+  mode: 'Live on Google Meet',
+  startIso: '2026-10-24T11:00:00+05:30', endIso: '2026-10-24T12:00:00+05:30',
+  startUtc: '20261024T053000Z', endUtc: '20261024T063000Z', // for Google Calendar and .ics
+  host: 'Rohit Sharma', hostRole: 'Founder, Goforge Digital',
   interest: 'Free webinar (Sat 24 Oct, 11 AM)',
-  points: ['How the 3-Month and 6-Month programmes work', 'Which one fits your college internship rule', 'Batch timings, the Diwali break and exam pauses', 'Your questions, answered live']
+  points: ['The internship problem students face', 'How to pick a track your college accepts', 'Live mini-project demo', 'Q&A + November batch details'],
+  poster: { base: '/img/webinar/webinar-poster', w: 1080, h: 1350 },
+  meetUrl: process.env.WEBINAR_MEET_URL || 'https://meet.google.com/dhk-pchn-zqx'
 };
+// Everything templates may print. No meeting link.
+const WEBINAR_PUBLIC = Object.freeze(Object.fromEntries(Object.entries(WEBINAR).filter(([k]) => k !== 'meetUrl')));
 
 const BATCH_LABEL = 'November 2026 batch';
 const NEXT_AFTER = 'January 2027';
@@ -88,7 +99,7 @@ function upcomingRows(rows, now = nowMs()) {
 // The batch at a glance, oldest first. Each step is marked done once its own date has passed (server time, IST).
 // Steps without a fixed date ('after month 1' etc.) are relative and never marked done.
 const TIMELINE = [
-  { date: 'Sat 24 Oct', title: 'Free orientation webinar', text: '11 AM to 12 PM, online. Optional.', ends: at('2026-10-24T12:00:00') },
+  { date: 'Sat 24 Oct', title: 'Free live webinar', text: '11 AM to 12 PM on Google Meet. Optional.', ends: at('2026-10-24T12:00:00') },
   { date: 'Wed 28 Oct', title: 'Registration closes', text: 'Last day to book a seat in either batch.', ends: at('2026-10-28T23:59:59') },
   { date: 'Sun 1 Nov', title: 'Orientation', text: 'How live classes, recordings and assignments work.', ends: at('2026-11-01T23:59:59') },
   { date: 'Mon 2 Nov', title: 'Weekday classes begin', text: 'Mon to Fri, 7:30 to 9:00 PM.', ends: at('2026-11-02T23:59:59') },
@@ -106,4 +117,4 @@ function timeline(now = nowMs()) {
   });
 }
 
-module.exports = { timeline, seatInfo, KEY_DATES, SEAT_CAP, REGISTRATION, REFERRAL, WEBINAR, BATCH_LABEL, NEXT_AFTER, BATCHES, BATCH_PROMISES, BATCH_PREFS, offerState, upcomingRows, nowMs, inr };
+module.exports = { timeline, seatInfo, KEY_DATES, SEAT_CAP, REGISTRATION, REFERRAL, WEBINAR, WEBINAR_PUBLIC, BATCH_LABEL, NEXT_AFTER, BATCHES, BATCH_PROMISES, BATCH_PREFS, offerState, upcomingRows, nowMs, inr };

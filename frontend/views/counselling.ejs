@@ -7,7 +7,7 @@
       <h1 class="h1 hero-title-sm"><span class="line"><span>Book a free</span></span> <span class="line"><span><em>counselling call.</em></span></span></h1>
       <p class="lede" data-hero-item>Talk to a counsellor about the right programme, the batch timing that suits you and what your college needs. The 3-Month Programme is <%= inr(CAREER_TRACKS[0].price) %> and the 6-Month Programme is <%= inr(CAREER_TRACKS[1].price) %> (festive launch price, all-inclusive).</p>
       <%- include('partials/batch-strip') %>
-      <% if (offer.webinar) { %><p class="hero-note" data-hero-item>Prefer to listen first? Choose "<%= WEBINAR.interest %>" in the form to join the free orientation webinar on <%= WEBINAR.date %>, <%= WEBINAR.time %>.</p><% } %>
+      <% if (offer.webinar) { %><p class="hero-note" data-hero-item>Prefer to listen first? <a href="/webinar">Join the free live webinar</a> on <%= WEBINAR.date %>, <%= WEBINAR.time %>, or choose "<%= WEBINAR.interest %>" in the form.</p><% } %>
     </div>
     <div class="form-card"><%- include('partials/counsel-form', { px: 'cp' }) %></div>
   </div>

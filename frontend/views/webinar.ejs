@@ -1,0 +1,67 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<% const faqs = [
+  ['Is it really free?', 'Yes. There is no payment and no card details. Registering only saves your seat and gives you the joining link.'],
+  ['Will it be recorded?', 'Please join live. We cannot promise a recording, and the demo and Q&A work best when you can ask questions as we go.'],
+  ['What do I need to join?', 'A laptop or phone with a stable internet connection. Google Meet opens in the browser on a laptop; on a phone, use the Google Meet app.'],
+  ['Will you try to sell me a programme?', 'At the end we share the November batch details (starts ' + BATCHES[0].startsShort + ', only ' + SEAT_CAP + ' seats per batch, 3-Month ' + inr(CAREER_TRACKS[0].price) + ' or 6-Month ' + inr(CAREER_TRACKS[1].price) + ') for anyone who wants them. There is no obligation to join.'],
+  ['Who is it for?', 'College students (B.Tech, BCA, BBA, MCA and others) and freshers who need an internship their college will accept, or want real project work to show.'],
+  ['I cannot make it on Saturday.', 'Book a free counselling call instead and we will go through your college rule and the programme options with you one-on-one.']
+]; %>
+<% const detail = ['Deadlines, college rules, and why many internships never become a letter your college accepts.', 'Match the weeks, the hours and the letter to what your college asks for, before you pay anyone.', 'A small real project built live, using AI tools you can use from tomorrow.', 'Your questions, answered live, plus the November batch dates, seats and fees.']; %>
+<% if (offer.webinar) { %>
+<section class="page-hero wb-hero">
+  <div class="wrap wb-hero-grid">
+    <div class="wb-hero-copy">
+      <p class="eyebrow" data-hero-item>Free live webinar &middot; for college students</p>
+      <h1 class="h1 wb-h1" data-hero-item>College-accepted internship <em>+ AI tools for your career.</em></h1>
+      <p class="lede wb-lede" data-hero-item>In one free hour, learn how to choose an internship your college will accept, watch a mini-project built live with AI tools, and get your questions answered.</p>
+      <ul class="wb-chips" aria-label="At a glance" data-hero-item><li class="is-gold">Free</li><li>60 min</li><li>Live Q&amp;A</li><li>Google Meet</li></ul>
+      <p class="wb-date" data-hero-item><%- include('partials/icon', { name: 'calendar' }) %><span><strong><%= WEBINAR.date %></strong><%= WEBINAR.time %></span></p>
+      <p class="wb-host" data-hero-item><span class="wb-av" aria-hidden="true">RS</span><span><strong>Hosted by <%= WEBINAR.host %></strong><%= WEBINAR.hostRole %></span></p>
+    </div>
+    <div class="form-card wb-form-card" id="register">
+      <div class="form-card-head"><h2 class="wb-form-h">Save your free seat</h2><p class="wb-form-sub">Three quick fields. The Meet link and a calendar invite appear right after.</p></div>
+      <%- include('partials/webinar-form', { px: 'wp' }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section wb-cover" aria-labelledby="cover-h">
+  <div class="wrap wb-cover-grid">
+    <figure class="wb-cover-poster" data-reveal><%- include('partials/webinar-picture', { cls: 'wb-poster', sizes: '(max-width: 900px) 60vw, 360px' }) %></figure>
+    <div>
+      <p class="eyebrow" data-reveal>The hour, in four parts</p>
+      <h2 id="cover-h" class="h2" data-reveal>What we&rsquo;ll <em>cover.</em></h2>
+      <ol class="wb-agenda" data-reveal-group>
+        <% WEBINAR.points.forEach((p, i) => { %><li data-reveal><span class="wb-num" aria-hidden="true"><%= i + 1 %></span><span><strong><%= p %></strong><%= detail[i] %></span></li><% }) %>
+      </ol>
+      <div class="wb-hostcard" data-reveal>
+        <span class="wb-av wb-av-lg" aria-hidden="true">RS</span>
+        <div><p class="wb-hostcard-k">Your host</p><p class="wb-hostcard-n"><%= WEBINAR.host %></p><p class="wb-hostcard-r"><%= WEBINAR.hostRole %>, the MSME-registered software company that runs these training and internship programmes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="wfaq-h">
+  <div class="wrap narrow">
+    <div class="section-head"><p class="eyebrow" data-reveal>Before you register</p><h2 id="wfaq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2></div>
+    <%- include('partials/faq-accordion', { items: faqs.map(([q, a]) => ({ q, a })), name: 'faq-webinar', openFirst: true }) %>
+    <div class="wb-end" data-reveal>
+      <a class="btn btn-primary" href="#register">Save my free seat <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <p><%= WEBINAR.date %> &middot; <%= WEBINAR.time %> &middot; Google Meet</p>
+    </div>
+  </div>
+</section>
+<% } else { %>
+<section class="page-hero">
+  <div class="wrap narrow">
+    <p class="eyebrow">Free webinar</p>
+    <h1 class="h1 hero-title-sm">This webinar <em>has ended.</em></h1>
+    <p class="lede">Thank you to everyone who joined on <%= WEBINAR.date %>. You can still talk to us one-on-one about your college rule and the programmes.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="/counselling">Book a free counselling call <%- include('partials/icon', { name: 'arrow' }) %></a><a class="btn btn-ghost" href="/internship">See the programmes</a></div>
+  </div>
+</section>
+<% } %>
+<%- include('partials/footer') %>

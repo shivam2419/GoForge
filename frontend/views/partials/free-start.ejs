@@ -1,4 +1,4 @@
-<%# Free webinar (hides after it ends) + gated guide download. %>
+<%# Free webinar card (hides after it ends) + gated guide download. %>
 <section class="section" id="guide" aria-labelledby="free-h">
   <div class="wrap">
     <div class="section-head split-head">
@@ -6,21 +6,10 @@
         <p class="eyebrow" data-reveal>Free, before you decide</p>
         <h2 id="free-h" class="h2" data-reveal>Start with <em>something free.</em></h2>
       </div>
-      <p class="section-intro" data-reveal><%= offer.webinar ? 'Join the live orientation, or take the guide home first.' : 'Take the guide home first, then book a free call when you are ready.' %> No payment and no commitment.</p>
+      <p class="section-intro" data-reveal><%= offer.webinar ? 'Join the free live webinar, or take the guide home first.' : 'Take the guide home first, then book a free call when you are ready.' %> No payment and no commitment.</p>
     </div>
-    <div class="free-grid<%= offer.webinar ? '' : ' is-single' %>" data-reveal-group>
-      <% if (offer.webinar) { %>
-      <article class="free-card free-webinar" data-reveal aria-labelledby="web-h">
-        <p class="free-kicker"><%= WEBINAR.mode %> &middot; free</p>
-        <h3 id="web-h" class="free-title"><%= WEBINAR.title %></h3>
-        <p class="free-when"><strong><%= WEBINAR.date %></strong><span><%= WEBINAR.time %></span></p>
-        <ul class="free-list">
-          <% WEBINAR.points.forEach(p => { %><li><%- include('icon', { name: 'check' }) %><span><%= p %></span></li><% }) %>
-        </ul>
-        <a class="btn btn-gold free-cta" href="/counselling?interest=webinar" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="<%= WEBINAR.interest %>">Save my free webinar seat <%- include('icon', { name: 'arrow' }) %></a>
-        <p class="free-note">We send the joining link to your phone before the session.</p>
-      </article>
-      <% } %>
+    <% if (offer.webinar) { %><div class="wb-in-free" id="webinar"><%- include('webinar-card-inner', { hTag: 'h3', hid: 'wbc-h3' }) %></div><% } %>
+    <div class="free-grid is-single" data-reveal-group>
       <article class="free-card free-guide" data-reveal aria-labelledby="guide-h">
         <p class="free-kicker">Free PDF guide</p>
         <h3 id="guide-h" class="free-title">Track picker + college internship guide</h3>

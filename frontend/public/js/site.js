@@ -282,6 +282,8 @@
           if (first && form.elements[first]) form.elements[first].focus();
           return;
         }
+        var st = success.querySelector('[data-success-title]');
+        if (st) { if (!st.hasAttribute('data-default')) st.setAttribute('data-default', st.textContent); st.textContent = data.title || st.getAttribute('data-default'); }
         success.querySelector('[data-success-text]').textContent = data.message;
         var oldCard = success.querySelector('[data-next-card]');
         if (oldCard) oldCard.remove();
@@ -398,6 +400,21 @@
       entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('sm-in'); mio.unobserve(en.target); } });
     }, { threshold: 0.5 });
     seatMinis.forEach(function (m) { mio.observe(m); });
+  }
+
+  /* ---------- webinar announcement bar: dismiss once, remembered in localStorage (ann.js hides it on later visits) ---------- */
+  var ann = doc.querySelector('[data-ann]');
+  if (ann) {
+    var annKey = ann.getAttribute('data-ann');
+    var annClose = ann.querySelector('[data-ann-close]');
+    if (annClose) annClose.addEventListener('click', function () {
+      try { localStorage.setItem('gf-ann', annKey); } catch (_) {}
+      var done = function () { root.classList.add('ann-off'); var b = doc.querySelector('.site-header .brand'); if (b) b.focus({ preventScroll: true }); };
+      if (motionOff()) return done();
+      ann.style.setProperty('height', ann.offsetHeight + 'px');
+      requestAnimationFrame(function () { ann.classList.add('is-closing'); ann.style.setProperty('height', '0px'); });
+      setTimeout(done, 320);
+    });
   }
 
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */

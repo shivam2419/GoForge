@@ -1,0 +1,16 @@
+<%# The compact webinar card itself (used on home and inside the /internship free section). %>
+    <article class="wbc" data-reveal>
+      <a class="wbc-media" href="/webinar" tabindex="-1" aria-hidden="true"><%- include('webinar-picture', { cls: 'wb-poster', sizes: '(max-width: 640px) 34vw, 220px' }) %></a>
+      <div class="wbc-body">
+        <ul class="wb-chips" aria-label="At a glance"><li class="is-gold">Free</li><li>60 min</li><li>Live Q&amp;A</li><li>Google Meet</li></ul>
+        <% const hTag = locals.hTag === 'h3' ? 'h3' : 'h2'; %><<%= hTag %> id="<%= locals.hid || 'wbc-h' %>" class="wbc-title">College-accepted internship <em>+ AI tools for your career</em></<%= hTag %>>
+        <p class="wbc-when"><%- include('icon', { name: 'calendar' }) %><strong><%= WEBINAR.date %></strong><span><%= WEBINAR.time %></span></p>
+        <ol class="wbc-agenda">
+          <% WEBINAR.points.forEach(p => { %><li><%= p %></li><% }) %>
+        </ol>
+        <div class="wbc-foot">
+          <p class="wb-host"><span class="wb-av" aria-hidden="true">RS</span><span><strong><%= WEBINAR.host %></strong><%= WEBINAR.hostRole %></span></p>
+          <a class="btn btn-primary btn-sm" href="/webinar#register">Register free <%- include('icon', { name: 'arrow' }) %></a>
+        </div>
+      </div>
+    </article>

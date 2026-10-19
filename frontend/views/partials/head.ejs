@@ -32,9 +32,11 @@
 <link rel="preload" href="/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/site.css?v=<%= assetV %>">
 <% if (locals.adminCss) { %><link rel="stylesheet" href="/css/admin.css?v=<%= assetV %>"><% } %>
+<% if (locals.showAnn) { %><script src="/js/ann.js?v=<%= assetV %>"></script><% } %>
 <script src="/js/site.js?v=<%= assetV %>" defer></script>
 <% if (locals.jsonld) { %><script type="application/ld+json"><%- jsonld %></script><% } %>
 <% if (locals.websiteLd) { %><script type="application/ld+json"><%- websiteLd %></script><% } %>
+<% if (locals.eventLd && offer.webinar) { %><script type="application/ld+json"><%- eventLd %></script><% } %>
 <% if (locals.breadcrumbLd) { %><script type="application/ld+json"><%- breadcrumbLd %></script><% } %>
 <% if (analytics && analytics.ga) { %>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<%= analytics.ga %>"></script>
