@@ -252,7 +252,7 @@ app.use(async (req, res, next) => {
   const now = batch.nowMs();
   const offer = batch.offerState(now);
   Object.assign(res.locals, {
-    offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR,
+    offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR_PUBLIC, showAnn: offer.webinar && req.path !== '/counselling' && req.path !== '/webinar',
     BATCH_LABEL: batch.BATCH_LABEL, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
     COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now), TIMELINE: batch.timeline(now), toolChips,
     PROGRAMS, TRACKS, MODES, SOURCES,
@@ -341,7 +341,7 @@ const OG_DIR = path.join(__dirname, 'public', 'img', 'og');
 const ogCache = new Map();
 function ogImageFor(p) {
   const m = p.match(/^\/internship\/programs\/([a-z0-9-]+)$/);
-  const name = m ? 'program-' + m[1] : ({ '/internship': 'internship', '/counselling': 'counselling', '/colleges': 'internship', '/faq': 'internship', '/services': 'services', '/work': 'services', '/contact': 'services' })[p]
+  const name = m ? 'program-' + m[1] : ({ '/internship': 'internship', '/counselling': 'counselling', '/webinar': 'webinar', '/colleges': 'internship', '/faq': 'internship', '/services': 'services', '/work': 'services', '/contact': 'services' })[p]
     || (p.startsWith('/services/') ? 'services' : '');
   if (!name) return null;
   if (!ogCache.has(name)) ogCache.set(name, fs.existsSync(path.join(OG_DIR, name + '.png')));
@@ -469,7 +469,7 @@ app.get('/', async (req, res) => {
   // Only business-facing stats (e.g. labels mentioning clients or businesses); student/programme stats stay on /internship.
   const stats = t.stats.filter(x => /client|business/i.test(x.label) && !/student|intern|project|instructor|success/i.test(x.label));
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
+    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
@@ -565,19 +565,82 @@ app.post('/counselling', formLimiter, async (req, res) => {
   const { errors, values } = validateCounsel(req.body, res.locals.TRACKS);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
+    if (req.body.from === 'webinar') return res.status(422).render('webinar', { errors, values, ...pageMeta(req, 'Free webinar', 'Free webinar', { noindex: true }) });
     return res.status(422).render('counselling', { errors, values, ...pageMeta(req, 'Book a free counselling call', 'Counselling', { noindex: true }) });
   }
   const msg = ['Preferred time: ' + (values.time || 'Any time'), values.interest && 'Interested in: ' + values.interest, values.batch && 'Batch: ' + values.batch].filter(Boolean).join('\n');
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
     values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null);
-  const isWebinar = values.interest === batch.WEBINAR.interest;
+  // A webinar sign-up only counts as one while the webinar is still ahead (older open forms may send it later).
+  const isWebinar = values.interest === batch.WEBINAR.interest && res.locals.offer.webinar;
   notifyLead({ title: isWebinar ? 'free webinar sign-up' : 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
     fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['Programme', values.program || 'Not sure yet'], ['Preferred programme length', values.track || 'Not sure yet'],
       ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by]] });
-  respondOk(req, res, 'counselling', isWebinar
-    ? 'Thanks, ' + values.name.split(' ')[0] + '. Your free webinar seat is saved. We will send the joining link for ' + batch.WEBINAR.date + ', ' + batch.WEBINAR.time + ' to your phone' + (values.email ? ' and email' : '') + ' before the session.'
-    : 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
+  if (isWebinar) return respondOk(req, res, 'counselling',
+    'Thanks, ' + values.name.split(' ')[0] + '. Your free seat is saved for ' + batch.WEBINAR.date + ', ' + batch.WEBINAR.time + '. Join with the Google Meet link below.',
+    null, { title: "You're registered", webinar: webinarReg() });
+  respondOk(req, res, 'counselling', 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
 });
+
+// ---------- free webinar: joining details for registrants only ----------
+// The Meet link is never in res.locals or any public page. It is rendered only into the thank-you state of a
+// successful webinar sign-up, and into a .ics served behind a signed, expiring link handed out in that same state.
+const W = batch.WEBINAR;
+const ICS_DAYS = 14;
+const icsSig = ts => hmac('webinar-ics:' + ts).slice(0, 32);
+function icsTokenOk(tok) {
+  const m = String(tok || '').match(/^([a-z0-9]{6,12})\.([a-f0-9]{32})$/);
+  if (!m) return false;
+  const t = parseInt(m[1], 36), now = Date.now();
+  if (!t || now - t > ICS_DAYS * 864e5 || t - now > 6e4) return false;
+  return crypto.timingSafeEqual(Buffer.from(m[2]), Buffer.from(icsSig(m[1])));
+}
+const webinarDetails = () => `Join on Google Meet: ${W.meetUrl}\n\n${W.points.map((p, i) => (i + 1) + '. ' + p).join('\n')}\n\nHost: ${W.host}, ${W.hostRole}. Free, live, about one hour.\n${SITE_URL}/webinar`;
+function webinarReg() {
+  const ts = Date.now().toString(36);
+  const q = new URLSearchParams({ action: 'TEMPLATE', text: W.title, dates: W.startUtc + '/' + W.endUtc, details: webinarDetails(), location: W.meetUrl, ctz: 'Asia/Kolkata' });
+  return { meetUrl: W.meetUrl, gcal: 'https://calendar.google.com/calendar/render?' + q.toString(), ics: '/webinar.ics?t=' + ts + '.' + icsSig(ts) };
+}
+function webinarIcs() {
+  const esc = v => String(v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  const fold = line => { const out = []; let rest = line; while (Buffer.byteLength(rest) > 74) { let n = 74; while (Buffer.byteLength(rest.slice(0, n)) > 74) n--; out.push(rest.slice(0, n)); rest = ' ' + rest.slice(n); } out.push(rest); return out.join('\r\n'); };
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Goforge Digital//Webinar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+    'UID:webinar-' + W.startUtc + '@goforgedigital.com', 'DTSTAMP:' + stamp, 'DTSTART:' + W.startUtc, 'DTEND:' + W.endUtc,
+    'SUMMARY:' + esc(W.title), 'DESCRIPTION:' + esc(webinarDetails()), 'LOCATION:' + esc(W.meetUrl), 'URL:' + W.meetUrl,
+    'ORGANIZER;CN=Goforge Digital:mailto:info@goforgedigital.com', 'STATUS:CONFIRMED', 'TRANSP:OPAQUE',
+    'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(W.title + ' starts in 30 minutes'), 'TRIGGER:-PT30M', 'END:VALARM',
+    'END:VEVENT', 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
+}
+const WEBINAR_DESC = 'Free live webinar for college students, Sat 24 Oct 2026, 11 AM–12 PM IST on Google Meet: how to get an internship your college accepts, a live mini-project demo with AI tools, and Q&A. Hosted by Rohit Sharma, Founder, Goforge Digital.';
+app.get('/webinar', (req, res) => res.render('webinar', { values: {}, errors: {}, ...pageMeta(req, 'Free webinar', WEBINAR_DESC, {
+  seoTitle: 'Free Webinar: College-Accepted Internship + AI Tools for Your Career | Goforge Digital',
+  eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, noindex: !res.locals.offer.webinar,
+  crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Free webinar', '/webinar']] }) }));
+app.get('/webinar.ics', (req, res) => {
+  res.set('X-Robots-Tag', 'noindex');
+  if (!icsTokenOk(req.query.t)) return res.redirect(303, '/webinar');
+  res.set('Cache-Control', 'private, no-store');
+  res.set('Content-Disposition', 'attachment; filename="goforge-webinar-24-oct.ics"');
+  res.type('text/calendar; charset=utf-8').send(webinarIcs());
+});
+// schema.org Event for home, /internship and /webinar, only while the webinar is ahead. The location and url are the
+// public registration page (/webinar), never the meeting link.
+function webinarJsonLd() {
+  return JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Event', name: W.title,
+    description: 'A free, live one-hour webinar for college students: ' + W.points.join('; ') + '. Hosted by ' + W.host + ', ' + W.hostRole + '.',
+    startDate: W.startIso, endDate: W.endIso,
+    eventStatus: 'https://schema.org/EventScheduled', eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    location: { '@type': 'VirtualLocation', url: SITE_URL + '/webinar' },
+    image: [SITE_URL + W.poster.base + '.jpg'],
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'INR', availability: 'https://schema.org/InStock', url: SITE_URL + '/webinar', validFrom: '2026-10-01T00:00:00+05:30' },
+    organizer: { '@type': 'Organization', name: BRAND.name, url: SITE_URL + '/' },
+    performer: { '@type': 'Person', name: W.host },
+    url: SITE_URL + '/webinar', inLanguage: 'en-IN'
+  }).replace(/</g, '\\u003c');
+}
 
 // ---------- lead magnet: track picker + college internship guide (PDF, gated by name + phone) ----------
 // The PDF lives outside public/, so it is only served with a signed link that expires after GUIDE_DAYS.
@@ -665,7 +728,7 @@ const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + in
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training for Students in Faridabad & Online | Goforge Digital', jsonld: eduJsonLd(), training: true })
+  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training for Students in Faridabad & Online | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
 }));
 
 app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
@@ -752,14 +815,15 @@ app.post('/internship', formLimiter, async (req, res) => {
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
 
-function respondOk(req, res, kind, message, group = null) {
-  if (group) res.set('Cache-Control', 'no-store');
+function respondOk(req, res, kind, message, group = null, opts = {}) {
+  if (group || opts.webinar) res.set('Cache-Control', 'no-store');
   if (wantsJson(req)) {
+    if (opts.webinar) return res.render('partials/webinar-next', { reg: opts.webinar }, (err, nextHtml) => res.json(err ? { ok: true, message, title: opts.title } : { ok: true, message, title: opts.title, nextHtml }));
     if (!group) return res.json({ ok: true, message });
     // Rendered server-side so no invite link or card markup sits in the public form page.
     return res.render('partials/group-card', { group }, (err, nextHtml) => res.json(err ? { ok: true, message } : { ok: true, message, nextHtml }));
   }
-  res.render('thanks', { ...pageMeta(req, 'Sent', message), noindex: true, kind, message, group });
+  res.render('thanks', { ...pageMeta(req, opts.title || 'Sent', message), noindex: true, kind, message, group, heading: opts.title, reg: opts.webinar });
 }
 
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
@@ -775,6 +839,7 @@ app.get('/sitemap.xml', (req, res) => {
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
     .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
+    .concat(res.locals.offer.webinar ? [['/webinar', '0.6']] : [])
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-10-19' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });

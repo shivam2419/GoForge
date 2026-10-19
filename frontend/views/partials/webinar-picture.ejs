@@ -1,0 +1,5 @@
+<%# Webinar poster, optimised (webp 360/720, jpg fallback), lazy by default. %>
+<picture class="<%= locals.cls || 'wb-poster' %>">
+  <source type="image/webp" srcset="<%= WEBINAR.poster.base %>-360.webp 360w, <%= WEBINAR.poster.base %>-720.webp 720w" sizes="<%= locals.sizes || '(max-width: 640px) 40vw, 240px' %>">
+  <img src="<%= WEBINAR.poster.base %>-720.jpg" width="720" height="900" alt="Poster: <%= WEBINAR.title %>. <%= WEBINAR.date %>, <%= WEBINAR.time %>, live on Google Meet. Hosted by <%= WEBINAR.host %>, <%= WEBINAR.hostRole %>." <% if (locals.eager) { %>fetchpriority="high"<% } else { %>loading="lazy"<% } %> decoding="async">
+</picture>

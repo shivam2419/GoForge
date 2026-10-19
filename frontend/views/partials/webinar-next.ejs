@@ -1,0 +1,20 @@
+<%# Shown only after a successful webinar sign-up (JSON nextHtml or the no-JS thank-you page). reg = { meetUrl, gcal, ics }. %>
+<div class="next-card wb-next" data-next-card>
+  <p class="wb-next-when"><%- include('icon', { name: 'calendar' }) %><span><strong><%= WEBINAR.date %></strong> &middot; <%= WEBINAR.time %> &middot; 60 min &middot; Google Meet</span></p>
+  <div class="wb-next-actions">
+    <a class="btn btn-primary" href="<%= reg.gcal %>" target="_blank" rel="noopener">Add to Google Calendar <%- include('icon', { name: 'arrow' }) %></a>
+    <a class="btn btn-ghost" href="<%= reg.ics %>" download>Download .ics <span class="wb-small">(Apple, Outlook)</span></a>
+  </div>
+  <div class="wb-meet">
+    <p class="wb-meet-k">Your joining link</p>
+    <a class="wb-meet-link" href="<%= reg.meetUrl %>" target="_blank" rel="noopener"><%= reg.meetUrl.replace(/^https:\/\//, '') %></a>
+    <p class="wb-meet-n">Save this link. It opens Google Meet in your browser or the Meet app.</p>
+  </div>
+  <p class="next-eyebrow">What to expect</p>
+  <ul class="next-steps wb-expect">
+    <li>Join 5 minutes early from a laptop or phone. No install needed on a laptop.</li>
+    <li>About 45 minutes of talk and a live mini-project demo, then open Q&amp;A.</li>
+    <li>Bring your college internship rule (weeks or hours, deadline) to ask about it live.</li>
+  </ul>
+  <p class="wb-remind">We will also send a reminder to your phone before the session.</p>
+</div>

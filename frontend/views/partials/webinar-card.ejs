@@ -1,0 +1,8 @@
+<%# Compact webinar card (home + /internship). Links to the dedicated /webinar page. Hidden after the webinar ends. %>
+<% if (offer.webinar) { %>
+<section class="section wb-section<%= locals.alt ? ' section-alt' : '' %>" id="webinar" aria-labelledby="wbc-h">
+  <div class="wrap">
+    <%- include('webinar-card-inner') %>
+  </div>
+</section>
+<% } %>

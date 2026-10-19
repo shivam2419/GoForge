@@ -1,0 +1,13 @@
+<%# Slim webinar announcement. Server hides it after the webinar ends (offer.webinar) and on /webinar and /counselling.
+    Dismissal is remembered in localStorage (public/js/ann.js hides it before first paint; site.js handles the close button). %>
+<% if (locals.showAnn) { %>
+<div class="ann" data-ann="webinar-2026-10-24" role="region" aria-label="Announcement">
+  <div class="wrap ann-row">
+    <a class="ann-link" href="/webinar">
+      <span class="ann-k"><span class="ann-long">Free live webinar</span><span class="ann-short">Free webinar</span></span><span class="ann-sep" aria-hidden="true">&middot;</span><span class="ann-when"><%= WEBINAR.dateShort %>, <%= WEBINAR.timeShort %> IST</span>
+      <span class="ann-cta">Register<span class="ann-long"> free</span> <%- include('icon', { name: 'arrow' }) %></span>
+    </a>
+    <button class="ann-x" type="button" data-ann-close aria-label="Dismiss the webinar announcement"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</div>
+<% } %>

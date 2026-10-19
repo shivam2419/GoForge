@@ -4,9 +4,10 @@
   <div class="wrap narrow">
     <div class="form-success is-static">
       <span class="success-icon"><%- include('partials/icon', { name: 'check' }) %></span>
-      <h1 class="h2">Sent</h1>
+      <h1 class="h2"><%= locals.heading || 'Sent' %></h1>
       <p><%= message %></p>
       <% if (locals.group) { %><%- include('partials/group-card', { group }) %><% } %>
+      <% if (locals.reg) { %><%- include('partials/webinar-next', { reg }) %><% } %>
       <% if (locals.download) { %><%- include('partials/guide-next', { url: download }) %><% } %>
       <div class="hero-actions">
         <a class="btn btn-ghost" href="/">Back to home</a>
