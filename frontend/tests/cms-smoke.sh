@@ -215,3 +215,9 @@ chk "ics served" 1 $(curl -s "$B$ICS" | grep -c 'DTSTART:20261024T053000Z')
 chk "ics bad token redirects" 303 $(curl -s -o /dev/null -w %{http_code} "$B/webinar.ics?t=nope")
 chk "no-JS thank-you shows Meet link" 1 $(curl -s -b ck -H 'X-Forwarded-For: 10.7.0.3' --data-urlencode "_csrf=$T" --data-urlencode "name=Web TEST" -d "phone=9876543210" --data-urlencode "interest=Free webinar (Sat 24 Oct, 11 AM)" $B/counselling | grep -c 'class="wb-meet-link"')
 chk "plain counselling has no Meet link" 0 $(curl -s -b ck -H 'Accept: application/json' -H 'X-Forwarded-For: 10.7.0.4' --data-urlencode "_csrf=$T" --data-urlencode "name=Call TEST" -d "phone=9876543210" $B/counselling | grep -c 'meet.google.com')
+
+# ---- founder name is spelled in full everywhere (BRAND.founder in lib/content.js) ----
+AB=$(curl -s $B/about)
+chk "founder JSON-LD name" 1 $(echo "$AB" | grep -c '"founder":{"@type":"Person","name":"Rohit Sharma"')
+for p in / /about /faq /internship /privacy /internship/overview /webinar; do chk "no abbreviated founder on $p" 0 $(curl -s $B$p | grep -c '[^A-Za-z]\. Sharma'); done
+chk "founder on privacy" 1 $(curl -s $B/privacy | grep -c 'run by Rohit Sharma, Founder')
