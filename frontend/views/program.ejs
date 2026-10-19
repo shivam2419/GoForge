@@ -15,14 +15,11 @@
       <a class="btn btn-ghost btn-sm" href="/refund">Refund policy <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-sm" href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Free demo class</a>
     </div>
-    <% const nb = p.batchesList[0]; if (nb && nb.start) { %>
-    <p class="next-batch" data-hero-item><strong>Next batch</strong><span>Starts <%= nb.start %></span><% if (nb.timing) { %><span><%= nb.timing %></span><% } %><% if (nb.seats) { %><span><%= nb.seats %></span><% } %></p>
-    <% } %>
+    <%- include('partials/batch-strip', { anchor: '#batch' }) %>
     <dl class="facts" data-reveal-group>
-      <div data-reveal><dt>Length</dt><dd>4, 6, 12 or 18 weeks (<a href="/internship#tracks">compare tracks</a>)</dd></div>
-      <div data-reveal><dt>4-Month Career Programme</dt><dd><%= p.training %> training + <%= p.internship %> internship</dd></div>
-      <div data-reveal><dt>Mode</dt><dd><%= p.modeText %></dd></div>
-      <div data-reveal><dt>Included</dt><dd>Projects + internship</dd></div>
+      <% CAREER_TRACKS.forEach(t => { %><div data-reveal><dt><%= t.name %> &middot; <%= inr(offer.priceOf(t)) %></dt><dd><%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> training + <%= t.internshipMonths %> months internship</dd></div><% }) %>
+      <div data-reveal><dt>Mode</dt><dd><%= p.modeText %>, every class recorded</dd></div>
+      <div data-reveal><dt>Included</dt><dd>Projects, internship, certificate + letter</dd></div>
     </dl>
   </div>
 </section>
@@ -85,28 +82,36 @@
   </div>
 </section>
 
-<section class="section section-tight" aria-labelledby="bat-h">
+<%- include('partials/batch-panel', { rows: upcomingRows(p.batchesList) }) %>
+
+<section class="section section-alt" aria-labelledby="price-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>Batches</p>
-      <h2 id="bat-h" class="h2" data-reveal>When it <em>starts.</em></h2>
+      <p class="eyebrow" data-reveal>Programme length and price</p>
+      <h2 id="price-h" class="h2" data-reveal><%= p.name %>: <em>3 or 6 months.</em></h2>
+      <p class="section-intro" data-reveal>Festive launch price, all-inclusive: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, with no instalments.</p>
     </div>
-    <% if (p.batchesList.length) { %>
-    <div class="table-wrap" data-reveal>
-      <table class="batches">
-        <thead><tr><th scope="col">Starts</th><th scope="col">Timing</th><th scope="col">Seats</th></tr></thead>
-        <tbody>
-          <% p.batchesList.forEach(b => { %><tr><td><%= b.start %></td><td><%= b.timing || 'On the call' %></td><td><%= b.seats || 'Limited' %></td></tr><% }) %>
-        </tbody>
-      </table>
-    </div>
-    <% } else { %>
-    <p class="section-intro" data-reveal>The next batch dates are confirmed on the counselling call. Projects and internship included.</p>
-    <% } %>
+    <ul class="track-grid track-grid-2" data-reveal-group>
+      <% CAREER_TRACKS.forEach(t => { const tw = Math.round(100 * t.trainingMonths / t.months); %>
+      <li data-reveal>
+        <article class="track-card">
+          <div class="track-top">
+            <p class="track-weeks"><strong><%= t.months %></strong> months</p>
+            <p class="track-price"><span>Festive launch price</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
+          </div>
+          <h3 class="track-name"><%= p.name %>: <%= t.name %></h3>
+          <svg class="track-split" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="<%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship"><rect class="seg-train" x="0" y="0" width="<%= tw - 1 %>" height="10"/><rect class="seg-intern" x="<%= tw + 1 %>" y="0" width="<%= 99 - tw %>" height="10"/></svg>
+          <p class="track-legend"><span class="lg lg-train"><%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> training</span><span class="lg lg-intern"><%= t.internshipMonths %> months internship</span></p>
+          <p class="track-who"><%= t.who %></p>
+          <a class="btn btn-primary track-cta" href="/counselling?program=<%= encodeURIComponent(p.name) %>&amp;track=<%= t.slug %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="track" data-prefill-value="<%= careerTrackLabel(t) %>">Book a free call <%- include('partials/icon', { name: 'arrow' }) %></a>
+        </article>
+      </li>
+      <% }) %>
+    </ul>
   </div>
 </section>
 
-<section class="section section-alt" aria-labelledby="path-h">
+<section class="section" aria-labelledby="path-h">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>How it works</p>

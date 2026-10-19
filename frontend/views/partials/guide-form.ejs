@@ -1,0 +1,20 @@
+<% const px = locals.px || 'g'; %>
+<form class="form form-compact" data-form="guide" method="post" action="/guide" novalidate data-ajax-form>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="hp" aria-hidden="true"><label for="<%= px %>-website">Leave this empty</label><input id="<%= px %>-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <div class="form-alert" role="alert" data-form-alert hidden></div>
+  <div class="form-grid">
+    <%- include('field', { f: { id: px + '-name', name: 'name', label: 'Your name', required: true, min: 2, max: 80, autocomplete: 'name' }, values: {}, errors: {} }) %>
+    <%- include('field', { f: { id: px + '-phone', name: 'phone', label: 'Phone', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' }, values: {}, errors: {} }) %>
+    <%- include('field', { f: { id: px + '-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email', wide: true }, values: {}, errors: {} }) %>
+    <div class="field field-wide field-check">
+      <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required aria-describedby="<%= px %>-consent-err"> Goforge Digital may call or email me about the guide and the programmes. <span class="req" aria-hidden="true">*</span></label>
+      <p class="field-error" id="<%= px %>-consent-err" data-error-for="consent"></p>
+    </div>
+  </div>
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit" data-submit>Get the free guide <%- include('icon', { name: 'arrow' }) %></button>
+    <p class="form-note">The download link appears here straight away. <a href="/privacy">Privacy notice</a>.</p>
+  </div>
+  <%- include('form-success') %>
+</form>

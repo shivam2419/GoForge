@@ -4,7 +4,7 @@ function escapePdf(value) {
   return String(value).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
 }
 
-function programmeLines({ settings, brand, tracks, lengths = [] }) {
+function programmeLines({ settings, brand, tracks, lengths = [], batchLines = [] }) {
   const lines = [
     '# Goforge Digital',
     'Internship programme overview',
@@ -16,12 +16,15 @@ function programmeLines({ settings, brand, tracks, lengths = [] }) {
     'that colleges and employers can verify online.',
     '',
     '# How it runs',
-    'Four tracks, from 4 weeks to 4 months:',
-    ...lengths.map(t => '- ' + t.name + ': ' + t.weeks + ' weeks' + (t.trainingWeeks ? ' (' + t.trainingWeeks + ' training + ' + t.internshipWeeks + ' internship)' : '') + '.'),
+    'Two programmes, 3 or 6 months:',
+    ...lengths.map(t => '- ' + t.name + ': ' + t.trainingMonths + ' month' + (t.trainingMonths > 1 ? 's' : '') + ' training + ' + t.internshipMonths + ' months internship.'),
+    ...lengths.map(t => '  ' + t.name + ' festive launch price: Rs ' + Number(t.price).toLocaleString('en-IN') + ', all-inclusive.'),
     'Training is live online. The internship is supervised.',
     'Who can apply: BTech, BCA and similar courses.',
     'Projects and internship included.',
-    'Batch dates are shared on the counselling call.',
+    ...batchLines,
+    'Every class is recorded. Pause during college exams, or',
+    'switch once to a later batch at no cost.',
     '',
     '# What you receive',
     '- Skills in the role you chose.',
@@ -34,7 +37,7 @@ function programmeLines({ settings, brand, tracks, lengths = [] }) {
     '# College support',
     '- Issued by an MSME-registered company.',
     '- College-specific formats, hours or an NOC on request.',
-    '- Check the weeks or hours your college needs, then pick a track.',
+    '- Check the weeks or hours your college needs, then pick a programme.',
     '',
     '# How a project is chosen',
     'The project matches your programme: real studio work or an',

@@ -145,7 +145,7 @@ const PAGES = [
       ['Sales and orders', 'Quotations, sales orders, delivery challans and order status visible to the whole team.'],
       ['Purchase and vendors', 'Purchase requests, purchase orders, goods receipt and vendor records with history.'],
       ['Production and job work', 'Bills of materials, work orders, job cards and material consumption for manufacturers.'],
-      ['Billing and GST-ready invoices', 'Invoices generated from orders with tax fields, plus export to your accounting software.'],
+      ['Billing and tax-ready invoices', 'Invoices generated from orders with tax fields, plus export to your accounting software.'],
       ['HR and attendance', 'Employee records, attendance and simple payroll inputs where needed.'],
       ['Approvals and audit trail', 'Approval steps for purchases, discounts and returns, with a record of who changed what.'],
       ['Dashboards and reports', 'Sales, stock, receivables, payables and production summaries for owners and managers.']

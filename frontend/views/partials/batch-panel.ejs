@@ -1,0 +1,73 @@
+<%# November 2026 batch: two batch cards with real dates, the real 25-seat cap and the seats-filled number from Admin > Settings.
+    Data lives in lib/batch.js. Optional admin batch rows (per programme) are passed as rows and shown underneath. %>
+<% const rows = locals.rows || []; const head = locals.head !== false; %>
+<section class="section<%= locals.alt ? ' section-alt' : '' %>" id="batch" aria-labelledby="batch-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Next batch &middot; live online</p>
+        <% if (offer.registrationOpen) { %>
+        <h2 id="batch-h" class="h2" data-reveal>November 2026 batch: <em>pick your timing.</em></h2>
+        <% } else { %>
+        <h2 id="batch-h" class="h2" data-reveal>Next batch: <em><%= NEXT_AFTER %>.</em></h2>
+        <% } %>
+      </div>
+      <% if (offer.registrationOpen) { %>
+      <p class="section-intro" data-reveal>Two timings, both live online, for both programmes. Every batch is capped at <%= SEAT_CAP %> students so a mentor can review every assignment.</p>
+      <% } else { %>
+      <p class="section-intro" data-reveal>Registration for the November 2026 batch closed on <%= REGISTRATION.closes %>. Book a free call for the <%= NEXT_AFTER %> dates and timings.</p>
+      <% } %>
+    </div>
+    <% if (offer.registrationOpen) { %>
+    <ul class="batch-keys" data-reveal>
+      <li class="is-hot"><%- include('icon', { name: 'key' }) %><span><strong>Registration closes</strong><%= REGISTRATION.closes %></span></li>
+      <li class="is-hot"><%- include('icon', { name: 'user' }) %><span><strong>Only <%= SEAT_CAP %> seats</strong>per batch</span></li>
+      <li><%- include('icon', { name: 'browser' }) %><span><strong>Every class</strong>recorded</span></li>
+      <li><%- include('icon', { name: 'check' }) %><span><strong>Exam-friendly</strong>pause or switch once</span></li>
+    </ul>
+    <ul class="batch-grid" data-reveal-group>
+      <% BATCHES.forEach((b, i) => { const st = SEATS[b.key]; %>
+      <li data-reveal>
+        <article class="batch-card<%= st.full ? ' is-full' : '' %>" aria-labelledby="batch-<%= b.key %>-h">
+          <p class="batch-kicker"><%= b.days %></p>
+          <h3 id="batch-<%= b.key %>-h" class="batch-name"><%= b.name %></h3>
+          <p class="batch-time"><%= b.time %></p>
+          <dl class="batch-meta">
+            <div><dt>Classes start</dt><dd><%= b.starts %></dd></div>
+            <div><dt>Mode</dt><dd>Live online, recorded</dd></div>
+          </dl>
+          <ul class="batch-notes">
+            <% b.notes.forEach(n => { %><li><%- include('icon', { name: 'check' }) %><span><%= n %></span></li><% }) %>
+          </ul>
+          <%- include('seat-line', { st }) %>
+          <% if (st.full) { %>
+          <a class="btn btn-ghost batch-cta" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Join the waitlist <%- include('icon', { name: 'arrow' }) %></a>
+          <% } else { %>
+          <a class="btn btn-primary batch-cta" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="batch" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Book a free call about the <%= b.name.toLowerCase() %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
+          <% } %>
+        </article>
+      </li>
+      <% }) %>
+    </ul>
+    <ul class="batch-promises" data-reveal>
+      <% BATCH_PROMISES.forEach(t => { %><li><%- include('icon', { name: 'check' }) %><span><%= t %></span></li><% }) %>
+      <li><%- include('icon', { name: 'spark' }) %><span><%= REFERRAL.terms %></span></li>
+    </ul>
+    <% } else { %>
+    <div class="hero-actions" data-reveal>
+      <a class="btn btn-primary" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
+    </div>
+    <% } %>
+    <% if (rows.length) { const anySeats = rows.some(r => r.seats); %>
+    <div class="table-wrap batch-rows" data-reveal>
+      <table class="batches">
+        <caption>More dates for this programme</caption>
+        <thead><tr><th scope="col">Starts</th><th scope="col">Timing</th><% if (anySeats) { %><th scope="col">Seats</th><% } %></tr></thead>
+        <tbody>
+          <% rows.forEach(b => { %><tr><td><%= b.start %></td><td><%= b.timing || 'On the call' %></td><% if (anySeats) { %><td><%= b.seats || (SEAT_CAP + ' seats') %></td><% } %></tr><% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </div>
+</section>

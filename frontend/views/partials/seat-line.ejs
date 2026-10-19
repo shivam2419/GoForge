@@ -1,0 +1,12 @@
+<%# Seat status for one batch. st = SEATS[key]: a real number typed in by the admin; nothing here is computed or animated. %>
+<% const st = locals.st; %>
+<% if (st.full) { %>
+<p class="seat-line is-full"><strong>Batch full</strong> <span>Join the waitlist or the <%= NEXT_AFTER %> batch</span></p>
+<% } else if (st.show) { %>
+<div class="seat-line">
+  <p><strong><%= st.filled %> of <%= st.cap %></strong> seats filled</p>
+  <svg class="seat-bar" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-label="<%= st.filled %> of <%= st.cap %> seats filled"><rect class="seat-bg" x="0" y="0" width="100" height="8"/><rect class="seat-fill" x="0" y="0" width="<%= st.pct %>" height="8"/></svg>
+</div>
+<% } else { %>
+<p class="seat-line"><strong>Only <%= st.cap %> seats</strong> in this batch</p>
+<% } %>

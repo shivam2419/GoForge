@@ -28,7 +28,7 @@
   <% STATUSES.forEach(st => { %><a role="listitem" href="/admin/<%= slug %>?status=<%= st %>"<% if (status === st) { %> aria-current="true"<% } %>><%= st %> <span><%= counts[st] %></span></a><% }) %>
 </div>
 <% if (!rows.length) { %>
-  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : (slug === 'colleges' ? 'No college enquiries yet. Enquiries from the For colleges page will appear here.' : slug === 'schools' ? 'No school enquiries yet. Enquiries from the For schools page will appear here.' : slug === 'counselling' ? 'No counselling call requests yet. Requests from the internship and programme pages will appear here.' : cfg.table === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
+  <div class="empty"><p><%= (q || status) ? 'Nothing matches this filter.' : slug === 'guides' ? 'No guide downloads yet. Students who download the free track picker guide on /internship appear here.' : (slug === 'colleges' ? 'No college enquiries yet. Enquiries from the For colleges page will appear here.' : slug === 'schools' ? 'No school enquiries yet. Enquiries from the For schools page will appear here.' : slug === 'counselling' ? 'No counselling call requests yet. Requests from the internship and programme pages will appear here.' : cfg.table === 'contacts' ? 'No enquiries yet. Messages from the contact form will appear here.' : 'No applications yet. Applications from the internship page will appear here.') %></p></div>
 <% } else { %>
 <ul class="items">
   <% rows.forEach(r => { %>
@@ -47,9 +47,11 @@
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.phone) %>"><%= r.phone %></a></dd></div>
         <div><dt><%= (slug === 'colleges' || slug === 'schools') ? 'Interested in' : slug === 'counselling' ? 'Programme' : 'Service' %></dt><dd><%= r.service || 'Not chosen' %></dd></div>
         <% if (slug === 'counselling') { %>
-        <div><dt>Preferred track</dt><dd><%= r.track || 'Not sure yet' %></dd></div>
+        <div><dt>Programme length</dt><dd><%= r.track || 'Not sure yet' %></dd></div>
         <% if (r.college_req) { %><div><dt>College requirement</dt><dd><%= r.college_req %></dd></div><% } %>
         <% } %>
+        <% if (r.referred_by) { %><div><dt>Referred by</dt><dd><%= r.referred_by %></dd></div><% } %>
+        <% if (slug === 'guides') { %><div><dt>Source</dt><dd>guide</dd></div><% } %>
         <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
       <% } else { %>
         <div><dt>Phone</dt><dd><a href="<%= telHref(r.whatsapp) %>"><%= r.whatsapp %></a> &middot; <a href="<%= telHref(r.whatsapp) %>">Call</a></dd></div>
@@ -59,6 +61,7 @@
         <% if (r.city) { %><div><dt>City</dt><dd><%= r.city %></dd></div><% } %>
         <% if (r.mode) { %><div><dt>Mode</dt><dd><%= r.mode %></dd></div><% } %>
         <% if (r.source) { %><div><dt>Heard via</dt><dd><%= r.source %></dd></div><% } %>
+        <% if (r.referred_by) { %><div><dt>Referred by</dt><dd><%= r.referred_by %></dd></div><% } %>
       <% } %>
       <div><dt>Received</dt><dd><time datetime="<%= r.created_at %>"><%= fmtTime(r.created_at) %></time></dd></div>
       <% if (r.updated_at) { %><div><dt>Status changed</dt><dd><time datetime="<%= r.updated_at %>"><%= fmtTime(r.updated_at) %></time></dd></div><% } %>

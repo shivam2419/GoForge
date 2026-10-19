@@ -4,15 +4,17 @@
   <div class="wrap">
     <p class="eyebrow" data-hero-item>Training + internship</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Industry Training + Internship</span></span> <span class="line"><span><em>for College Students &amp; Graduates</em></span></span></h1>
-    <p class="lede" data-hero-item>Choose a track <%= TRACK_RANGE %>: live online training with mentors, then supervised work on real projects with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
+    <p class="lede" data-hero-item>Choose a 3-Month or 6-Month Programme: live online training with mentors, then supervised work on real projects with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
     <p class="lede hero-trust-line" data-hero-item>Every certificate has an ID you can <a href="/verify">verify online</a>.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
-      <a class="btn btn-ghost btn-lg" href="#tracks">Compare tracks</a>
+      <a class="btn btn-ghost btn-lg" href="#tracks">Compare programmes</a>
     </div>
+    <%- include('partials/batch-strip', { anchor: '#batch' }) %>
     <dl class="facts" data-reveal-group>
-      <div data-reveal><dt>Length</dt><dd>4 tracks: 4, 6, 12 or 18 weeks</dd></div>
+      <div data-reveal><dt>Length</dt><dd>3 or 6 months</dd></div>
+      <div data-reveal><dt>Festive launch price</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
       <div data-reveal><dt>Format</dt><dd>Live online training, then a supervised internship</dd></div>
       <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
     </dl>
@@ -20,6 +22,7 @@
 </section>
 
 <%- include('partials/trust', { stats, credentials }) %>
+<%- include('partials/batch-panel', { alt: true }) %>
 <%- include('partials/track-story') %>
 <% const tools = TECH_STACK; %>
 <% if (tools.length) { %>
@@ -55,7 +58,7 @@
         <p class="eyebrow" data-reveal>Programmes</p>
         <h2 id="programs-h" class="h2" data-reveal>Choose a <em>programme</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Pick the role you want to learn, in any of the four tracks. Open a programme for its curriculum, tools and batches. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
+      <p class="section-intro" data-reveal>Pick the role you want to learn, in the 3-Month or the 6-Month Programme. Open a programme for its curriculum, tools and batches. Interested in something close to these? Apply with "Similar role" and name it in your note.</p>
     </div>
     <ul class="role-grid" data-reveal-group data-zoom>
       <% PROGRAMS.forEach((t, i) => { %>
@@ -65,7 +68,7 @@
           <h3 class="service-name"><a class="role-link" href="/internship/programs/<%= t.slug %>"><%= t.name %></a></h3>
           <p class="service-blurb"><%= t.summary %></p>
           <ul class="program-meta">
-            <li>4 to 18 weeks</li><li>Live + internship</li>
+            <li>3 or 6 months</li><li>From <%= inr(offer.fromPrice(CAREER_TRACKS)) %></li>
           </ul>
           <a class="btn btn-primary btn-apply" href="/internship/programs/<%= t.slug %>" aria-label="Apply now: <%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
         </div>
@@ -83,6 +86,7 @@
   </div>
 </section>
 
+<%- include('partials/free-start') %>
 <%- include('partials/people', { instructors, testimonials }) %>
 <%- include('partials/why-trust', { credentials }) %>
 <%- include('partials/samples', { sampleDocs, alt: true }) %>
@@ -125,7 +129,7 @@
       <p class="eyebrow" data-reveal>Questions students ask</p>
       <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
-    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.slice(0, 8), name: 'faq-internship', openFirst: true }) %>
+    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.filter(i => i.top).slice(0, 10), name: 'faq-internship', openFirst: true }) %>
     <h3 class="h3 faq-sub" data-reveal>For parents</h3>
     <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'parents').items, name: 'faq-parents' }) %>
     <p class="faq-more"><a class="text-link" href="/faq#students">All student questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
@@ -137,7 +141,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
-      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included, and batch dates are confirmed on the counselling call. Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included in the price.<% if (offer.registrationOpen) { %> Registration for the November 2026 batch closes on <%= REGISTRATION.closes %>, with only <%= SEAT_CAP %> seats per batch.<% } %> Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form') %>

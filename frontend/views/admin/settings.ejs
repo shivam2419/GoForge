@@ -27,9 +27,17 @@
   <fieldset class="panel">
     <legend>Internship details</legend>
     <div class="form-grid">
-      <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Training length (4-Month Career Programme)', required: true, max: 40 } }) %>
-      <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Internship length (4-Month Career Programme)', required: true, max: 40 } }) %>
-      <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Fee line', required: true, max: 80, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Default training length (internal)', required: true, max: 40, hint: 'Not shown on the site. Public programme lengths (3-Month, 6-Month) and prices are set in lib/content.js.' } }) %>
+      <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Default internship length (internal)', required: true, max: 40 } }) %>
+      <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Fee note (internal, not shown on the site)', required: true, max: 80, wide: true } }) %>
+    </div>
+  </fieldset>
+  <fieldset class="panel">
+    <legend>November 2026 batch: seats filled</legend>
+    <p class="field-hint">Each batch is capped at <%= SEAT_CAP %> seats. Enter the real number of students who have enrolled (paid) in each batch. At 0 the site shows only "Only <%= SEAT_CAP %> seats per batch"; from 1 it shows "X of <%= SEAT_CAP %> seats filled" with a bar; at <%= SEAT_CAP %> it shows the batch as full and points students to the waitlist and the <%= NEXT_AFTER %> batch. The site never changes this number by itself.</p>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-sw', name: 'seats_weekday', label: 'Weekday batch: seats filled (0 to ' + SEAT_CAP + ')', type: 'number', inputmode: 'numeric', required: true, max: 2 } }) %>
+      <%- include('../partials/field', { f: { id: 's-se', name: 'seats_weekend', label: 'Weekend batch: seats filled (0 to ' + SEAT_CAP + ')', type: 'number', inputmode: 'numeric', required: true, max: 2 } }) %>
     </div>
   </fieldset>
   <div class="form-foot"><button class="btn btn-primary" type="submit">Save settings</button></div>
