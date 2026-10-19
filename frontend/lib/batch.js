@@ -60,7 +60,9 @@ function nowMs() {
 // Seats filled (a number the admin enters) against the fixed cap. Shown only when at least 1.
 function seatInfo(value) {
   const n = Math.max(0, Math.min(SEAT_CAP, parseInt(value, 10) || 0));
-  return { filled: n, cap: SEAT_CAP, show: n >= 1, full: n >= SEAT_CAP, pct: Math.round(100 * n / SEAT_CAP) };
+  const pct = Math.round(100 * n / SEAT_CAP);
+  // left: seats still open (cap minus the admin number). hot: 'Filling fast' only when at least 60% is really filled.
+  return { filled: n, cap: SEAT_CAP, left: SEAT_CAP - n, show: n >= 1, full: n >= SEAT_CAP, pct, hot: pct >= 60 && n < SEAT_CAP };
 }
 
 const inr = n => '₹' + Number(n).toLocaleString('en-IN');

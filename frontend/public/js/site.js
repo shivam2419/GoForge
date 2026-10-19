@@ -344,6 +344,36 @@
     mark();
   }
 
+  /* ---------- batch seat cards: light up the real (admin-entered) seats and count up once, when in view ---------- */
+  var seatCards = doc.querySelectorAll('[data-seatcard]');
+  if (seatCards.length) {
+    var countUp = function (el) {
+      var to = parseInt(el.getAttribute('data-countup'), 10) || 0, t0 = null, dur = 1200;
+      if (reduceMotion || !to) { el.textContent = String(to); return; }
+      var step = function (t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = String(Math.round(to * e));
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    var light = function (card) {
+      if (card.classList.contains('is-lit')) return;
+      card.classList.add('is-lit');
+      card.querySelectorAll('[data-countup]').forEach(countUp);
+    };
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      seatCards.forEach(light);
+    } else {
+      seatCards.forEach(function (c) { c.querySelectorAll('[data-countup]').forEach(function (n) { n.textContent = '0'; }); });
+      var sio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { var t = en.target; sio.unobserve(t); setTimeout(function () { light(t); }, 350); } });
+      }, { threshold: 0.35 });
+      seatCards.forEach(function (c) { sio.observe(c); });
+    }
+  }
+
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
   var mt = doc.querySelector('[data-motion-toggle]');
   function setMotion(paused) {
