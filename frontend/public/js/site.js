@@ -344,15 +344,20 @@
     mark();
   }
 
-  /* ---------- batch seat cards: light up the real (admin-entered) seats and count up once, when in view ---------- */
+  /* ---------- batch seat cards: one quiet entrance per card, then the real (admin-entered) seats fill and count up once ---------- */
+  var motionOff = function () {
+    if (reduceMotion || root.classList.contains('motion-paused')) return true;
+    try { return localStorage.getItem('gf-motion') === 'paused'; } catch (_) { return false; }
+  };
   var seatCards = doc.querySelectorAll('[data-seatcard]');
   if (seatCards.length) {
+    var FILL_MS = 1200;
     var countUp = function (el) {
-      var to = parseInt(el.getAttribute('data-countup'), 10) || 0, t0 = null, dur = 1200;
-      if (reduceMotion || !to) { el.textContent = String(to); return; }
+      var to = parseInt(el.getAttribute('data-countup'), 10) || 0, t0 = null;
+      if (motionOff() || !to) { el.textContent = String(to); return; }
       var step = function (t) {
         if (t0 === null) t0 = t;
-        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        var k = Math.min(1, (t - t0) / FILL_MS), e = 1 - Math.pow(1 - k, 4); // matches the bar's ease-out-quart
         el.textContent = String(Math.round(to * e));
         if (k < 1) requestAnimationFrame(step);
       };
@@ -363,15 +368,36 @@
       card.classList.add('is-lit');
       card.querySelectorAll('[data-countup]').forEach(countUp);
     };
-    if (reduceMotion || !('IntersectionObserver' in window)) {
+    // 120ms stagger between the cards in a grid.
+    doc.querySelectorAll('.bc3-grid').forEach(function (g) {
+      g.querySelectorAll(':scope > [data-reveal]').forEach(function (li, i) { li.style.setProperty('--d', (i * 0.12).toFixed(2) + 's'); });
+    });
+    if (motionOff() || !('IntersectionObserver' in window)) {
+      root.classList.add('seats-still');
       seatCards.forEach(light);
     } else {
       seatCards.forEach(function (c) { c.querySelectorAll('[data-countup]').forEach(function (n) { n.textContent = '0'; }); });
       var sio = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) { if (en.isIntersecting) { var t = en.target; sio.unobserve(t); setTimeout(function () { light(t); }, 350); } });
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var t = en.target, li = t.closest('[data-reveal]');
+          var d = li ? parseFloat(li.style.getPropertyValue('--d')) || 0 : 0;
+          sio.unobserve(t);
+          setTimeout(function () { light(t); }, 320 + d * 1000);
+        });
       }, { threshold: 0.35 });
       seatCards.forEach(function (c) { sio.observe(c); });
     }
+  }
+
+  /* ---------- seats-left numbers in strips and the sticky bar: a soft fade-in when first seen ---------- */
+  var seatMinis = doc.querySelectorAll('.seat-mini');
+  if (seatMinis.length && !motionOff() && 'IntersectionObserver' in window) {
+    seatMinis.forEach(function (m) { m.classList.add('sm-wait'); });
+    var mio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('sm-in'); mio.unobserve(en.target); } });
+    }, { threshold: 0.5 });
+    seatMinis.forEach(function (m) { mio.observe(m); });
   }
 
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
