@@ -1,0 +1,30 @@
+<% const list = locals.kind === 'client' ? GREVIEWS.CLIENT_REVIEWS : GREVIEWS.STUDENT_REVIEWS; const hid = 'gr-' + (locals.kind || 'student') + '-h'; %>
+<% if (list.length) { %>
+<section class="section gr-section<%= locals.alt ? ' section-alt' : '' %>" id="<%= locals.kind === 'client' ? 'client-reviews' : 'student-reviews' %>" aria-labelledby="<%= hid %>">
+  <div class="wrap">
+    <div class="gr-head">
+      <div>
+        <p class="eyebrow" data-reveal><%= locals.kind === 'client' ? 'Client reviews' : 'Student reviews' %></p>
+        <h2 id="<%= hid %>" class="h2" data-reveal><%- locals.kind === 'client' ? 'What clients say <em>on Google.</em>' : 'What students say <em>on Google.</em>' %></h2>
+      </div>
+      <div class="gr-meta" data-reveal>
+        <%- include('gr-badge') %>
+        <a class="gr-all" href="<%= GREVIEWS.GOOGLE.url %>" target="_blank" rel="noopener">Read all reviews on Google <%- include('icon', { name: 'upright' }) %></a>
+      </div>
+    </div>
+    <ul class="gr-grid" data-reveal-group>
+      <% list.forEach(r => { %>
+      <li class="gr-card" data-reveal>
+        <div class="gr-top">
+          <span class="gr-av" aria-hidden="true"><%= GREVIEWS.initials(r.name) %></span>
+          <span class="gr-who"><strong><%= r.name %></strong><span class="gr-label">Google review</span></span>
+          <span class="gr-stars" role="img" aria-label="<%= r.rating %> out of 5 stars"><%= '★'.repeat(r.rating) %><span><%= '★'.repeat(5 - r.rating) %></span></span>
+        </div>
+        <blockquote class="gr-text"><p>&ldquo;<%= r.text %>&rdquo;</p></blockquote>
+        <% if (r.videoUrl) { %><a class="gr-video" href="<%= r.videoUrl %>" target="_blank" rel="noopener"><span class="gr-play" aria-hidden="true">&#9654;</span>Watch <%= r.name.split(' ')[0] %>&rsquo;s video</a><% } %>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<% } %>
