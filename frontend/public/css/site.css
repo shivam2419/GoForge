@@ -1837,3 +1837,55 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .fcta-seat strong { font-variant-numeric: tabular-nums; }
 .fcta-facts { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 @media (max-width: 760px) { .fcta-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fcta-facts li:last-child:nth-child(odd) { grid-column: 1 / -1; border-left: 0; } .fcta-facts li:nth-child(odd) { border-left: 0; } .fcta-facts li:nth-child(n+3) { border-top: 1px solid var(--cream-line); } .fcta-facts li:nth-child(even) { border-left: 1px solid var(--cream-line); } }
+
+/* ===== Seats v4: refined motion for the compact cards (200–600ms ease-out, one tiny loop) =====
+   All entrance motion is gated by prefers-reduced-motion and by the site's Pause animations toggle (.motion-paused / .seats-still). */
+:root { --ease-quart: cubic-bezier(.25, 1, .5, 1); }
+/* 1. Cards: fade + rise 12px, 120ms stagger (overrides the site-wide 26px/scale reveal for this grid only) */
+.reveal-on .bc3-grid > [data-reveal] { transform: translate3d(0, 12px, 0); transition: opacity .5s var(--ease-quart) var(--d, 0s), transform .6s var(--ease-quart) var(--d, 0s); }
+.reveal-on .bc3-grid > [data-reveal].is-in, .reveal-on .bc3-grid > [data-reveal].is-in.is-past { opacity: 1; transform: none; }
+.motion-paused .reveal-on .bc3-grid > [data-reveal], .seats-still .bc3-grid > [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+/* 2. Bar: ease-out fill (number counts up in sync in site.js), then one soft gold shimmer */
+.bc3-fill { transition: transform 1.2s var(--ease-quart); }
+.bc3-shine { opacity: 0; transform-box: view-box; }
+@keyframes bc3-sweep { 0% { opacity: 0; transform: translateX(0); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(128px); } }
+/* 3. Enrolling now: soft ring pulse */
+.live-dot { position: relative; }
+.live-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--ok); opacity: 0; pointer-events: none; }
+@keyframes bc3-ring { 0% { transform: scale(1); opacity: .32; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
+/* 4. Filling fast: one-time scale-in */
+@keyframes bc3-pop { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: none; } }
+/* 6. Seats-left numbers fade in */
+@keyframes sm-fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused):not(.seats-still) .bc3.is-lit .bc3-shine { animation: bc3-sweep .9s ease-out 1.25s 1 both; }
+  html:not(.motion-paused) .live-dot::after { animation: bc3-ring 2.4s cubic-bezier(.2, .6, .35, 1) infinite; }
+  html.js:not(.motion-paused):not(.seats-still) .bc3:not(.is-lit) .bc3-tag { opacity: 0; }
+  html:not(.motion-paused):not(.seats-still) .bc3.is-lit .bc3-tag { animation: bc3-pop .45s var(--ease-quart) .35s both; }
+  .seat-mini.sm-wait strong { display: inline-block; opacity: 0; }
+  .seat-mini.sm-in strong { animation: sm-fade .5s var(--ease-quart) both; }
+  .seat-mini.sm-in strong:nth-of-type(2) { animation-delay: .1s; }
+  /* 5. Hover: lift 3px, softer wider shadow, deeper gold border */
+  .bc3 { transition: transform .3s var(--ease-quart), border-color .3s, box-shadow .3s var(--ease-quart); }
+}
+.motion-paused .bc3-fill, .seats-still .bc3-fill { transition: none; }
+.motion-paused .seat-mini strong { opacity: 1 !important; animation: none !important; }
+@media (hover: hover) {
+  .bc3:hover { border-color: var(--gold-deep); box-shadow: 0 1px 2px rgba(27, 39, 68, .05), 0 18px 36px -20px rgba(27, 39, 68, .38); }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .bc3:hover { transform: translateY(-3px); }
+}
+/* Reserve your seat: no idle sheen loop in the card; one shine pass and a 3px arrow nudge on hover */
+.bc3 .btn-primary::after { animation: none; transform: translateX(-130%); }
+.bc3 .btn-primary .icon { width: 15px; height: 15px; transition: transform .3s var(--ease-quart); }
+.bc3 .btn-primary:hover .icon, .bc3 .btn-primary:focus-visible .icon { transform: translateX(3px); }
+@keyframes bc3-shinepass { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .bc3 .btn-primary:hover::after { animation: bc3-shinepass .7s ease-out 1 both; }
+}
+/* Book a free call: underline grows in ink over the gold hairline */
+.bc3-link { border-bottom: 0; padding: 4px 0 5px; background: linear-gradient(var(--ink), var(--ink)) 0 100% / 0% 1px no-repeat, linear-gradient(var(--gold-soft), var(--gold-soft)) 0 100% / 100% 1px no-repeat; transition: background-size .35s var(--ease-quart); }
+.bc3-link:hover, .bc3-link:focus-visible { background-size: 100% 1px, 100% 1px; }
+.bc3-link .icon { transition: transform .3s var(--ease-quart); }
+.bc3-link:hover .icon { transform: translateX(2px); }
