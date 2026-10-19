@@ -1,51 +1,29 @@
-<%# Premium batch card. b = BATCHES[i], st = SEATS[b.key] (the admin's real number; nothing is auto-counted).
-    Server renders the final state; site.js only animates it into place when the card scrolls into view. %>
-<% const R = 42, C = +(2 * Math.PI * R).toFixed(2), off = +(C * (1 - st.pct / 100)).toFixed(2); %>
-<article class="bc2<%= st.full ? ' is-full' : '' %><%= st.hot ? ' is-hot' : '' %>" aria-labelledby="batch-<%= b.key %>-h" data-seatcard>
-  <div class="bc2-inner">
-    <div class="bc2-top">
-      <% if (offer.registrationOpen && !st.full) { %><span class="bc2-live"><span class="live-dot" aria-hidden="true"></span>Enrolling now</span><% } %>
-      <% if (st.hot) { %><span class="bc2-tag">Filling fast</span><% } %>
-      <span class="bc2-left<%= st.full ? ' is-full' : '' %>"><%= st.full ? 'Batch full' : (st.show ? st.left + ' seats left' : 'Only ' + st.cap + ' seats') %></span>
-    </div>
-    <p class="bc2-kicker"><%= b.days %></p>
-    <h3 id="batch-<%= b.key %>-h" class="bc2-name"><%= b.name %></h3>
-    <p class="bc2-time"><%= b.time %></p>
-
-    <div class="bc2-seats">
-      <div class="bc2-ring">
-        <svg viewBox="0 0 100 100" role="img" aria-label="<%= st.show ? st.filled + ' of ' + st.cap + ' seats filled' : 'Only ' + st.cap + ' seats in this batch' %>">
-          <circle class="ring-bg" cx="50" cy="50" r="<%= R %>"/>
-          <circle class="ring-fill" cx="50" cy="50" r="<%= R %>" stroke-dasharray="<%= C %>" stroke-dashoffset="<%= off %>" data-ring-c="<%= C %>"/>
-        </svg>
-        <% if (st.show) { %><span class="bc2-count" aria-hidden="true"><span class="bc2-num" data-countup="<%= st.filled %>"><%= st.filled %></span><small>of <%= st.cap %> filled</small></span>
-        <% } else { %><span class="bc2-count" aria-hidden="true"><span class="bc2-num"><%= st.cap %></span><small>seats only</small></span><% } %>
-      </div>
-      <div class="bc2-grid-wrap">
-        <ol class="seat-grid" aria-hidden="true">
-          <% for (let k = 0; k < st.cap; k++) { %><li class="seat<%= k < st.filled ? ' is-taken' : '' %>"></li><% } %>
-        </ol>
-        <p class="seat-legend"><span class="lg-taken">Taken</span><span class="lg-open">Open</span></p>
-      </div>
-    </div>
-
-    <dl class="bc2-meta">
-      <div><dt>Classes start</dt><dd><%= b.starts %></dd></div>
-      <div><dt>Mode</dt><dd>Live online, recorded</dd></div>
-    </dl>
-    <ul class="bc2-notes">
-      <% b.notes.forEach(n => { %><li><%- include('icon', { name: 'check' }) %><span><%= n %></span></li><% }) %>
-    </ul>
+<%# Compact batch card. b = BATCHES[i], st = SEATS[b.key] (the admin's real number; nothing is auto-counted).
+    The server renders the final state; site.js only animates the bar and number once when the card scrolls into view. %>
+<article class="bc3<%= st.full ? ' is-full' : '' %>" aria-labelledby="batch-<%= b.key %>-h" data-seatcard>
+  <div class="bc3-top">
+    <span class="bc3-status">
+      <% if (st.full) { %><span class="bc3-full">Batch full</span><% } else if (offer.registrationOpen) { %><span class="live-dot" aria-hidden="true"></span>Enrolling now<% } %>
+      <% if (st.hot) { %><span class="bc3-tag">Filling fast</span><% } %>
+    </span>
+    <span class="bc3-left"><%= st.full ? '0 seats left' : (st.show ? st.left + ' seats left' : 'Only ' + st.cap + ' seats') %></span>
+  </div>
+  <h3 id="batch-<%= b.key %>-h" class="bc3-name"><%= b.name %></h3>
+  <p class="bc3-when"><%= b.when %></p>
+  <% if (st.show) { %>
+  <div class="bc3-progress">
+    <svg class="bc3-bar" viewBox="0 0 100 4" preserveAspectRatio="none" role="img" aria-label="<%= st.filled %> of <%= st.cap %> seats filled"><rect class="bc3-bg" width="100" height="4" rx="2"/><rect class="bc3-fill" width="<%= st.pct %>" height="4" rx="2"/></svg>
+    <p class="bc3-cap" aria-hidden="true"><span data-countup="<%= st.filled %>"><%= st.filled %></span> of <%= st.cap %> filled</p>
+  </div>
+  <% } %>
+  <p class="bc3-meta">Starts <%= b.startsShort %> &middot; Live online, recorded</p>
+  <p class="bc3-note"><%= st.full ? 'This batch is full. Join the waitlist or the ' + NEXT_AFTER + ' batch.' : b.note %></p>
+  <div class="bc3-ctas">
     <% if (st.full) { %>
-    <p class="bc2-fullnote">This batch is full. Join the waitlist or the <%= NEXT_AFTER %> batch.</p>
-    <div class="bc2-ctas">
-      <a class="btn btn-shine" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Join the waitlist <%- include('icon', { name: 'arrow' }) %></a>
-    </div>
+    <a class="btn btn-primary btn-sm" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Join the waitlist</a>
     <% } else { %>
-    <div class="bc2-ctas">
-      <a class="btn btn-shine" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply" aria-label="Reserve your seat in the <%= b.name.toLowerCase() %>">Reserve your seat <%- include('icon', { name: 'arrow' }) %></a>
-      <a class="btn btn-ghost-light" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="batch" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Book a free call about the <%= b.name.toLowerCase() %>">Book a free call</a>
-    </div>
+    <a class="btn btn-primary btn-sm" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply" aria-label="Reserve your seat in the <%= b.name.toLowerCase() %>">Reserve your seat</a>
+    <a class="bc3-link" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="batch" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Book a free call about the <%= b.name.toLowerCase() %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
     <% } %>
   </div>
 </article>

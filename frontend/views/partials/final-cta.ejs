@@ -7,7 +7,7 @@
     <h2 id="fcta-h" class="h2 h2-light" data-reveal><%- !offer.registrationOpen ? 'Join the <em>' + NEXT_AFTER + ' batch.</em>' : (anyRealSeats ? (seatsLeftAll ? 'Take one of the <em>' + seatsLeftAll + ' seats left.</em>' : 'Both batches are <em>full.</em>') : 'Take one of the <em>' + SEAT_CAP + ' seats.</em>') %></h2>
     <ul class="fcta-facts" data-reveal>
       <li><span>From</span><strong><%= inr(offer.fromPrice(CAREER_TRACKS)) %></strong></li>
-      <% if (offer.registrationOpen && BATCHES.some(b => SEATS[b.key].show)) { BATCHES.forEach(b => { const st = SEATS[b.key]; %><li class="fcta-seat"><span><%= b.name.replace(' batch', '') %> seats</span><strong><% if (!st.full) { %><span class="live-dot" aria-hidden="true"></span><% } %><%= st.full ? 'Full' : st.left + ' of ' + st.cap + ' left' %></strong></li><% }) } else { %><li><span>Seats</span><strong><%= SEAT_CAP %> per batch</strong></li><% } %>
+      <% if (offer.registrationOpen && BATCHES.some(b => SEATS[b.key].show)) { BATCHES.forEach(b => { const st = SEATS[b.key]; %><li class="fcta-seat"><span><%= b.name.replace(' batch', '') %> seats</span><strong><%= st.full ? 'Full' : st.left + ' of ' + st.cap + ' left' %></strong></li><% }) } else { %><li><span>Seats</span><strong><%= SEAT_CAP %> per batch</strong></li><% } %>
       <li><span><%= offer.registrationOpen ? 'Registration closes' : 'Status' %></span><strong><%= offer.registrationOpen ? REGISTRATION.closesShort : 'Waitlist open' %></strong></li>
       <li><span>Format</span><strong>Live online, recorded</strong></li>
     </ul>
