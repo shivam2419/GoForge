@@ -32,11 +32,13 @@ const NEXT_AFTER = 'January 2027';
 const BATCHES = [
   {
     key: 'weekday', name: 'Weekday batch', days: 'Mon to Fri', time: '7:30 to 9:00 PM IST',
+    when: 'Mon–Fri · 7:30–9:00 PM IST', note: 'Diwali break 7–11 Nov; classes resume Thu 12 Nov.',
     starts: 'Mon 2 Nov 2026', startsShort: 'Mon 2 Nov',
     notes: ['Fridays are doubt and project sessions', 'Diwali break 7 to 11 Nov; classes resume Thu 12 Nov']
   },
   {
     key: 'weekend', name: 'Weekend batch', days: 'Sat and Sun', time: '11:00 AM to 2:00 PM IST',
+    when: 'Sat–Sun · 11 AM–2 PM IST, 15-min break', note: 'Orientation Sun 1 Nov; classes from Sat 14 Nov.',
     starts: 'Sat 14 Nov 2026', startsShort: 'Sat 14 Nov',
     notes: ['Includes a 15-minute break', 'Orientation on Sun 1 Nov; classes from Sat 14 Nov']
   }

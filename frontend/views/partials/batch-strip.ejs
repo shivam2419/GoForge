@@ -4,7 +4,7 @@
   <strong><%= BATCH_LABEL %></strong>
   <span>Weekday from <%= BATCHES[0].startsShort %></span>
   <span>Weekend from <%= BATCHES[1].startsShort %></span>
-  <%- include('seat-mini', { cls: 'nb-hot', fallbackCls: 'nb-hot' }) %>
+  <%- include('seat-mini', { fallbackCls: 'nb-hot' }) %>
   <span class="nb-hot">Registration closes <%= REGISTRATION.closesShort %></span>
   <a href="<%= locals.anchor || '/internship#batch' %>">Timings <%- include('icon', { name: 'arrow' }) %></a>
 </p>

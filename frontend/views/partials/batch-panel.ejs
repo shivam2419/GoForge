@@ -25,7 +25,7 @@
       <li><%- include('icon', { name: 'browser' }) %><span><strong>Every class</strong>recorded</span></li>
       <li><%- include('icon', { name: 'check' }) %><span><strong>Exam-friendly</strong>pause or switch once</span></li>
     </ul>
-    <ul class="batch-grid bc2-grid" data-reveal-group>
+    <ul class="batch-grid bc3-grid" data-reveal-group>
       <% BATCHES.forEach((b, i) => { const st = SEATS[b.key]; %>
       <li data-reveal>
         <%- include('batch-card', { b, st, i }) %>
