@@ -5,9 +5,15 @@
     <p class="error-code"><%= code %></p>
     <h1 class="h1"><%= heading %></h1>
     <p class="lede"><%= body %></p>
+    <% if (locals.code === 404) { %>
+    <ul class="err-paths">
+      <li><a href="/internship"><span class="mini-h">Students</span><strong>Training + internship</strong><span>3-Month or 6-Month programme, live online</span><%- include('partials/icon', { name: 'arrow' }) %></a></li>
+      <li><a href="/services"><span class="mini-h">Businesses</span><strong>Software, CRM and websites</strong><span>Custom work for growing businesses</span><%- include('partials/icon', { name: 'arrow' }) %></a></li>
+      <li><a href="/verify"><span class="mini-h">Certificates</span><strong>Verify a certificate</strong><span>Check a certificate ID</span><%- include('partials/icon', { name: 'arrow' }) %></a></li>
+    </ul>
+    <% } %>
     <div class="hero-actions">
       <a class="btn btn-primary" href="/">Home</a>
-      <a class="btn btn-ghost" href="/services">Services</a>
       <a class="btn btn-ghost" href="/contact">Contact</a>
     </div>
   </div>

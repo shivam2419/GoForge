@@ -24,6 +24,9 @@
   </div>
 </section>
 
+<% const tcProg = toolChips(p.toolsList); %>
+<%- include('partials/page-nav', { label: p.name, items: [['#curriculum', 'Curriculum'], ...(tcProg.chips.length ? [['#tools', 'Tools']] : []), ['#fit', 'Is it for you'], ['#kit', 'What you get'], ['#batch', 'Batch'], ['#fees', 'Fees'], ['#compare', 'Compare'], ['#apply', 'Apply']] }) %>
+
 <%- include('partials/trust', { stats, credentials }) %>
 
 <% if (p.overview) { %>
@@ -31,7 +34,7 @@
 <% } %>
 
 <% if (p.curriculumList.length) { %>
-<section class="section section-tight" aria-labelledby="cur-h">
+<section class="section section-tight" id="curriculum" aria-labelledby="cur-h">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Curriculum</p>
@@ -52,6 +55,8 @@
 </section>
 <% } %>
 
+<%- include('partials/tool-grid', { tools: p.toolsList }) %>
+
 <section class="section section-alt">
   <div class="wrap detail-grid">
     <% if (p.coversList.length) { %>
@@ -60,7 +65,7 @@
       <ul class="check-list"><% p.coversList.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %></ul>
     </article>
     <% } %>
-    <% if (p.toolsList.length) { %>
+    <% if (p.toolsList.length && !tcProg.chips.length) { %>
     <article class="detail-block" data-reveal>
       <p class="mini-h">Tools</p>
       <ul class="check-list"><% p.toolsList.forEach(item => { %><li><%- include('partials/icon', { name: 'check' }) %><span><%= item %></span></li><% }) %></ul>
@@ -82,9 +87,13 @@
   </div>
 </section>
 
+<%- include('partials/fit-check') %>
+
+<%- include('partials/kit', { alt: true }) %>
+
 <%- include('partials/batch-panel', { rows: upcomingRows(p.batchesList) }) %>
 
-<section class="section section-alt" aria-labelledby="price-h">
+<section class="section section-alt" id="fees" aria-labelledby="price-h">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Programme length and price</p>
@@ -108,8 +117,11 @@
       </li>
       <% }) %>
     </ul>
+    <%- include('partials/refund-note') %>
   </div>
 </section>
+
+<%- include('partials/compare') %>
 
 <section class="section" aria-labelledby="path-h">
   <div class="wrap">
@@ -122,6 +134,8 @@
 </section>
 
 <%- include('partials/people', { instructors, testimonials: [] }) %>
+
+<%- include('partials/final-cta', { inPageApply: true, program: p.name }) %>
 
 <section class="section" id="apply" aria-labelledby="apply-h">
   <div class="wrap split split-form">

@@ -319,6 +319,31 @@
     sync();
   });
 
+  /* ---------- programme page: sticky in-page nav that follows the header and marks the section in view ---------- */
+  var pnav = doc.querySelector('[data-page-nav]');
+  if (pnav && header) {
+    var setTop = function () { root.style.setProperty('--hdr-h', header.offsetHeight + 'px'); };
+    setTop();
+    if ('ResizeObserver' in window) new ResizeObserver(setTop).observe(header); else window.addEventListener('resize', setTop);
+    var links = Array.prototype.slice.call(pnav.querySelectorAll('.page-nav-list a'));
+    var targets = links.map(function (a) { return doc.getElementById(a.getAttribute('href').slice(1)); });
+    var list = pnav.querySelector('.page-nav-list');
+    var current = -1;
+    var mark = function () {
+      var line = header.offsetHeight + pnav.offsetHeight + 24, idx = -1;
+      targets.forEach(function (t, i) { if (t && t.getBoundingClientRect().top <= line) idx = i; });
+      pnav.classList.toggle('is-stuck', pnav.getBoundingClientRect().top <= header.offsetHeight + 1);
+      if (idx === current) return;
+      current = idx;
+      links.forEach(function (a, i) { if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+      var act = links[idx];
+      if (act && list.scrollWidth > list.clientWidth) list.scrollTo({ left: act.offsetLeft - 16, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    var pt = false;
+    window.addEventListener('scroll', function () { if (pt) return; pt = true; requestAnimationFrame(function () { mark(); pt = false; }); }, { passive: true });
+    mark();
+  }
+
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
   var mt = doc.querySelector('[data-motion-toggle]');
   function setMotion(paused) {

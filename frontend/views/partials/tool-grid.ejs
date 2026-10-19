@@ -1,0 +1,24 @@
+<%# Tools taught on a programme, as logo tiles. Logos only name the tools; no partnership is implied. %>
+<% const tc = toolChips(locals.tools || []); if (tc.chips.length) { %>
+<section class="section section-tight" id="tools" aria-labelledby="tools-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Tools you will use</p>
+        <h2 id="tools-h" class="h2" data-reveal>Hands on <em>the real tools.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Tools used at work, used in your classes, assignments and projects. Tools follow the project, so not every batch uses every tool.</p>
+    </div>
+    <ul class="tool-grid" data-reveal-group>
+      <% tc.chips.forEach(c => { %>
+      <li class="tool-tile" data-reveal>
+        <% if (c.d) { %><svg class="tool-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="<%= c.d %>"/></svg><% } else { %><span class="tool-letters" aria-hidden="true"><%= c.letters %></span><% } %>
+        <span class="tool-name"><%= c.label %></span>
+      </li>
+      <% }) %>
+    </ul>
+    <% if (tc.rest.length) { %><p class="tool-rest"><strong>Also:</strong> <%= tc.rest.join(' · ') %></p><% } %>
+    <p class="tool-legal">Product names and logos belong to their owners and are shown only to name the tools taught.</p>
+  </div>
+</section>
+<% } %>
