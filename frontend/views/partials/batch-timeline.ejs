@@ -1,0 +1,14 @@
+<%# The November batch at a glance. Done/next states come from the server date; no timers. %>
+<div class="tl" data-reveal>
+  <p class="mini-h">The batch at a glance</p>
+  <ol class="tl-list">
+    <% TIMELINE.forEach(t => { %>
+    <li class="tl-item<%= t.done ? ' is-done' : '' %><%= t.next ? ' is-next' : '' %>">
+      <span class="tl-dot" aria-hidden="true"><% if (t.done) { %><%- include('icon', { name: 'check' }) %><% } %></span>
+      <span class="tl-date"><%= t.date %><% if (t.done) { %><span class="visually-hidden"> (done)</span><% } else if (t.next) { %><span class="tl-now">Up next</span><% } %></span>
+      <strong class="tl-title"><%= t.title %></strong>
+      <span class="tl-text"><%= t.text %></span>
+    </li>
+    <% }) %>
+  </ol>
+</div>

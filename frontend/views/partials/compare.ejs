@@ -1,0 +1,31 @@
+<%# Honest comparison of course types (not of any named provider). %>
+<section class="section<%= locals.alt ? ' section-alt' : '' %>" id="compare" aria-labelledby="cmp-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Compare your options</p>
+        <h2 id="cmp-h" class="h2" data-reveal>Why not just <em>learn on YouTube?</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>You can, and many people do. Here is an honest view of what each route gives a college student who needs skills and an internship.</p>
+    </div>
+    <p class="cmp-swipe" aria-hidden="true">Swipe the table to compare &rarr;</p>
+    <div class="cmp-wrap" data-reveal>
+      <table class="cmp">
+        <caption class="visually-hidden">Goforge Digital programme compared with self-learning and long bootcamps</caption>
+        <thead>
+          <tr><th scope="col"><span class="visually-hidden">What you get</span></th><th scope="col" class="cmp-us">Goforge Digital<small>3 or 6 months</small></th><th scope="col">Self-learning<small>YouTube, free courses</small></th><th scope="col">Long bootcamps<small>typical</small></th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Fee</th><td class="cmp-us"><strong><%= inr(CAREER_TRACKS[0].price) %> or <%= inr(CAREER_TRACKS[1].price) %></strong>, all-inclusive</td><td>Free or low</td><td>Often in lakhs, or monthly EMIs</td></tr>
+          <tr><th scope="row">Length</th><td class="cmp-us">3 or 6 months, including the internship</td><td>Your own pace</td><td>Often 6 to 14 months</td></tr>
+          <tr><th scope="row">Live classes with a mentor</th><td class="cmp-us"><span class="cmp-y">Yes</span>, and every class is recorded</td><td><span class="cmp-n">No</span></td><td><span class="cmp-y">Usually</span></td></tr>
+          <tr><th scope="row">Assignments reviewed by a person</th><td class="cmp-us"><span class="cmp-y">Yes</span>, batches capped at <%= SEAT_CAP %></td><td><span class="cmp-n">No</span></td><td>Varies with batch size</td></tr>
+          <tr><th scope="row">Internship letter for your college</th><td class="cmp-us"><span class="cmp-y">Yes</span>, with role, dates, hours and work</td><td><span class="cmp-n">No</span></td><td>Not usually the focus</td></tr>
+          <tr><th scope="row">Certificate anyone can verify</th><td class="cmp-us"><span class="cmp-y">Yes</span>, by ID on our site</td><td>Depends on the platform</td><td><span class="cmp-y">Usually</span></td></tr>
+          <tr><th scope="row">Job guarantee</th><td class="cmp-us"><span class="cmp-n">No</span>. We do not promise jobs.</td><td><span class="cmp-n">No</span></td><td>Some offer placement support; read the terms</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp-note">A general comparison of course types, not of any named provider. Fees and terms vary; check each provider's own page.</p>
+  </div>
+</section>

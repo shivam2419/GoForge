@@ -1,0 +1,18 @@
+<%# Closing navy band for training pages. Urgency only from real dates and the real cap. %>
+<section class="cta-band cta-band-students" aria-labelledby="fcta-h">
+  <div class="navy-rings" aria-hidden="true"><span></span><span></span></div>
+  <div class="wrap fcta">
+    <p class="eyebrow eyebrow-light" data-reveal><%= offer.registrationOpen ? BATCH_LABEL : 'Next batch: ' + NEXT_AFTER %></p>
+    <h2 id="fcta-h" class="h2 h2-light" data-reveal><%- offer.registrationOpen ? 'Take one of the <em>' + SEAT_CAP + ' seats.</em>' : 'Join the <em>' + NEXT_AFTER + ' batch.</em>' %></h2>
+    <ul class="fcta-facts" data-reveal>
+      <li><span>From</span><strong><%= inr(offer.fromPrice(CAREER_TRACKS)) %></strong></li>
+      <li><span>Seats</span><strong><%= SEAT_CAP %> per batch</strong></li>
+      <li><span><%= offer.registrationOpen ? 'Registration closes' : 'Status' %></span><strong><%= offer.registrationOpen ? REGISTRATION.closesShort : 'Waitlist open' %></strong></li>
+      <li><span>Format</span><strong>Live online, recorded</strong></li>
+    </ul>
+    <div class="hero-actions fcta-actions" data-reveal>
+      <a class="btn btn-gold btn-lg" href="#apply"<% if (!locals.inPageApply) { %> data-dialog="dlg-apply" data-fallback-form="apply"<% } %>>Apply now <%- include('icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost-light btn-lg" href="/counselling<%= locals.program ? '?program=' + encodeURIComponent(program) : '' %>" data-dialog="dlg-counsel" data-fallback-form="counsel"<% if (locals.program) { %> data-prefill-name="program" data-prefill-value="<%= program %>"<% } %>>Book a free counselling call</a>
+    </div>
+  </div>
+</section>

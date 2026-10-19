@@ -53,6 +53,7 @@
       <% BATCH_PROMISES.forEach(t => { %><li><%- include('icon', { name: 'check' }) %><span><%= t %></span></li><% }) %>
       <li><%- include('icon', { name: 'spark' }) %><span><%= REFERRAL.terms %></span></li>
     </ul>
+    <%- include('batch-timeline') %>
     <% } else { %>
     <div class="hero-actions" data-reveal>
       <a class="btn btn-primary" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Book a free call <%- include('icon', { name: 'arrow' }) %></a>

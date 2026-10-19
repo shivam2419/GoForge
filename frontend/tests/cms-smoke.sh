@@ -102,7 +102,7 @@ chk "counselling bad time 422" 422 $(curl -s -b ck3 -o /dev/null -w %{http_code}
 chk "counselling in its inbox" 1 $(curl -s -b ck $B/admin/counselling | grep -c 'TEST Counsel')
 chk "counselling not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 'TEST Counsel')
 IN=$(curl -s $B/internship)
-chk "internship counselling button" 1 $(echo "$IN" | grep -c 'Book a free counselling call</a>')
+chk "internship counselling button (hero + final band)" 2 $(echo "$IN" | grep -c 'Book a free counselling call</a>')
 chk "internship why-trust band" 1 $(echo "$IN" | grep -c 'id="why-h"')
 chk "internship sample certificate" 1 $(echo "$IN" | grep -c 'sample-certificate.webp" alt')
 chk "verify sample certificate" 1 $(curl -s $B/verify | grep -c 'sample-certificate.webp" alt')
@@ -115,13 +115,13 @@ chk "careers & training nav" 1 $(curl -s $B/ | grep -c 'data-nav-group>Careers &
 for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
 rm -f ck3
 # November batch: prices, seat cap, seats filled, referral, webinar, guide
-chk "internship prices" 1 $(echo "$IN" | grep -c '₹1,499</strong>')
-chk "internship 6-month price" 1 $(echo "$IN" | grep -c '₹1,999</strong>')
+chk "internship prices (card + final band)" 2 $(echo "$IN" | grep -c '₹1,499</strong>')
+chk "internship 6-month price (card + compare)" 2 $(echo "$IN" | grep -c '₹1,999</strong>')
 chk "no early-bird" 0 $(echo "$IN" | grep -ci 'early-bird\|early bird\|₹1,299\|₹1,799')
 chk "no GST" 0 $(echo "$IN" | grep -c 'GST')
 chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'in this batch')
 chk "no seats-filled bar at 0" 0 $(echo "$IN" | grep -c 'seats filled</p>')
-chk "registration closes" 1 $(echo "$IN" | grep -c 'Registration closes</strong>')
+chk "registration closes (key chip + timeline)" 2 $(echo "$IN" | grep -c 'Registration closes</strong>')
 chk "old tracks gone" 0 $(echo "$IN" | grep -ci '6-Week\|1-Month\|4-Month\|18 weeks')
 T=$(tok /admin/settings); SET=$(curl -s -b ck $B/admin/settings)
 v(){ echo "$SET" | grep -o "name=\"$1\" type=\"[a-z]*\" value=\"[^\"]*\"" | sed 's/.*value="//;s/"$//'; }
@@ -149,3 +149,19 @@ chk "guide lead not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 
 PJ=$(curl -s $B/internship/programs/data-analyst); chk "course offers INR" 2 $(echo "$PJ" | grep -o '"priceCurrency":"INR"' | wc -l | tr -d ' ')
 chk "course P3M" 1 $(echo "$PJ" | grep -c '"courseWorkload":"P3M"')
 rm -f ck4
+
+# ---- polish: programme nav, tools, fit, compare, kit, timeline, refund note, final band, OG, 404 ----
+PG=$(curl -s $B/internship/programs/data-analyst)
+chk "programme page nav" 1 $(echo "$PG" | grep -c 'data-page-nav')
+chk "tool logos" 1 $(echo "$PG" | grep -c 'class="tool-grid"')
+chk "tool trademark note" 1 $(echo "$PG" | grep -c 'shown only to name the tools taught')
+chk "fit check honest no-guarantee" 1 $(echo "$PG" | grep -c 'We do not promise jobs or placements')
+chk "kit section" 1 $(echo "$PG" | grep -c 'id="kit"')
+chk "compare table" 1 $(echo "$PG" | grep -c 'class="cmp"')
+chk "timeline 8 steps" 8 $(echo "$PG" | grep -c 'class="tl-item')
+chk "refund note" 1 $(echo "$PG" | grep -c 'Full refund if you cancel before your first live class')
+chk "final band" 1 $(echo "$PG" | grep -c 'cta-band-students')
+chk "programme og + twitter image" 2 $(echo "$PG" | grep -c 'og/program-data-analyst.png')
+chk "og file served" 200 $(curl -s -o /dev/null -w %{http_code} $B/img/og/program-data-analyst.png)
+chk "no GST on programme" 0 $(echo "$PG" | grep -c 'GST')
+chk "404 student path" 1 $(curl -s $B/no-such-page | grep -c 'class="err-paths"')

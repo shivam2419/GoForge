@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs');
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
 const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel, visibleFaq } = require('./lib/content');
 const batch = require('./lib/batch');
+const { toolChips } = require('./lib/tools');
 const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
@@ -253,7 +254,7 @@ app.use(async (req, res, next) => {
   Object.assign(res.locals, {
     offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR,
     BATCH_LABEL: batch.BATCH_LABEL, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
-    COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now),
+    COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now), TIMELINE: batch.timeline(now), toolChips,
     PROGRAMS, TRACKS, MODES, SOURCES,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
     CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel,
@@ -330,8 +331,21 @@ function pageMeta(req, title, desc, extra = {}) {
       : `${title} | Goforge Digital`),
     pageDesc: desc,
     canonicalPath: req.path === '/' ? '/' : req.path.replace(/\/+$/, ''),
+    ogImage: ogImageFor(canonicalPath),
     ...rest
   };
+}
+
+// Page-specific Open Graph cards (built by scripts/build-og.js into public/img/og/). Falls back to the brand card.
+const OG_DIR = path.join(__dirname, 'public', 'img', 'og');
+const ogCache = new Map();
+function ogImageFor(p) {
+  const m = p.match(/^\/internship\/programs\/([a-z0-9-]+)$/);
+  const name = m ? 'program-' + m[1] : ({ '/internship': 'internship', '/counselling': 'counselling', '/colleges': 'internship', '/faq': 'internship', '/services': 'services', '/work': 'services', '/contact': 'services' })[p]
+    || (p.startsWith('/services/') ? 'services' : '');
+  if (!name) return null;
+  if (!ogCache.has(name)) ogCache.set(name, fs.existsSync(path.join(OG_DIR, name + '.png')));
+  return ogCache.get(name) ? '/img/og/' + name + '.png' : (m ? (ogImageFor('/internship')) : null);
 }
 
 function orgBase(s) {

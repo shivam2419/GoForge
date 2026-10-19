@@ -86,6 +86,7 @@
   </div>
 </section>
 
+<%- include('partials/compare') %>
 <%- include('partials/free-start') %>
 <%- include('partials/people', { instructors, testimonials }) %>
 <%- include('partials/why-trust', { credentials }) %>
@@ -123,6 +124,8 @@
   </div>
 </section>
 
+<%- include('partials/fit-check') %>
+
 <section class="section" aria-labelledby="faq-h">
   <div class="wrap faq-wrap">
     <div class="section-head">
@@ -135,6 +138,8 @@
     <p class="faq-more"><a class="text-link" href="/faq#students">All student questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
 </section>
+
+<%- include('partials/final-cta', { inPageApply: true }) %>
 
 <section class="section section-alt" id="apply" aria-labelledby="apply-h">
   <div class="wrap split split-form">

@@ -1,0 +1,28 @@
+<%# What a student walks away with. Only things the programme really includes. %>
+<% const docs = locals.sampleDocs || { certificate: '/img/samples/sample-certificate.webp', letter: '/img/samples/sample-internship-letter.webp' }; %>
+<section class="section<%= locals.alt ? ' section-alt' : '' %>" id="kit" aria-labelledby="kit-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>What you get</p>
+        <h2 id="kit-h" class="h2" data-reveal>Your kit, <em>end to end.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Everything below is included in the one fee. Samples shown; your real documents carry your name, programme, dates and a unique ID.</p>
+    </div>
+    <div class="kit-layout">
+      <div class="kit-docs" data-reveal>
+        <a class="kit-doc kit-doc-a" href="<%= docs.certificate %>" target="_blank" rel="noopener"><img src="<%= docs.certificate %>" alt="Sample Goforge Digital training certificate" width="480" height="339" loading="lazy" decoding="async"></a>
+        <a class="kit-doc kit-doc-b" href="<%= docs.letter %>" target="_blank" rel="noopener"><img src="<%= docs.letter %>" alt="Sample Goforge Digital internship letter" width="360" height="509" loading="lazy" decoding="async"></a>
+        <span class="kit-seal" aria-hidden="true"><%- include('icon', { name: 'check' }) %>Verifiable ID</span>
+      </div>
+      <ul class="kit-list" data-reveal-group>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'browser' }) %></span><div><h3>Live classes + recordings</h3><p>Every class taught live online, and recorded for revision or a missed day.</p></div></li>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'tag' }) %></span><div><h3>Study material</h3><p>Notes, slides and practice files for every module.</p></div></li>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'user' }) %></span><div><h3>Mentor reviews</h3><p>Assignments checked by a person, plus doubt sessions.</p></div></li>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'code' }) %></span><div><h3>Projects you can show</h3><p>Mini projects and an internship project, kept in your own GitHub or portfolio.</p></div></li>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'key' }) %></span><div><h3>Training certificate</h3><p>Issued when you finish the training, with an ID anyone can <a href="/verify">check</a>.</p></div></li>
+        <li data-reveal><span class="service-icon"><%- include('icon', { name: 'check' }) %></span><div><h3>Internship letter</h3><p>States your role, dates, hours and work, signed by an MSME-registered company.</p></div></li>
+      </ul>
+    </div>
+  </div>
+</section>

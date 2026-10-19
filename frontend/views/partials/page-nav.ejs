@@ -1,0 +1,10 @@
+<%# In-page section nav for programme pages: sticky under the header, highlights the section in view. %>
+<nav class="page-nav" aria-label="On this page" data-page-nav>
+  <div class="wrap page-nav-row">
+    <span class="page-nav-name"><%= locals.label %></span>
+    <ul class="page-nav-list">
+      <% locals.items.forEach(([href, text]) => { %><li><a href="<%= href %>"><%= text %></a></li><% }) %>
+    </ul>
+    <a class="btn btn-primary btn-sm page-nav-cta" href="#apply">Apply now <%- include('icon', { name: 'arrow' }) %></a>
+  </div>
+</nav>

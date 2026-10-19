@@ -81,4 +81,25 @@ function upcomingRows(rows, now = nowMs()) {
   });
 }
 
-module.exports = { seatInfo, KEY_DATES, SEAT_CAP, REGISTRATION, REFERRAL, WEBINAR, BATCH_LABEL, NEXT_AFTER, BATCHES, BATCH_PROMISES, BATCH_PREFS, offerState, upcomingRows, nowMs, inr };
+// The batch at a glance, oldest first. Each step is marked done once its own date has passed (server time, IST).
+// Steps without a fixed date ('after month 1' etc.) are relative and never marked done.
+const TIMELINE = [
+  { date: 'Sat 24 Oct', title: 'Free orientation webinar', text: '11 AM to 12 PM, online. Optional.', ends: at('2026-10-24T12:00:00') },
+  { date: 'Wed 28 Oct', title: 'Registration closes', text: 'Last day to book a seat in either batch.', ends: at('2026-10-28T23:59:59') },
+  { date: 'Sun 1 Nov', title: 'Orientation', text: 'How live classes, recordings and assignments work.', ends: at('2026-11-01T23:59:59') },
+  { date: 'Mon 2 Nov', title: 'Weekday classes begin', text: 'Mon to Fri, 7:30 to 9:00 PM.', ends: at('2026-11-02T23:59:59') },
+  { date: '7 to 11 Nov', title: 'Diwali break', text: 'No classes. Weekday classes resume Thu 12 Nov.', ends: at('2026-11-11T23:59:59') },
+  { date: 'Sat 14 Nov', title: 'Weekend classes begin', text: 'Sat and Sun, 11 AM to 2 PM.', ends: at('2026-11-14T23:59:59') },
+  { date: 'After month 1 or 3', title: 'Internship begins', text: 'Month 2 on the 3-Month Programme, month 4 on the 6-Month.', ends: null },
+  { date: 'At the end', title: 'Certificate + letter', text: 'Training certificate and an internship letter with an ID anyone can verify.', ends: null }
+];
+function timeline(now = nowMs()) {
+  let nextMarked = false;
+  return TIMELINE.map(t => {
+    const done = t.ends !== null && now > t.ends;
+    const next = !done && !nextMarked; if (next) nextMarked = true;
+    return { ...t, done, next };
+  });
+}
+
+module.exports = { timeline, seatInfo, KEY_DATES, SEAT_CAP, REGISTRATION, REFERRAL, WEBINAR, BATCH_LABEL, NEXT_AFTER, BATCHES, BATCH_PROMISES, BATCH_PREFS, offerState, upcomingRows, nowMs, inr };
