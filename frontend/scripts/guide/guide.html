@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<title>Track picker + college internship guide | Goforge Digital</title>
+<style>
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-600.woff2") format("woff2"); font-weight: 600; }
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-600-italic.woff2") format("woff2"); font-weight: 600; font-style: italic; }
+@font-face { font-family: "Manrope"; src: url("../../public/fonts/manrope.woff2") format("woff2"); font-weight: 200 800; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: "Manrope", system-ui, sans-serif; color: #141C30; font-size: 10.6pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 16mm 16mm 14mm; background: #F0ECE3; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; }
+.top { display: flex; justify-content: space-between; align-items: center; font-size: 8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #7C5C20; border-bottom: 1px solid rgba(27,39,68,.18); padding-bottom: 4mm; margin-bottom: 7mm; }
+.top b { color: #141C30; }
+h1, h2, h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 700; margin: 0; line-height: 1.05; }
+h1 { font-size: 46pt; }
+h2 { font-size: 26pt; margin-bottom: 3mm; }
+h2 em, h1 em { font-style: italic; font-weight: 600; color: #7C5C20; }
+h3 { font-size: 15pt; margin-bottom: 1.5mm; }
+p { margin: 0 0 3mm; }
+.lede { font-size: 12pt; color: #47526C; max-width: 150mm; }
+.eyebrow { font-size: 8.5pt; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #7C5C20; margin-bottom: 3mm; }
+.card { background: #FBF8F2; border: 1px solid rgba(27,39,68,.14); border-radius: 4mm; padding: 5mm 6mm; }
+.navy { background: #141C30; color: #F0ECE3; border-color: #141C30; }
+.navy .eyebrow, .navy h3 em { color: #CAA465; }
+.gold { color: #7C5C20; }
+.cover { background: #141C30; color: #F0ECE3; }
+.cover .top { color: #CAA465; border-color: rgba(240,236,227,.2); }
+.cover .top b { color: #F0ECE3; }
+.cover h1 { color: #F0ECE3; margin: 26mm 0 6mm; }
+.cover h1 em { color: #CAA465; }
+.cover .lede { color: rgba(240,236,227,.82); }
+.rings { position: absolute; right: -40mm; top: 40mm; width: 150mm; height: 150mm; border-radius: 50%; border: 1px solid rgba(202,164,101,.35); }
+.rings::after { content: ""; position: absolute; inset: 18mm; border-radius: 50%; border: 1px solid rgba(202,164,101,.22); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: auto; }
+.steps .card { background: rgba(240,236,227,.06); border-color: rgba(240,236,227,.18); color: #F0ECE3; }
+.steps b { display: block; font-family: "Cormorant Garamond", serif; font-size: 26pt; color: #CAA465; line-height: 1; margin-bottom: 2mm; }
+.foot { margin-top: auto; padding-top: 4mm; border-top: 1px solid rgba(27,39,68,.18); font-size: 8pt; color: #586077; display: flex; justify-content: space-between; }
+.cover .foot { border-color: rgba(240,236,227,.2); color: rgba(240,236,227,.7); margin-top: 8mm; }
+table { width: 100%; border-collapse: collapse; background: #FBF8F2; border-radius: 3mm; overflow: hidden; font-size: 9.6pt; }
+th, td { text-align: left; padding: 2.6mm 3.2mm; border-bottom: 1px solid rgba(27,39,68,.12); vertical-align: top; }
+th { background: #141C30; color: #F0ECE3; font-size: 8pt; letter-spacing: .12em; text-transform: uppercase; }
+td b { color: #141C30; }
+.qs { counter-reset: q; display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; margin: 0; padding: 0; list-style: none; }
+.qs li { counter-increment: q; position: relative; padding: 3.2mm 4mm 3.2mm 13mm; background: #FBF8F2; border: 1px solid rgba(27,39,68,.12); border-radius: 3mm; font-size: 9.8pt; }
+.qs li::before { content: counter(q); position: absolute; left: 3.5mm; top: 3mm; width: 7mm; height: 7mm; border-radius: 50%; background: #141C30; color: #F0ECE3; font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 12pt; display: grid; place-items: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.prog .price { font-family: "Cormorant Garamond", serif; font-size: 30pt; font-weight: 700; line-height: 1; }
+.prog .lbl { font-size: 7.5pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #7C5C20; }
+.navy .lbl { color: #CAA465; }
+.bar { display: flex; height: 3mm; border-radius: 2mm; overflow: hidden; margin: 3mm 0 1.5mm; }
+.bar i { display: block; height: 100%; }
+.legend { font-size: 8pt; font-weight: 700; color: #586077; display: flex; justify-content: space-between; margin-bottom: 3mm; }
+.navy .legend { color: rgba(240,236,227,.75); }
+ul.check { list-style: none; padding: 0; margin: 0; }
+ul.check li { position: relative; padding-left: 5.5mm; margin-bottom: 1.6mm; font-size: 9.8pt; }
+ul.check li::before { content: ""; position: absolute; left: 0; top: 1.7mm; width: 2.4mm; height: 2.4mm; border-radius: 50%; background: #CAA465; }
+.note { font-size: 8.8pt; color: #47526C; }
+.fit { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin: 4mm 0; }
+.fit div { padding: 3.5mm 4mm; border-radius: 3mm; border: 1px dashed rgba(27,39,68,.3); font-size: 9.6pt; }
+.fit b { display: block; font-size: 8pt; letter-spacing: .12em; text-transform: uppercase; color: #7C5C20; margin-bottom: 1mm; }
+.src { font-size: 7.8pt; color: #47526C; line-height: 1.45; word-break: break-all; }
+.src li { margin-bottom: 1mm; }
+.mt { margin-top: 5mm; }
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div class="rings"></div>
+  <div class="top"><span><b>Goforge Digital</b> &middot; Training + internship</span><span>Free guide &middot; October 2026</span></div>
+  <p class="eyebrow">For B.Tech, BCA, MCA students and recent graduates</p>
+  <h1>Track picker +<br><em>college internship</em><br>guide.</h1>
+  <p class="lede">Before you pay anyone for an internship, find out what your college actually asks for. This guide shows the usual rules, the six questions to ask your training and placement cell, and how to choose between a 3-month and a 6-month programme.</p>
+  <div class="steps">
+    <div class="card"><b>1</b>See what colleges usually ask for (page 2).</div>
+    <div class="card"><b>2</b>Ask your college the six questions (page 2).</div>
+    <div class="card"><b>3</b>Match your rule to a programme (page 3).</div>
+  </div>
+  <div class="foot"><span>Goforge Digital &middot; MSME (Udyam) registered &middot; Puri Highstreet, Sector 81, Faridabad</span><span>goforgedigital.com</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span><b>Step 1 + 2</b> &middot; Know your rule</span><span>Page 2</span></div>
+  <p class="eyebrow">What colleges usually ask for</p>
+  <h2>Common internship rules, <em>in one table.</em></h2>
+  <p class="note">Taken from the public documents listed on page 4, as published when we checked in October 2026. Your scheme year or department may differ, so treat this as a starting point and confirm with your own college.</p>
+  <table>
+    <thead><tr><th>Body or university</th><th>What the document asks for</th></tr></thead>
+    <tbody>
+      <tr><td><b>AICTE</b> internship policy (B.Tech)</td><td>Short internships during the summer breaks: about 3 to 4 weeks after semester 2, and 4 to 6 weeks after semesters 4 and 6</td></tr>
+      <tr><td><b>UGC</b> guidelines (UG courses)</td><td>An internship of about 60 to 120 hours (2 to 4 credits), often counted in hours rather than weeks</td></tr>
+      <tr><td><b>GGSIPU</b> (affiliated B.Tech colleges)</td><td>4 to 6 weeks of summer internship or industrial training</td></tr>
+      <tr><td><b>AKTU</b>-affiliated colleges</td><td>4 to 6 weeks, or about 45 days, of internship or industrial training</td></tr>
+      <tr><td><b>MDU</b> Rohtak</td><td>B.Tech: 4 to 6 weeks. BCA: an 8-week internship in the newer scheme</td></tr>
+      <tr><td><b>J.C. Bose UST</b> (YMCA), Faridabad</td><td>Computer Engg. / IT: a 6-month internship in the final semester (January to June)</td></tr>
+      <tr><td><b>Manav Rachna</b> (MRIIRS), CSE</td><td>A 24-week internship in semester 8</td></tr>
+    </tbody>
+  </table>
+  <p class="eyebrow mt">Step 2: ask your college these six questions</p>
+  <ol class="qs">
+    <li><b>How long?</b> How many weeks or hours must the internship be, and does training time count?</li>
+    <li><b>When?</b> Which dates must it fall between, and when is the report or letter due?</li>
+    <li><b>Online?</b> Is an online (remote) internship accepted, or must it be on-site?</li>
+    <li><b>Paperwork first?</b> Do you need an NOC, or an offer letter before you start?</li>
+    <li><b>Format?</b> Is there a college format for the letter, the weekly diary or the final report?</li>
+    <li><b>Which company?</b> Must it be a registered company? Any other conditions?</li>
+  </ol>
+  <div class="foot"><span>Rules change. Only your college can confirm what it accepts.</span><span>goforgedigital.com</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span><b>Step 3</b> &middot; Pick a programme</span><span>Page 3</span></div>
+  <p class="eyebrow">Which Goforge programme fits?</p>
+  <h2>Two programmes, <em>one standard.</em></h2>
+  <p class="note">Both are live online, include a supervised internship on a project, and end with a training certificate and an internship letter that carries an ID your college can verify.</p>
+  <div class="two">
+    <div class="card prog">
+      <p class="lbl">3-Month Programme</p>
+      <p><span class="price">₹1,499</span> <span class="note">festive launch price, all-inclusive</span></p>
+      <div class="bar"><i style="width:33%;background:#141C30"></i><i style="width:2%"></i><i style="width:65%;background:#CAA465"></i></div>
+      <div class="legend"><span>1 month training</span><span>2 months internship</span></div>
+      <ul class="check">
+        <li>For a 4 to 8-week summer or semester internship</li>
+        <li>For 1st to 3rd-year students who want a first real project</li>
+        <li>Also fits most 60 to 120-hour requirements</li>
+      </ul>
+    </div>
+    <div class="card prog navy">
+      <p class="lbl">6-Month Programme</p>
+      <p><span class="price">₹1,999</span> <span class="note" style="color:rgba(240,236,227,.75)">festive launch price, all-inclusive</span></p>
+      <div class="bar"><i style="width:49%;background:#F0ECE3"></i><i style="width:2%"></i><i style="width:49%;background:#CAA465"></i></div>
+      <div class="legend"><span>3 months training</span><span>3 months internship</span></div>
+      <ul class="check">
+        <li>For final-year students and recent graduates</li>
+        <li>For deeper training and a portfolio to show employers</li>
+        <li>For longer, final-semester requirements (see the note below)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fit">
+    <div><b>An honest note</b>If your college needs 6 months (or 24 weeks) of internship on its own, ask whether the training months count. If they do not, tell us on the call and we will say plainly whether a programme fits.</div>
+    <div><b>Your letter includes</b>Goforge Digital, your name, college and course, role, exact start and end dates, that the work was online, a summary of your work, hours on request, and a named signatory with phone and email.</div>
+  </div>
+  <div class="card">
+    <p class="eyebrow" style="margin-bottom:2mm">November 2026 batch &middot; live online</p>
+    <div class="two">
+      <div><h3>Weekday batch</h3><p class="note" style="margin:0">Mon to Fri, 7:30 to 9:00 PM IST. Starts Mon 2 Nov. Fridays are doubt and project sessions. Diwali break 7 to 11 Nov; classes resume Thu 12 Nov.</p></div>
+      <div><h3>Weekend batch</h3><p class="note" style="margin:0">Sat and Sun, 11:00 AM to 2:00 PM IST, with a 15-minute break. Orientation Sun 1 Nov; classes from Sat 14 Nov.</p></div>
+    </div>
+    <p class="note" style="margin:3mm 0 0"><b>Only 25 seats per batch.</b> Registration closes Wed 28 Oct 2026. Every class is recorded. Exam-friendly: pause during your college exams, or switch once to the January 2027 batch at no cost.</p>
+  </div>
+  <div class="foot"><span>Prices and dates as of October 2026. Paid once, no instalments.</span><span>goforgedigital.com</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span><b>Before you enrol</b></span><span>Page 4</span></div>
+  <p class="eyebrow">Straight answers</p>
+  <h2>Check these <em>before you pay anyone.</em></h2>
+  <div class="two">
+    <div class="card">
+      <h3>Is it AICTE approved?</h3>
+      <p class="note">No. Goforge Digital offers private industry training and an internship as an MSME (Udyam) registered software company (UDYAM-HR-03-0170735). It is not an AICTE-approved course. Many colleges accept internships with registered companies, but only your college can confirm that.</p>
+      <h3 class="mt">No job guarantee</h3>
+      <p class="note" style="margin:0">We do not promise jobs or placements. What you get is training, a supervised project, and documents that can be checked.</p>
+    </div>
+    <div class="card navy">
+      <h3>Your checklist</h3>
+      <ul class="check">
+        <li>I know the weeks or hours my college needs</li>
+        <li>I know the dates and the submission deadline</li>
+        <li>My college accepts an online internship</li>
+        <li>I have asked about an NOC or a letter format</li>
+        <li>I have read the refund policy (goforgedigital.com/refund)</li>
+        <li>I know the full price, and that nothing is due before a call</li>
+        <li>I can check the certificate ID at goforgedigital.com/verify</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card mt">
+    <h3>Next step</h3>
+    <p class="note" style="margin:0">Book a free 15-minute counselling call at <b>goforgedigital.com/internship</b>. Bring your college rule and deadline, and we will suggest the programme and batch that fit, or tell you honestly if neither does. Refer a friend: they get ₹200 off, and you get ₹200 by UPI once they complete their first week.</p>
+  </div>
+  <p class="eyebrow mt">Sources (public documents, checked October 2026)</p>
+  <ul class="src">
+    <li>AICTE Internship Policy: internship.aicte-india.org/docs/maharashtra/6-AICTE-Internship-Policy.pdf</li>
+    <li>UGC internship guidelines for UG: ugc.gov.in/pdfnews/2051511_Internship-Research-Internship-Guidelines.pdf</li>
+    <li>GGSIPU (MAIT CSE notice and guidelines): cse.mait.ac.in/index.php/notice-summer-internship-industrial-training</li>
+    <li>AKTU-affiliated college policy: bbditm.ac.in/wp-content/uploads/2026/04/internship-policy-for-students.pdf</li>
+    <li>MDU B.Tech scheme: dpgitm.ac.in/wp-content/uploads/2026/08/B.Tech-Civil-2nd-Year-NEP-2020-H-Scheme-2026-27.pdf; MDU BCA clarification (Dec 2025): mdu.ac.in</li>
+    <li>J.C. Bose UST training and placement rules: jcboseust.ac.in; scheme: hshec.org/uploads/courses/1644384429COMPUTER_ENGINEERING.pdf</li>
+    <li>MRIIRS CSE curriculum 2023-27: manavrachna.edu.in/assets/pdf/Curriculum%20Booklet%20CSE-Core%2023-27.pdf</li>
+  </ul>
+  <div class="foot"><span>Goforge Digital &middot; D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad, Haryana 121001 &middot; info@goforgedigital.com</span><span>goforgedigital.com</span></div>
+</section>
+</body>
+</html>

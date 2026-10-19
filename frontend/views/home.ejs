@@ -16,6 +16,7 @@
       <div class="hero-actions" data-hero-item>
         <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
         <a class="btn btn-ghost btn-lg" href="#services">See our services</a>
+        <a class="btn btn-ghost btn-lg btn-students" href="/internship">Students: training + internship <%- include('partials/icon', { name: 'arrow' }) %></a>
       </div>
       <p class="hero-note" data-hero-item>A short call to understand your goals. A clear plan agreed before work begins.</p>
     </div>
@@ -42,7 +43,7 @@
   </div>
 </section>
 
-<aside class="student-band" aria-label="For students"><a href="/internship"><strong>Students:</strong> <span>industry training + internship</span> <%- include('partials/icon', { name: 'arrow' }) %> <span>Explore programmes</span></a></aside>
+<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot">Nov batch &middot; only <%= SEAT_CAP %> seats per batch &middot; registration closes <%= REGISTRATION.closesShort %></span><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
@@ -175,9 +176,9 @@
   <div class="wrap">
     <a class="stu-card" href="/internship" data-reveal>
       <span class="audience-k">For students</span>
-      <span id="stu-h" class="stu-t">Training and internship programmes</span>
-      <span class="stu-d">Four tracks from 4 weeks to 4 months: live training, then an internship on real projects.</span>
-      <span class="stu-go">Explore programmes <%- include('partials/icon', { name: 'arrow' }) %></span>
+      <span id="stu-h" class="stu-t">Training + internship: 3 or 6 months</span>
+      <span class="stu-d">Festive launch price <%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (offer.registrationOpen) { %> <strong class="stu-hot">November batch: weekday from <%= BATCHES[0].startsShort %>, weekend from <%= BATCHES[1].startsShort %>. Only <%= SEAT_CAP %> seats per batch. Registration closes <%= REGISTRATION.closes %>.</strong><% } %></span>
+      <span class="stu-go">See batches <%- include('partials/icon', { name: 'arrow' }) %></span>
     </a>
   </div>
 </section>

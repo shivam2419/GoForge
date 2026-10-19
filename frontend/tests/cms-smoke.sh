@@ -32,8 +32,8 @@ chk "testimonial on public" 1 $(curl -s $B/internship | grep -c 'Riya TEST')
 PID=$(curl -s -b ck $B/admin/programs | grep -o '/admin/programs/[0-9]*"' | head -1 | grep -o '[0-9]*')
 EDIT=$(curl -s -b ck $B/admin/programs/$PID); NAME=$(echo "$EDIT" | grep -o 'name="name" type="text" value="[^"]*"' | sed 's/.*value="//;s/"//'); echo "editing $PID $NAME"
 T=$(tok /admin/programs/$PID)
-R=$(curl -s -b ck -o /dev/null -w %{http_code} -F "_csrf=$T" -F "name=$NAME" -F "slug=software-engineering" -F "icon=code" -F "summary=Build features in a real codebase." -F "fee=₹4,999 + GST" -F "batches=2 Nov 2026 | Mon–Fri, 7–9 PM IST | 20 seats" -F "curriculum=Week 1: Foundations | Git, CLI" -F "published=1" -F "sort_order=10" $B/admin/programs/$PID); chk "program save 303" 303 $R
-P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "batch row (next-batch strip + table)" 2 $(echo "$P" | grep -c '2 Nov 2026'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
+R=$(curl -s -b ck -o /dev/null -w %{http_code} -F "_csrf=$T" -F "name=$NAME" -F "slug=software-engineering" -F "icon=code" -F "summary=Build features in a real codebase." -F "fee=₹4,999 internal note" -F "batches=18 Jan 2027 | Mon–Fri, 7:30–9 PM IST | 25 seats" -F "curriculum=Week 1: Foundations | Git, CLI" -F "published=1" -F "sort_order=10" $B/admin/programs/$PID); chk "program save 303" 303 $R
+P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "admin batch row in table" 1 $(echo "$P" | grep -c '<td>18 Jan 2027</td>'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
 chk "no fee text on programme" 0 $(curl -s $B/internship/programs/data-analyst | grep -ci 'contact for fees\|training fee')
 chk "no fee text on internship" 0 $(curl -s $B/internship | grep -ci 'contact for fees\|training fee')
 # programmes v2
@@ -114,3 +114,38 @@ chk "home student band" 1 $(curl -s $B/ | grep -c 'class="student-band"')
 chk "careers & training nav" 1 $(curl -s $B/ | grep -c 'data-nav-group>Careers &amp; Training</a>')
 for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
 rm -f ck3
+# November batch: prices, seat cap, seats filled, referral, webinar, guide
+chk "internship prices" 1 $(echo "$IN" | grep -c '₹1,499</strong>')
+chk "internship 6-month price" 1 $(echo "$IN" | grep -c '₹1,999</strong>')
+chk "no early-bird" 0 $(echo "$IN" | grep -ci 'early-bird\|early bird\|₹1,299\|₹1,799')
+chk "no GST" 0 $(echo "$IN" | grep -c 'GST')
+chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'in this batch')
+chk "no seats-filled bar at 0" 0 $(echo "$IN" | grep -c 'seats filled</p>')
+chk "registration closes" 1 $(echo "$IN" | grep -c 'Registration closes</strong>')
+chk "old tracks gone" 0 $(echo "$IN" | grep -ci '6-Week\|1-Month\|4-Month\|18 weeks')
+T=$(tok /admin/settings); SET=$(curl -s -b ck $B/admin/settings)
+v(){ echo "$SET" | grep -o "name=\"$1\" type=\"[a-z]*\" value=\"[^\"]*\"" | sed 's/.*value="//;s/"$//'; }
+R=$(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" --data-urlencode "phone1=$(v phone1)" --data-urlencode "phone2=$(v phone2)" --data-urlencode "email=$(v email)" --data-urlencode "linkedin_company=$(v linkedin_company)" \
+  --data-urlencode "blurb1=Web apps, portals and internal tools built around your workflow." --data-urlencode "blurb2=CRM and ERP systems that bring leads and billing together." --data-urlencode "blurb3=AI-powered workflows that send alerts and follow-ups for you." --data-urlencode "blurb4=Local SEO, Google Business Profile and targeted ads for you." \
+  -d "intern_training=6 weeks&intern_work=12 weeks&intern_fee=Contact for fees&seats_weekday=7&seats_weekend=25" $B/admin/settings); chk "settings seats save 303" 303 $R
+IN=$(curl -s $B/internship)
+chk "weekday 7 of 25 filled" 1 $(echo "$IN" | grep -c '<strong>7 of 25</strong> seats filled')
+chk "weekend batch full" 1 $(echo "$IN" | grep -c 'Batch full</strong>')
+T=$(tok /admin/settings); chk "seats over cap rejected" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "phone1=+91 84488 52971&phone2=+91 89580 39354&email=info@goforgedigital.com&seats_weekday=26&seats_weekend=0&intern_training=6 weeks&intern_work=12 weeks&intern_fee=x" $B/admin/settings)
+CT=$(curl -s -c ck4 $B/counselling | grep -o 'name="_csrf" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
+chk "counselling with referral + webinar 200" 200 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" --data-urlencode "interest=Free webinar (Sat 24 Oct, 11 AM)" --data-urlencode "batch=Not sure yet" --data-urlencode "track=3-Month Programme (1 month training + 2 months internship)" -d "name=TEST Referral&phone=9876543210&referred_by=Aman 9811111111" $B/counselling)
+chk "referral shown in counselling inbox" 1 $(curl -s -b ck $B/admin/counselling | grep -c 'Aman 9811111111')
+chk "old track rejected" 422 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" --data-urlencode "track=6-Week Industrial Training + Internship (6 weeks)" -d "name=TEST Old&phone=9876543210" $B/counselling)
+chk "apply with referral 200" 200 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" -d "full_name=TEST RefApp&college=ABC College&course_year=BTech 3&phone=9876543210&track=Data Analyst&consent=yes&referred_by=Neha" $B/internship)
+chk "referral shown in applications inbox" 1 $(curl -s -b ck $B/admin/applications | grep -c '<dd>Neha</dd>')
+chk "guide no consent 422" 422 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} -H 'Accept: application/json' --data-urlencode "_csrf=$CT" -d "name=TEST Guide&phone=9876543210" $B/guide)
+GJ=$(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -H 'Accept: application/json' --data-urlencode "_csrf=$CT" -d "name=TEST Guide&phone=9876543210&consent=yes" $B/guide)
+GU=$(echo "$GJ" | grep -o '/internship/guide.pdf?t=[a-z0-9.]*' | head -1); chk "guide link returned" 1 $([ -n "$GU" ] && echo 1 || echo 0)
+chk "guide pdf with token" 200 $(curl -s -o /dev/null -w %{http_code} "$B$GU")
+chk "guide pdf type" 1 $(curl -s -D - -o /dev/null "$B$GU" | grep -ci 'content-type: application/pdf')
+chk "guide pdf without token redirects" 303 $(curl -s -o /dev/null -w %{http_code} "$B/internship/guide.pdf?t=abc")
+chk "guide lead in its inbox" 1 $(curl -s -b ck $B/admin/guides | grep -c 'TEST Guide')
+chk "guide lead not in enquiries" 0 $(curl -s -b ck $B/admin/contacts | grep -c 'TEST Guide')
+PJ=$(curl -s $B/internship/programs/data-analyst); chk "course offers INR" 2 $(echo "$PJ" | grep -o '"priceCurrency":"INR"' | wc -l | tr -d ' ')
+chk "course P3M" 1 $(echo "$PJ" | grep -c '"courseWorkload":"P3M"')
+rm -f ck4

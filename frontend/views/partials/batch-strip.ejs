@@ -1,0 +1,13 @@
+<%# One-line summary of the next batch, for heroes. Hides the November details after registration closes. %>
+<% if (offer.registrationOpen) { %>
+<p class="next-batch" data-hero-item>
+  <strong><%= BATCH_LABEL %></strong>
+  <span>Weekday from <%= BATCHES[0].startsShort %></span>
+  <span>Weekend from <%= BATCHES[1].startsShort %></span>
+  <span class="nb-hot">Only <%= SEAT_CAP %> seats per batch</span>
+  <span class="nb-hot">Registration closes <%= REGISTRATION.closesShort %></span>
+  <a href="<%= locals.anchor || '/internship#batch' %>">Timings <%- include('icon', { name: 'arrow' }) %></a>
+</p>
+<% } else { %>
+<p class="next-batch" data-hero-item><strong>Next batch</strong><span><%= NEXT_AFTER %>: dates on your free counselling call</span><span class="nb-hot">Only <%= SEAT_CAP %> seats per batch</span></p>
+<% } %>

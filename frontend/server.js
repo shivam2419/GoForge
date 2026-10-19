@@ -10,7 +10,8 @@ const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
 const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
-const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel } = require('./lib/content');
+const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel, visibleFaq } = require('./lib/content');
+const batch = require('./lib/batch');
 const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
@@ -174,6 +175,7 @@ function validateApplication(body, TRACKS) {
   if (values.mode && !MODES.includes(values.mode)) errors.mode = 'Please choose from the list.';
   values.source = text(body.source);
   if (values.source && !SOURCES.includes(values.source)) errors.source = 'Please choose from the list.';
+  field(errors, values, body, 'referred_by', 'who referred you', { max: 80 });
   values.consent = body.consent ? 'yes' : '';
   if (!values.consent) errors.consent = 'Please agree so we can contact you about your application.';
   return { errors, values };
@@ -246,11 +248,16 @@ app.use(async (req, res, next) => {
   const s = getSettings();
   const PROGRAMS = await cms.publishedPrograms(s);
   const TRACKS = PROGRAMS.map(p => p.name).concat([SIMILAR_ROLE]);
+  const now = batch.nowMs();
+  const offer = batch.offerState(now);
   Object.assign(res.locals, {
+    offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR,
+    BATCH_LABEL: batch.BATCH_LABEL, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
+    COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now),
     PROGRAMS, TRACKS, MODES, SOURCES,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
     CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel,
-    WHY_SMALL, FAQ, OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
+    WHY_SMALL, FAQ: visibleFaq(now), OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC, vercel: VERCEL_ANALYTICS },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
@@ -401,7 +408,7 @@ function serviceJsonLd(sp) {
   ]).replace(/</g, '\\u003c');
 }
 
-function courseJsonLd(p) {
+function courseJsonLd(p, offer) {
   return JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Course', name: p.name + ' training + internship', description: p.summary,
     url: SITE_URL + '/internship/programs/' + p.slug, inLanguage: 'en-IN',
@@ -409,12 +416,17 @@ function courseJsonLd(p) {
     educationalCredentialAwarded: 'Training certificate and internship letter',
     teaches: p.coversList.length ? p.coversList : undefined,
     syllabusSections: p.curriculumList.map(m => ({ '@type': 'Syllabus', name: (m.label ? m.label + ': ' : '') + m.title, description: m.topics.join('; ') })),
-    // One CourseInstance per programme length (ISO 8601 durations: P4W, P6W, P12W, P18W).
-    hasCourseInstance: CAREER_TRACKS.map(t => ({ '@type': 'CourseInstance', name: t.name, courseMode: 'Online', courseWorkload: t.iso, location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } }))
+    // One CourseInstance and one Offer per programme length (ISO 8601 durations: P3M, P6M). Prices in INR, all-inclusive.
+    hasCourseInstance: CAREER_TRACKS.map(t => ({ '@type': 'CourseInstance', name: t.name, courseMode: 'Online', courseWorkload: t.iso,
+      courseSchedule: { '@type': 'Schedule', duration: t.iso, repeatFrequency: 'Daily', repeatCount: 1 },
+      location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } })),
+    offers: CAREER_TRACKS.map(t => ({ '@type': 'Offer', name: t.name, category: 'Paid', price: String(offer.priceOf(t)), priceCurrency: 'INR',
+      availability: offer.registrationOpen ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+      url: SITE_URL + '/internship/programs/' + p.slug }))
   }).replace(/</g, '\\u003c');
 }
 function faqJsonLd() {
-  const entities = FAQ.flatMap(group => group.items.map(item => ({
+  const entities = visibleFaq(batch.nowMs()).flatMap(group => group.items.map(item => ({
     '@type': 'Question',
     name: item.q,
     acceptedAnswer: { '@type': 'Answer', text: item.a }
@@ -505,6 +517,12 @@ app.post('/colleges', formLimiter, async (req, res) => {
 });
 
 const COUNSEL_TIMES = ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'];
+// What a student wants from the call. The webinar option is only offered until the webinar ends,
+// but older open forms may still send it, so validation accepts every option.
+const COUNSEL_INTEREST_ALL = ['Joining the ' + batch.BATCH_LABEL, batch.WEBINAR.interest, 'Joining the ' + batch.NEXT_AFTER + ' batch', 'Just exploring'];
+function counselInterests(offer) {
+  return COUNSEL_INTEREST_ALL.filter(o => (o !== batch.WEBINAR.interest || offer.webinar) && (o !== 'Joining the ' + batch.BATCH_LABEL || offer.registrationOpen));
+}
 function validateCounsel(body, programs) {
   const errors = {}, values = {};
   field(errors, values, body, 'name', 'your name', { required: true, min: 2, max: 80 });
@@ -518,10 +536,16 @@ function validateCounsel(body, programs) {
   values.track = text(body.track);
   if (values.track && !CAREER_TRACK_OPTIONS.includes(values.track)) errors.track = 'Please choose from the list.';
   field(errors, values, body, 'college_req', 'your college requirement', { max: 160 });
+  values.interest = text(body.interest);
+  if (values.interest && !COUNSEL_INTEREST_ALL.includes(values.interest)) errors.interest = 'Please choose from the list.';
+  values.batch = text(body.batch);
+  if (values.batch && !batch.BATCH_PREFS.includes(values.batch)) errors.batch = 'Please choose from the list.';
+  field(errors, values, body, 'referred_by', 'who referred you', { max: 80 });
   return { errors, values };
 }
 const trackFromQuery = slug => { const t = CAREER_TRACKS.find(x => x.slug === slug); return t ? careerTrackLabel(t) : ''; };
-app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
+const interestFromQuery = (q, res) => q === 'webinar' && res.locals.offer.webinar ? batch.WEBINAR.interest : '';
+app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track), interest: interestFromQuery(req.query.interest, res) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
 app.post('/counselling', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'counselling', 'Thanks. Your request has been sent.');
   const { errors, values } = validateCounsel(req.body, res.locals.TRACKS);
@@ -529,13 +553,67 @@ app.post('/counselling', formLimiter, async (req, res) => {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('counselling', { errors, values, ...pageMeta(req, 'Book a free counselling call', 'Counselling', { noindex: true }) });
   }
-  const msg = 'Preferred time: ' + (values.time || 'Any time');
-  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
-    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null);
-  notifyLead({ title: 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
-    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Programme', values.program || 'Not sure yet'], ['Preferred track', values.track || 'Not sure yet'],
-      ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time']] });
-  respondOk(req, res, 'counselling', 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
+  const msg = ['Preferred time: ' + (values.time || 'Any time'), values.interest && 'Interested in: ' + values.interest, values.batch && 'Batch: ' + values.batch].filter(Boolean).join('\n');
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
+    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null);
+  const isWebinar = values.interest === batch.WEBINAR.interest;
+  notifyLead({ title: isWebinar ? 'free webinar sign-up' : 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
+    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['Programme', values.program || 'Not sure yet'], ['Preferred programme length', values.track || 'Not sure yet'],
+      ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by]] });
+  respondOk(req, res, 'counselling', isWebinar
+    ? 'Thanks, ' + values.name.split(' ')[0] + '. Your free webinar seat is saved. We will send the joining link for ' + batch.WEBINAR.date + ', ' + batch.WEBINAR.time + ' to your phone' + (values.email ? ' and email' : '') + ' before the session.'
+    : 'Thanks, ' + values.name.split(' ')[0] + '. Your counselling call request is saved. A counsellor will call you at your preferred time, usually within one working day.');
+});
+
+// ---------- lead magnet: track picker + college internship guide (PDF, gated by name + phone) ----------
+// The PDF lives outside public/, so it is only served with a signed link that expires after GUIDE_DAYS.
+// Source: scripts/guide/guide.html (rebuild with: node scripts/build-guide.js).
+const GUIDE_FILE = path.join(__dirname, 'assets', 'goforge-track-picker-guide.pdf');
+const GUIDE_NAME = 'Track picker + college internship guide';
+const GUIDE_DAYS = 7;
+const guideSig = ts => hmac('guide:' + ts).slice(0, 32);
+const guideUrl = () => { const ts = Date.now().toString(36); return '/internship/guide.pdf?t=' + ts + '.' + guideSig(ts); };
+function guideTokenOk(tok) {
+  const m = String(tok || '').match(/^([a-z0-9]{6,12})\.([a-f0-9]{32})$/);
+  if (!m) return false;
+  const t = parseInt(m[1], 36), now = Date.now();
+  if (!t || now - t > GUIDE_DAYS * 864e5 || t - now > 6e4) return false;
+  return crypto.timingSafeEqual(Buffer.from(m[2]), Buffer.from(guideSig(m[1])));
+}
+function validateGuide(body) {
+  const errors = {}, values = {};
+  field(errors, values, body, 'name', 'your name', { required: true, min: 2, max: 80 });
+  phoneField(errors, values, body, 'phone', 'phone number');
+  values.email = text(body.email);
+  if (values.email && (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120)) errors.email = 'Please enter a valid email address.';
+  values.consent = body.consent ? 'yes' : '';
+  if (!values.consent) errors.consent = 'Please agree so we can send the guide and contact you about it.';
+  return { errors, values };
+}
+app.post('/guide', formLimiter, async (req, res) => {
+  const ok = (message, url) => {
+    if (wantsJson(req)) return res.render('partials/guide-next', { url }, (err, nextHtml) => res.json(err ? { ok: true, message } : { ok: true, message, nextHtml }));
+    res.render('thanks', { ...pageMeta(req, 'Your guide', message), noindex: true, kind: 'guide', message, download: url });
+  };
+  res.set('Cache-Control', 'no-store');
+  if (text(req.body.website)) return ok('Thanks. Your guide is ready.', guideUrl());
+  const { errors, values } = validateGuide(req.body);
+  if (Object.keys(errors).length) {
+    if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
+    return res.status(422).render('error', { ...pageMeta(req, 'Please check the form', 'Guide'), noindex: true, code: 422, heading: 'Please check the form', body: Object.values(errors).join(' ') + ' Go back and try again.' });
+  }
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'guide')",
+    values.name, null, values.phone, GUIDE_NAME, 'Downloaded the ' + GUIDE_NAME + ' (source: guide).', values.email || null);
+  notifyLead({ title: 'guide download', name: values.name, adminUrl: SITE_URL + '/admin/guides', replyTo: values.email,
+    fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Source', 'guide'], ['Downloaded', GUIDE_NAME]] });
+  ok('Thanks, ' + values.name.split(' ')[0] + '. Your guide is ready to download.', guideUrl());
+});
+app.get('/internship/guide.pdf', (req, res) => {
+  res.set('X-Robots-Tag', 'noindex');
+  if (!guideTokenOk(req.query.t)) return res.redirect(303, '/internship#guide');
+  res.set('Cache-Control', 'private, no-store');
+  res.set('Content-Disposition', 'attachment; filename="goforge-track-picker-guide.pdf"');
+  res.type('application/pdf').sendFile(GUIDE_FILE);
 });
 
 const SCHOOLS_DESC = 'NEP 2020 aligned skills programmes for Classes 5 to 12 (coding, AI, data science, robotics) and school software: websites, admission enquiry systems, ERP and parent updates. Goforge Digital, Faridabad.';
@@ -569,7 +647,7 @@ async function trustData() {
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = 'Live industry training plus a supervised internship for college students and graduates, in Faridabad and online: software, AI/ML, data analytics, data science, web development, business analysis and digital marketing. Verifiable certificates.';
+const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. November 2026 batch, 25 seats per batch. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
@@ -585,8 +663,8 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
     program, instructors, credentials, stats, counselProgram: program.name,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' at Goforge Digital: ' + program.training + ' of live training, then a ' + program.internship + ' internship. Curriculum, tools, projects and batches.',
-      { seoTitle: program.name + ' Training with Internship | Goforge Digital', jsonld: courseJsonLd(program), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
+      program.name + ' training + internship at Goforge Digital: 3-Month (₹1,499) or 6-Month (₹1,999) programme, live online. Curriculum, tools, projects, batch timings and the November 2026 batch.',
+      { seoTitle: program.name + ' Training with Internship | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
 // Old role pages moved to programme pages.
@@ -599,7 +677,9 @@ app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(re
 app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
   res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
-  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: CAREER_TRACKS, tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
+  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: CAREER_TRACKS, batchLines: res.locals.offer.registrationOpen
+    ? [batch.BATCH_LABEL + ' (registration closes ' + batch.REGISTRATION.closes + '):', ...batch.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ', from ' + b.starts + '.'), 'Only ' + batch.SEAT_CAP + ' seats per batch.']
+    : ['Next batch: ' + batch.NEXT_AFTER + '. Dates on the counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
@@ -651,9 +731,9 @@ app.post('/internship', formLimiter, async (req, res) => {
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
   const groupUrl = await cms.whatsappGroupFor(values.track);
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, 1, groupUrl ? 1 : 0));
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, referred_by, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0));
   notifyLead({ title: 'internship application', name: values.full_name, adminUrl: SITE_URL + '/admin/applications', replyTo: values.email,
-    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Heard about us', values.source], ['Note', values.note]] });
+    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Note', values.note]] });
   // The group link is only ever sent in this response, after the application is saved.
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
@@ -672,16 +752,17 @@ app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow
 // Priorities put the business pages first. lastmod is the date the page content last changed
 // (SITE_UPDATED, bump when copy changes) rather than the request date.
 const SITE_UPDATED = '2026-10-18';
+// The November 2026 batch, prices and seat cap changed the training pages, home and FAQ on 2026-10-19.
 // Every page changed on 2026-10-18 (address PIN in the footer, new work section), so all share SITE_UPDATED for now.
 // Add a path here when only that page changes later, e.g. { '/faq': '2026-11-02' }.
-const PAGE_UPDATED = {};
+const PAGE_UPDATED = { '/': '2026-10-19', '/internship': '2026-10-19', '/faq': '2026-10-19', '/colleges': '2026-10-19', '/about': '2026-10-19', '/internship/overview': '2026-10-19' };
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
     .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || SITE_UPDATED}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-10-19' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });
 app.get('/js/analytics.js', (req, res) => {
   if (!GA_ID) return res.status(404).type('text').send('');
@@ -713,7 +794,8 @@ async function requireAdmin(req, res, next) {
   res.set('Cache-Control', 'no-store');
   res.locals.noindex = true;
   res.locals.newCounts = {
-    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind NOT IN ('college', 'school', 'counselling')")).n,
+    contacts: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind NOT IN ('college', 'school', 'counselling', 'guide')")).n,
+    guides: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'guide'")).n,
     schools: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'school'")).n,
     colleges: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'college'")).n,
     counselling: (await db.get("SELECT COUNT(*) n FROM contacts WHERE status = 'New' AND kind = 'counselling'")).n,
@@ -752,7 +834,7 @@ app.get('/admin', requireAdmin, (req, res) => res.redirect(303, '/admin/contacts
 
 const INBOXES = {
   contacts: {
-    table: 'contacts', title: 'Project enquiries', base: "kind NOT IN ('college', 'school', 'counselling')", search: ['name', 'business', 'phone', 'service', 'message']
+    table: 'contacts', title: 'Project enquiries', base: "kind NOT IN ('college', 'school', 'counselling', 'guide')", search: ['name', 'business', 'phone', 'service', 'message']
   },
   colleges: {
     table: 'contacts', title: 'College enquiries', base: "kind = 'college'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
@@ -761,10 +843,13 @@ const INBOXES = {
     table: 'contacts', title: 'School enquiries', base: "kind = 'school'", search: ['name', 'business', 'phone', 'service', 'message', 'email']
   },
   counselling: {
-    table: 'contacts', title: 'Counselling calls', base: "kind = 'counselling'", search: ['name', 'phone', 'service', 'message', 'email', 'track', 'college_req']
+    table: 'contacts', title: 'Counselling calls', base: "kind = 'counselling'", search: ['name', 'phone', 'service', 'message', 'email', 'track', 'college_req', 'referred_by']
+  },
+  guides: {
+    table: 'contacts', title: 'Guide downloads', base: "kind = 'guide'", search: ['name', 'phone', 'email', 'message']
   },
   applications: {
-    table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city']
+    table: 'applications', title: 'Internship applications', search: ['full_name', 'college', 'course_year', 'whatsapp', 'track', 'note', 'email', 'city', 'referred_by']
   }
 };
 const PAGE_SIZE = 25;
@@ -818,6 +903,12 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   field(errors, values, req.body, 'intern_training', 'the training length', { required: true, max: 40 });
   field(errors, values, req.body, 'intern_work', 'the internship length', { required: true, max: 40 });
   field(errors, values, req.body, 'intern_fee', 'the fee line', { required: true, max: 80 });
+  for (const k of ['seats_weekday', 'seats_weekend']) {
+    const v = text(req.body[k]) || '0';
+    values[k] = v;
+    if (!/^\d{1,2}$/.test(v) || Number(v) > batch.SEAT_CAP) errors[k] = 'Enter a whole number from 0 to ' + batch.SEAT_CAP + '.';
+    else values[k] = String(Number(v));
+  }
   if (Object.keys(errors).length) {
     return res.status(422).render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: { ...getSettings(), ...values }, errors, flash: null });
   }

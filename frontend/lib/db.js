@@ -86,7 +86,10 @@ const DEFAULT_SETTINGS = {
   blurb4: 'Local SEO, Google Business Profile and targeted ads that bring more qualified enquiries, with clear monthly reports.',
   intern_training: '6 weeks',
   intern_work: '12 weeks',
-  intern_fee: 'Contact for fees'
+  intern_fee: 'Contact for fees',
+  // Real seats filled per batch, typed in by the admin (Admin > Settings). Never computed or auto-incremented.
+  seats_weekday: '0',
+  seats_weekend: '0'
 };
 
 async function init() {

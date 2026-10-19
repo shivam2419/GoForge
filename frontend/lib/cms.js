@@ -20,14 +20,14 @@ const ENTITIES = {
       { name: 'duration_training', label: 'Training length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'duration_internship', label: 'Internship length', type: 'text', max: 40, hint: 'Empty = the default from Settings.' },
       { name: 'mode', label: 'Mode', type: 'text', max: 60, hint: 'For example: Live online' },
-      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'For example: ₹4,999 + GST. Internal only; not shown on the public site.' },
+      { name: 'fee', label: 'Fee', type: 'text', max: 80, hint: 'Internal note only; not shown on the public site. Public prices are set in lib/content.js.' },
       { name: 'eligibility', label: 'Who can apply', type: 'text', max: 160 },
       { name: 'covers', label: 'What you learn', type: 'lines', max: 2000, hint: 'One point per line.' },
       { name: 'curriculum', label: 'Curriculum', type: 'lines', max: 16000, hint: 'One module per line: Module 1: Title | topic; topic; topic | Hands-on: assignment. Use Capstone: for the final project.' },
       { name: 'tools', label: 'Tools', type: 'lines', max: 1000, hint: 'One per line.' },
       { name: 'project', label: 'Typical project', type: 'textarea', rows: 3, max: 800 },
       { name: 'suits', label: 'Who it suits', type: 'textarea', rows: 2, max: 500 },
-      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'One per line: Start date | Timing | Seats. For example: 2 Nov 2026 | Mon–Fri, 7–9 PM IST | 20 seats' },
+      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'Optional. One per line: Start date | Timing | Seats. For example: 2 Nov 2026 | Mon–Fri, 7:30–9 PM IST | 25 seats. Leave empty to show the November 2026 weekday and weekend batches. Rows hide after their start date. Write only a real seat cap; leave Seats empty to show the standard 25-seat cap.' },
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
     ]
@@ -225,7 +225,7 @@ async function seedProgramsV2() {
 }
 
 // Applications table gained columns; add them to existing databases.
-const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0' };
+const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT' };
 async function migrate() {
   await db.batch(schemaSql().map(sql => [sql]));
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
@@ -237,6 +237,8 @@ async function migrate() {
   // Counselling: chosen programme length and the college's own rule (weeks or hours, deadline). Nullable, so old rows are untouched.
   if (!contactCols.has('track')) await db.run('ALTER TABLE contacts ADD COLUMN track TEXT');
   if (!contactCols.has('college_req')) await db.run('ALTER TABLE contacts ADD COLUMN college_req TEXT');
+  // Referral: who referred this student (free text, name or phone). Nullable.
+  if (!contactCols.has('referred_by')) await db.run('ALTER TABLE contacts ADD COLUMN referred_by TEXT');
   const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
   if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
   await db.run(`CREATE TABLE IF NOT EXISTS whatsapp_groups (
