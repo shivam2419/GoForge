@@ -119,8 +119,9 @@ chk "internship prices (card + final band)" 2 $(echo "$IN" | grep -c '₹1,499</
 chk "internship 6-month price (card + compare)" 2 $(echo "$IN" | grep -c '₹1,999</strong>')
 chk "no early-bird" 0 $(echo "$IN" | grep -ci 'early-bird\|early bird\|₹1,299\|₹1,799')
 chk "no GST" 0 $(echo "$IN" | grep -c 'GST')
-chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'in this batch')
-chk "no seats-filled bar at 0" 0 $(echo "$IN" | grep -c 'seats filled</p>')
+chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'Only 25 seats</span>')
+chk "no count-up at 0" 0 $(echo "$IN" | grep -c 'data-countup')
+chk "no filling-fast at 0" 0 $(echo "$IN" | grep -c 'class="bc2-tag"')
 chk "registration closes (key chip + timeline)" 2 $(echo "$IN" | grep -c 'Registration closes</strong>')
 chk "old tracks gone" 0 $(echo "$IN" | grep -ci '6-Week\|1-Month\|4-Month\|18 weeks')
 T=$(tok /admin/settings); SET=$(curl -s -b ck $B/admin/settings)
@@ -129,8 +130,12 @@ R=$(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" --dat
   --data-urlencode "blurb1=Web apps, portals and internal tools built around your workflow." --data-urlencode "blurb2=CRM and ERP systems that bring leads and billing together." --data-urlencode "blurb3=AI-powered workflows that send alerts and follow-ups for you." --data-urlencode "blurb4=Local SEO, Google Business Profile and targeted ads for you." \
   -d "intern_training=6 weeks&intern_work=12 weeks&intern_fee=Contact for fees&seats_weekday=7&seats_weekend=25" $B/admin/settings); chk "settings seats save 303" 303 $R
 IN=$(curl -s $B/internship)
-chk "weekday 7 of 25 filled" 1 $(echo "$IN" | grep -c '<strong>7 of 25</strong> seats filled')
-chk "weekend batch full" 1 $(echo "$IN" | grep -c 'Batch full</strong>')
+chk "weekday 7 of 25 filled" 1 $(echo "$IN" | grep -c 'aria-label="7 of 25 seats filled"')
+chk "weekday 18 seats left" 1 $(echo "$IN" | grep -c '>18 seats left</span>')
+chk "weekend batch full chip" 1 $(echo "$IN" | grep -c '>Batch full</span>')
+chk "seat grid taken = 7 + 25" 32 $(echo "$IN" | grep -o 'class="seat is-taken"' | wc -l)
+chk "no filling-fast below 60% or when full" 0 $(echo "$IN" | grep -c 'class="bc2-tag"')
+chk "count-up uses admin number" 1 $(echo "$IN" | grep -c 'data-countup="7"')
 T=$(tok /admin/settings); chk "seats over cap rejected" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "phone1=+91 84488 52971&phone2=+91 89580 39354&email=info@goforgedigital.com&seats_weekday=26&seats_weekend=0&intern_training=6 weeks&intern_work=12 weeks&intern_fee=x" $B/admin/settings)
 CT=$(curl -s -c ck4 $B/counselling | grep -o 'name="_csrf" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
 chk "counselling with referral + webinar 200" 200 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" --data-urlencode "interest=Free webinar (Sat 24 Oct, 11 AM)" --data-urlencode "batch=Not sure yet" --data-urlencode "track=3-Month Programme (1 month training + 2 months internship)" -d "name=TEST Referral&phone=9876543210&referred_by=Aman 9811111111" $B/counselling)
@@ -165,3 +170,16 @@ chk "programme og + twitter image" 2 $(echo "$PG" | grep -c 'og/program-data-ana
 chk "og file served" 200 $(curl -s -o /dev/null -w %{http_code} $B/img/og/program-data-analyst.png)
 chk "no GST on programme" 0 $(echo "$PG" | grep -c 'GST')
 chk "404 student path" 1 $(curl -s $B/no-such-page | grep -c 'class="err-paths"')
+
+# ---- seats v2: Filling fast only at >= 60% real fill ----
+T=$(tok /admin/settings); SET=$(curl -s -b ck $B/admin/settings)
+R=$(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" --data-urlencode "phone1=$(v phone1)" --data-urlencode "phone2=$(v phone2)" --data-urlencode "email=$(v email)" --data-urlencode "linkedin_company=$(v linkedin_company)" \
+  --data-urlencode "blurb1=Web apps, portals and internal tools built around your workflow." --data-urlencode "blurb2=CRM and ERP systems that bring leads and billing together." --data-urlencode "blurb3=AI-powered workflows that send alerts and follow-ups for you." --data-urlencode "blurb4=Local SEO, Google Business Profile and targeted ads for you." \
+  -d "intern_training=6 weeks&intern_work=12 weeks&intern_fee=Contact for fees&seats_weekday=10&seats_weekend=17" $B/admin/settings); chk "settings 10/17 save 303" 303 $R
+IN=$(curl -s $B/internship)
+chk "filling fast only on weekend (17/25 = 68%)" 1 $(echo "$IN" | grep -c 'class="bc2-tag"')
+chk "weekday 15 left" 1 $(echo "$IN" | grep -c '>15 seats left</span>')
+chk "weekend 8 left" 1 $(echo "$IN" | grep -c '>8 seats left</span>')
+chk "enrolling now on both" 2 $(echo "$IN" | grep -c 'Enrolling now')
+chk "seat-mini on strip + sticky bar" 2 $(echo "$IN" | grep -c 'Weekday <strong>15 of 25 left')
+chk "reserve your seat CTA" 2 $(echo "$IN" | grep -c '>Reserve your seat')

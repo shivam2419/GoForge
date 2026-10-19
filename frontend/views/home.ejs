@@ -43,7 +43,7 @@
   </div>
 </section>
 
-<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot">Nov batch &middot; only <%= SEAT_CAP %> seats per batch &middot; registration closes <%= REGISTRATION.closesShort %></span><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
+<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot">Nov batch &middot; <%- include('partials/seat-mini') %> &middot; registration closes <%= REGISTRATION.closesShort %></span><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 

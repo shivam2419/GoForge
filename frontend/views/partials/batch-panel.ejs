@@ -25,27 +25,10 @@
       <li><%- include('icon', { name: 'browser' }) %><span><strong>Every class</strong>recorded</span></li>
       <li><%- include('icon', { name: 'check' }) %><span><strong>Exam-friendly</strong>pause or switch once</span></li>
     </ul>
-    <ul class="batch-grid" data-reveal-group>
+    <ul class="batch-grid bc2-grid" data-reveal-group>
       <% BATCHES.forEach((b, i) => { const st = SEATS[b.key]; %>
       <li data-reveal>
-        <article class="batch-card<%= st.full ? ' is-full' : '' %>" aria-labelledby="batch-<%= b.key %>-h">
-          <p class="batch-kicker"><%= b.days %></p>
-          <h3 id="batch-<%= b.key %>-h" class="batch-name"><%= b.name %></h3>
-          <p class="batch-time"><%= b.time %></p>
-          <dl class="batch-meta">
-            <div><dt>Classes start</dt><dd><%= b.starts %></dd></div>
-            <div><dt>Mode</dt><dd>Live online, recorded</dd></div>
-          </dl>
-          <ul class="batch-notes">
-            <% b.notes.forEach(n => { %><li><%- include('icon', { name: 'check' }) %><span><%= n %></span></li><% }) %>
-          </ul>
-          <%- include('seat-line', { st }) %>
-          <% if (st.full) { %>
-          <a class="btn btn-ghost batch-cta" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Join the waitlist <%- include('icon', { name: 'arrow' }) %></a>
-          <% } else { %>
-          <a class="btn btn-primary batch-cta" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="batch" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Book a free call about the <%= b.name.toLowerCase() %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
-          <% } %>
-        </article>
+        <%- include('batch-card', { b, st, i }) %>
       </li>
       <% }) %>
     </ul>
