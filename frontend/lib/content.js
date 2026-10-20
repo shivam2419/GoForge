@@ -264,6 +264,10 @@ const FAQ = [
         a: 'Each batch is capped at 25 students, so a mentor can review every assignment and project. The weekday batch and the weekend batch each have their own 25 seats.', top: true
       },
       {
+        q: 'Do you offer job placement?',
+        a: 'No. We do not promise jobs or placements. What you get is live training, real projects you can show in interviews, a training certificate and an internship letter that describes the work you actually did.', top: true
+      },
+      {
         q: 'Is the programme AICTE approved?',
         a: 'No. This is private industry training and an internship with Goforge Digital, an MSME (Udyam) registered software company. It is not an AICTE-approved course, and we do not claim it is. Your internship letter is issued by Goforge Digital. Only your college can confirm whether it accepts the internship, so please check its rules before you enrol.', top: true
       },

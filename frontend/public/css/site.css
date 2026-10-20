@@ -1698,7 +1698,10 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .cross-list { list-style: none; margin: 0; padding: 0; }
 .cross-list li { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; color: var(--ink-2); }
 .cross-list .icon { width: 20px; height: 20px; color: var(--ink-3); flex: none; margin-top: 2px; }
-@media (max-width: 760px) { .fitc-grid { grid-template-columns: 1fr; } }
+.fitc-single { grid-template-columns: 1fr; max-width: 880px; margin: 0 auto; }
+.fitc-single .fit-card { padding: 22px 26px 14px; }
+.fitc-single .check-list { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+@media (max-width: 760px) { .fitc-grid, .fitc-single .check-list { grid-template-columns: 1fr; } }
 
 /* Comparison table */
 .cmp-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line); background: var(--sheet); box-shadow: var(--shadow); }

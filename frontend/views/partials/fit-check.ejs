@@ -6,26 +6,17 @@
         <p class="eyebrow" data-reveal>Before you apply</p>
         <h2 id="fit-h" class="h2" data-reveal>Is this <em>right for you?</em></h2>
       </div>
-      <p class="section-intro" data-reveal>We would rather you join the right programme than the wrong one. If something below is a deal-breaker, tell us on the free call.</p>
+      <p class="section-intro" data-reveal>We would rather you join the right programme than the wrong one. Not sure? Talk it through with us on the free call.</p>
     </div>
-    <div class="fitc-grid" data-reveal-group>
+    <div class="fitc-grid fitc-single" data-reveal-group>
       <article class="fit-card fit-yes" data-reveal>
-        <p class="mini-h">A good fit if you</p>
+        <p class="mini-h">A great fit if you</p>
         <ul class="check-list">
           <% if (locals.suits) { %><li><%- include('icon', { name: 'check' }) %><span><%= suits %></span></li><% } %>
           <li><%- include('icon', { name: 'check' }) %><span>Need an internship with a letter that states your role, dates, hours and work</span></li>
           <li><%- include('icon', { name: 'check' }) %><span>Want projects you can open and explain in an interview</span></li>
           <li><%- include('icon', { name: 'check' }) %><span>Can attend live classes on weekday evenings or weekends, and do the assignments</span></li>
           <li><%- include('icon', { name: 'check' }) %><span>Are a beginner or have some basics; we start from the foundations</span></li>
-        </ul>
-      </article>
-      <article class="fit-card fit-no" data-reveal>
-        <p class="mini-h">Not the right fit if you</p>
-        <ul class="cross-list">
-          <li><%- include('icon', { name: 'cross' }) %><span>Want a job guarantee. We do not promise jobs or placements.</span></li>
-          <li><%- include('icon', { name: 'cross' }) %><span>Want a certificate without doing the work. The letter describes what you actually did.</span></li>
-          <li><%- include('icon', { name: 'cross' }) %><span>Need an AICTE-approved course for credit. We are not AICTE-approved; check your college's rule first.</span></li>
-          <li><%- include('icon', { name: 'cross' }) %><span>Cannot make either batch timing at all. Recordings help with missed classes, not a whole programme.</span></li>
         </ul>
       </article>
     </div>
