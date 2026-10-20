@@ -39,6 +39,7 @@
       <li class="quote-card">
         <% if (t.rating) { %><p class="stars" aria-label="<%= t.rating %> out of 5"><%= '★'.repeat(t.rating) %><span aria-hidden="true"><%= '★'.repeat(5 - t.rating) %></span></p><% } %>
         <blockquote><p><%= t.quote %></p></blockquote>
+        <% if (t.video_url) { %><a class="gr-video" href="<%= t.video_url %>" target="_blank" rel="noopener"><span class="gr-play" aria-hidden="true">&#9654;</span>Watch <%= t.name.split(/\s+/)[0] %>&rsquo;s video</a><% } %>
         <p class="quote-by">
           <% if (t.photo_url) { %><img src="<%= t.photo_url %>" alt="" loading="lazy" width="40" height="40"><% } %>
           <span><strong><%= t.name %></strong><% if (t.role) { %><span><%= t.role %></span><% } %></span>
