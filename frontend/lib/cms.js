@@ -68,6 +68,7 @@ const ENTITIES = {
       { name: 'kind', label: 'Type', type: 'select', options: ['student', 'client'], required: true },
       { name: 'quote', label: 'Quote', type: 'textarea', rows: 4, required: true, max: 800 },
       { name: 'photo_url', label: 'Photo', type: 'image' },
+      { name: 'video_url', label: 'Video link', type: 'url', max: 300, hint: 'Optional. Paste a YouTube or Google Drive link (set to "Anyone with the link"). Shows a small "Watch video" button on the card.' },
       { name: 'rating', label: 'Rating (1–5)', type: 'number', min: 0, max: 5, hint: '0 or empty hides stars.' },
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
@@ -241,6 +242,9 @@ async function migrate() {
   if (!contactCols.has('referred_by')) await db.run('ALTER TABLE contacts ADD COLUMN referred_by TEXT');
   const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
   if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
+  // Testimonials: optional video link (student video reviews). Nullable, so old rows are untouched.
+  const tesCols = new Set((await db.all('PRAGMA table_info(testimonials)')).map(r => r.name));
+  if (!tesCols.has('video_url')) await db.run('ALTER TABLE testimonials ADD COLUMN video_url TEXT');
   await db.run(`CREATE TABLE IF NOT EXISTS whatsapp_groups (
     program TEXT PRIMARY KEY,
     url TEXT NOT NULL,
