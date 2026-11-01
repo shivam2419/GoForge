@@ -209,7 +209,6 @@ const WHY_SMALL = [
 // FAQ items with `until` (a timestamp) hide themselves after that moment; see visibleFaq().
 const { KEY_DATES } = require('./batch');
 const REGISTRATION_CLOSES = KEY_DATES.registrationCloses;
-const DIWALI_BREAK_ENDS = Date.parse('2026-11-12T00:00:00+05:30');
 const FAQ = [
   {
     id: 'students',
@@ -249,7 +248,7 @@ const FAQ = [
       },
       {
         q: 'Is there a Diwali break?',
-        a: 'Yes. The weekday batch starts on Mon 2 Nov, breaks for Diwali from 7 to 11 Nov and resumes on Thu 12 Nov. The weekend batch has its orientation on Sun 1 Nov and starts classes on Sat 14 Nov, after the festival.', until: DIWALI_BREAK_ENDS, top: true
+        a: 'Yes. The weekday batch starts on Mon 2 Nov, breaks for Diwali from 7 to 11 Nov and resumes on Thu 12 Nov. The weekend batch has its orientation on Sun 1 Nov and starts classes on Sat 14 Nov, after the festival.', until: REGISTRATION_CLOSES, top: true
       },
       {
         q: 'What if I miss a class?',
