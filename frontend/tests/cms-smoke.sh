@@ -137,7 +137,7 @@ chk "weekend schedule full chip" 1 $(echo "$IN" | grep -c '>Schedule full</span>
 chk "no seat grid or ring (v3)" 0 $(echo "$IN" | grep -c 'seat-grid\|bc2-ring')
 chk "no filling-fast below 60% or when full" 0 $(echo "$IN" | grep -c 'class="bc3-tag"')
 chk "count-up uses admin number" 1 $(echo "$IN" | grep -c 'data-countup="7"')
-T=$(tok /admin/settings); chk "seats over cap rejected" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "phone1=+91 84488 52971&phone2=+91 89580 39354&email=info@goforgedigital.com&seats_weekday=26&seats_weekend=0&intern_training=6 weeks&intern_work=12 weeks&intern_fee=x" $B/admin/settings)
+T=$(tok /admin/settings); chk "seats over cap rejected" 422 $(curl -s -b ck -o /dev/null -w %{http_code} --data-urlencode "_csrf=$T" -d "phone1=+91 84488 52971&phone2=+91 85950 39354&email=info@goforgedigital.com&seats_weekday=26&seats_weekend=0&intern_training=6 weeks&intern_work=12 weeks&intern_fee=x" $B/admin/settings)
 CT=$(curl -s -c ck4 $B/counselling | grep -o 'name="_csrf" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
 chk "counselling with referral + webinar 200" 200 $(curl -s -b ck4 -H "X-Forwarded-For: 10.9.0.$((RANDOM%250+1))" -o /dev/null -w %{http_code} --data-urlencode "_csrf=$CT" --data-urlencode "interest=Free webinar (Sat 24 Oct, 11 AM)" --data-urlencode "batch=Not sure yet" --data-urlencode "track=3-Month Programme (1 month training + 2 months internship)" -d "name=TEST Referral&phone=9876543210&referred_by=Aman 9811111111" $B/counselling)
 chk "referral shown in counselling inbox" 1 $(curl -s -b ck $B/admin/counselling | grep -c 'Aman 9811111111')

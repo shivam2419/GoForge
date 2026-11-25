@@ -161,7 +161,7 @@ async function run() {
     fd.set('_csrf', csrfFrom(settingsPage));
     fd.set('_settings_v2', '1');
     fd.set('phone1', '+91 84488 52971');
-    fd.set('phone2', '+91 89580 39354');
+    fd.set('phone2', '+91 85950 39354');
     fd.set('email', 'goforgedigital@gmail.com');
     fd.set('linkedin_company', 'https://www.linkedin.com/company/143989208');
     fd.set('batch_label', 'March 2027 batch');

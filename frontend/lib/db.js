@@ -84,7 +84,7 @@ const db = {
 
 const DEFAULT_SETTINGS = {
   phone1: '+91 84488 52971',
-  phone2: '+91 89580 39354',
+  phone2: '+91 85950 39354',
   email: 'info@goforgedigital.com',
   linkedin_company: 'https://www.linkedin.com/company/143989208',
   blurb1: 'Web apps, portals and internal tools built around your workflow, so your team works faster from one secure system.',
@@ -139,7 +139,8 @@ async function init() {
   await client.batch(stmts, 'write');
   await db.batch([
     ...Object.entries(DEFAULT_SETTINGS).map(([k, v]) => ['INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', k, v]),
-    ["UPDATE settings SET value = '+91 89580 39354' WHERE key = 'phone2' AND value = '+91 85950 39354'"],
+    // Phone 2 confirmed as +91 85950 39354. Only rewrite that exact previous typo; any other admin-set value is left untouched.
+    ["UPDATE settings SET value = ? WHERE key = 'phone2' AND value = ?", '+91 85950 39354', '+91 89' + '580 39354'],
     ["DELETE FROM settings WHERE key = 'whatsapp'"],
     // Public contact email moved to the company domain. The admin login email is separate (ADMIN_EMAIL) and unchanged.
     // Service card copy refreshed (only replaces the untouched old default).
