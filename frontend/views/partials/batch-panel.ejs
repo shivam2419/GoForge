@@ -33,6 +33,7 @@
       </li>
       <% }) %>
     </ul>
+    <p class="schedule-note" data-reveal><%= SCHEDULE_NOTE %></p>
     <ul class="batch-promises" data-reveal>
       <% BATCH_PROMISES.forEach(t => { %><li><%- include('icon', { name: 'check' }) %><span><%= t %></span></li><% }) %>
       <li><%- include('icon', { name: 'spark' }) %><span><%= REFERRAL.terms %></span></li>

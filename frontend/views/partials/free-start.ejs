@@ -1,20 +1,24 @@
-<%# Free webinar card (hides after it ends) + gated guide download. %>
+<%# Free webinar card (hides after it ends) + direct guide & overview downloads (no form gate). %>
 <section class="section" id="guide" aria-labelledby="free-h">
   <div class="wrap">
     <div class="section-head split-head">
       <div>
         <p class="eyebrow" data-reveal>Free, before you decide</p>
-        <h2 id="free-h" class="h2" data-reveal>Start with <em>something free.</em></h2>
+        <h2 id="free-h" class="h2" data-reveal>Download the <em>guides first.</em></h2>
       </div>
-      <p class="section-intro" data-reveal><%= offer.webinar ? 'Join the free live webinar, or take the guide home first.' : 'Take the guide home first, then book a free call when you are ready.' %> No payment and no commitment.</p>
+      <p class="section-intro" data-reveal>Take the guide and syllabus overview straight away — no form, no sign-up required. Book a free call whenever you are ready.</p>
     </div>
     <% if (offer.webinar) { %><div class="wb-in-free" id="webinar"><%- include('webinar-card-inner', { hTag: 'h3', hid: 'wbc-h3' }) %></div><% } %>
     <div class="free-grid is-single" data-reveal-group>
       <article class="free-card free-guide" data-reveal aria-labelledby="guide-h">
-        <p class="free-kicker">Free PDF guide</p>
-        <h3 id="guide-h" class="free-title">Track picker + college internship guide</h3>
-        <p class="free-text">What AICTE, UGC and NCR universities usually ask for, the questions to ask your college, and which programme fits which rule.</p>
-        <%- include('guide-form', { px: locals.px || 'g' }) %>
+        <p class="free-kicker">Free PDF downloads</p>
+        <h3 id="guide-h" class="free-title">Track picker &amp; college internship guide</h3>
+        <p class="free-text">What AICTE, UGC and NCR universities usually ask for, the questions to ask your college, which programme fits which rule, and the full syllabus overview.</p>
+        <div class="free-actions">
+          <a class="btn btn-primary" href="/internship/guide.pdf" download="goforge-track-picker-guide.pdf">Download track picker &amp; college guide (PDF) <%- include('icon', { name: 'upright' }) %></a>
+          <a class="btn btn-ghost" href="/internship/overview.pdf" target="_blank" rel="noopener">Programme overview (PDF) <%- include('icon', { name: 'upright' }) %></a>
+          <a class="text-link" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call <%- include('icon', { name: 'arrow' }) %></a>
+        </div>
       </article>
     </div>
   </div>

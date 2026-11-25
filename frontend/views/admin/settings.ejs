@@ -1,12 +1,14 @@
 <%- include('top') %>
 <div class="admin-head">
   <h1 class="admin-title">Site settings</h1>
-  <p class="admin-sub">These details appear across the public site: header, footer, contact strips. Changes go live as soon as you save.</p>
+  <p class="admin-sub">These details appear across the public site: batch dates, timings, fees, toggles, PDFs and contact strips. Changes go live as soon as you save.</p>
 </div>
 <% if (flash) { %><div class="flash" role="status"><%= flash %></div><% } %>
 <% if (Object.keys(errors).length) { %><div class="form-alert" role="alert">Please check the highlighted fields.</div><% } %>
-<form method="post" action="/admin/settings" class="form settings-form" novalidate>
+<form method="post" action="/admin/settings" class="form settings-form" enctype="multipart/form-data" novalidate>
   <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <input type="hidden" name="_settings_v2" value="1">
+
   <fieldset class="panel">
     <legend>Contact details</legend>
     <div class="form-grid">
@@ -16,6 +18,97 @@
       <%- include('../partials/field', { f: { id: 's-li', name: 'linkedin_company', label: 'Company LinkedIn page', type: 'url', max: 200, hint: 'Shown in the footer, on Contact and About. Leave empty to hide.' } }) %>
     </div>
   </fieldset>
+
+  <fieldset class="panel">
+    <legend>Batch, timings &amp; seats</legend>
+    <p class="field-hint">Use full dates like <strong>8 January 2027</strong> so the site calculates weekday abbreviations and closing time automatically.</p>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-bl', name: 'batch_label', label: 'Batch name', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-bs', name: 'batch_starts', label: 'Batch start date', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-bw', name: 'batch_first_weekend', label: 'First weekend class date', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-bd', name: 'batch_deadline', label: 'Registration deadline', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-wt', name: 'batch_weekday_timing', label: 'Weekday timing', required: true, max: 100 } }) %>
+      <%- include('../partials/field', { f: { id: 's-wkt', name: 'batch_weekend_timing', label: 'Weekend timing', required: true, max: 100 } }) %>
+      <%- include('../partials/field', { f: { id: 's-cap', name: 'seat_cap', label: 'Seats per schedule (cap)', type: 'number', inputmode: 'numeric', required: true, max: 3 } }) %>
+      <%- include('../partials/field', { f: { id: 's-sw', name: 'seats_weekday', label: 'Weekday seats filled (0 to cap)', type: 'number', inputmode: 'numeric', required: true, max: 3 } }) %>
+      <%- include('../partials/field', { f: { id: 's-se', name: 'seats_weekend', label: 'Weekend seats filled (0 to cap)', type: 'number', inputmode: 'numeric', required: true, max: 3 } }) %>
+      <%- include('../partials/field', { f: { id: 's-sn', name: 'schedule_note', label: 'Schedule note', as: 'textarea', rows: 2, required: true, max: 300, wide: true } }) %>
+    </div>
+  </fieldset>
+
+  <fieldset class="panel">
+    <legend>Programme fees &amp; labels</legend>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-t3l', name: 'track_3m_label', label: '3-month label', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-t3p', name: 'track_3m_price', label: '3-month fee (INR)', type: 'number', inputmode: 'numeric', required: true, max: 6 } }) %>
+      <%- include('../partials/field', { f: { id: 's-t6l', name: 'track_6m_label', label: '6-month label', required: true, max: 60 } }) %>
+      <%- include('../partials/field', { f: { id: 's-t6p', name: 'track_6m_price', label: '6-month fee (INR)', type: 'number', inputmode: 'numeric', required: true, max: 6 } }) %>
+      <%- include('../partials/field', { f: { id: 's-fn', name: 'fee_note', label: 'Fee note (shown on programme pages)', as: 'textarea', rows: 2, required: true, max: 300, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Default training length (internal)', required: true, max: 40 } }) %>
+      <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Default internship length (internal)', required: true, max: 40 } }) %>
+      <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Internal fee note', required: true, max: 80, wide: true } }) %>
+    </div>
+  </fieldset>
+
+  <fieldset class="panel">
+    <legend>Home stats, Google rating &amp; programme sections</legend>
+    <div class="form-grid">
+      <div class="field field-wide field-check">
+        <label for="s-shs"><input id="s-shs" type="checkbox" name="show_home_stats" value="1"<% if (values.show_home_stats !== '0') { %> checked<% } %>> Show stats block (100+/150+/98%/10+) on Home page (edit values in <a href="/admin/stats">Stats</a>)</label>
+      </div>
+      <div class="field field-wide field-check">
+        <label for="s-sgb"><input id="s-sgb" type="checkbox" name="show_google_badge" value="1"<% if (values.show_google_badge !== '0') { %> checked<% } %>> Show Google rating badge once on Home page</label>
+      </div>
+      <%- include('../partials/field', { f: { id: 's-gr', name: 'google_rating', label: 'Google rating', required: true, max: 10 } }) %>
+      <%- include('../partials/field', { f: { id: 's-gbt', name: 'google_badge_text', label: 'Google rating label', required: true, max: 80 } }) %>
+      <div class="field field-wide field-check">
+        <label for="s-pc"><input id="s-pc" type="checkbox" name="prog_show_curriculum" value="1"<% if (values.prog_show_curriculum !== '0') { %> checked<% } %>> Programme pages: show curriculum modules</label>
+      </div>
+      <div class="field field-wide field-check">
+        <label for="s-pt"><input id="s-pt" type="checkbox" name="prog_show_tools" value="1"<% if (values.prog_show_tools !== '0') { %> checked<% } %>> Programme pages: show tools grid</label>
+      </div>
+      <div class="field field-wide field-check">
+        <label for="s-pb"><input id="s-pb" type="checkbox" name="prog_show_batches" value="1"<% if (values.prog_show_batches !== '0') { %> checked<% } %>> Programme pages: show batch schedule &amp; key dates</label>
+      </div>
+      <div class="field field-wide field-check">
+        <label for="s-pf"><input id="s-pf" type="checkbox" name="prog_show_fees" value="1"<% if (values.prog_show_fees !== '0') { %> checked<% } %>> Programme pages: show fee cards</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="panel">
+    <legend>Kit &amp; certificate proof copy (/internship)</legend>
+    <p class="field-hint">Sample certificate &amp; letter images are editable under <a href="/admin/samples">Samples</a>, badges under <a href="/admin/credentials">Badges</a>, and questions under <a href="/admin/faqs">FAQs</a>.</p>
+    <div class="form-grid">
+      <%- include('../partials/field', { f: { id: 's-kh', name: 'kit_heading', label: 'Kit section heading', required: true, max: 120, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-ki', name: 'kit_intro', label: 'Kit section intro', as: 'textarea', rows: 2, required: true, max: 300, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-ph', name: 'proof_heading', label: 'Proof section heading', required: true, max: 120, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-pi', name: 'proof_intro', label: 'Proof section intro', as: 'textarea', rows: 2, required: true, max: 360, wide: true } }) %>
+    </div>
+  </fieldset>
+
+  <fieldset class="panel">
+    <legend>PDF documents (/internship/guide.pdf &amp; /colleges/pack.pdf)</legend>
+    <div class="form-grid">
+      <div class="field field-wide<%= errors.guide_pdf_file || errors.guide_pdf_url ? ' has-error' : '' %>">
+        <label for="s-gf">Track picker &amp; college guide PDF <span class="opt"><%= pdfStatus.guide %></span></label>
+        <p class="field-hint">Upload a replacement PDF (under 4 MB, stored in <%= uploadMode === 'blob' ? 'Vercel Blob' : 'Turso DB' %>) or paste an https:// URL below. <a href="/internship/guide.pdf" target="_blank" rel="noopener">Open current PDF</a></p>
+        <input id="s-gf" type="file" name="guide_pdf_file" accept="application/pdf">
+        <input id="s-gu" type="url" name="guide_pdf_url" value="<%= values.guide_pdf_url || '' %>" maxlength="400" placeholder="Optional https://... override link">
+        <label class="inline-check"><input type="checkbox" name="guide_pdf_reset" value="1"> Reset to built-in PDF</label>
+        <p class="field-error"><%= errors.guide_pdf_file || errors.guide_pdf_url || '' %></p>
+      </div>
+      <div class="field field-wide<%= errors.college_pack_pdf_file || errors.college_pack_pdf_url ? ' has-error' : '' %>">
+        <label for="s-cf">College partnership pack PDF <span class="opt"><%= pdfStatus.collegePack %></span></label>
+        <p class="field-hint">Upload a replacement PDF (under 4 MB, stored in <%= uploadMode === 'blob' ? 'Vercel Blob' : 'Turso DB' %>) or paste an https:// URL below. <a href="/colleges/pack.pdf" target="_blank" rel="noopener">Open current PDF</a></p>
+        <input id="s-cf" type="file" name="college_pack_pdf_file" accept="application/pdf">
+        <input id="s-cu" type="url" name="college_pack_pdf_url" value="<%= values.college_pack_pdf_url || '' %>" maxlength="400" placeholder="Optional https://... override link">
+        <label class="inline-check"><input type="checkbox" name="college_pack_pdf_reset" value="1"> Reset to built-in PDF</label>
+        <p class="field-error"><%= errors.college_pack_pdf_file || errors.college_pack_pdf_url || '' %></p>
+      </div>
+    </div>
+  </fieldset>
+
   <fieldset class="panel">
     <legend>Service lines</legend>
     <div class="form-grid">
@@ -24,22 +117,7 @@
       <% }) %>
     </div>
   </fieldset>
-  <fieldset class="panel">
-    <legend>Internship details</legend>
-    <div class="form-grid">
-      <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Default training length (internal)', required: true, max: 40, hint: 'Not shown on the site. Public programme lengths (3-Month, 6-Month) and prices are set in lib/content.js.' } }) %>
-      <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Default internship length (internal)', required: true, max: 40 } }) %>
-      <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Fee note (internal, not shown on the site)', required: true, max: 80, wide: true } }) %>
-    </div>
-  </fieldset>
-  <fieldset class="panel">
-    <legend>January 2027 batch: seats filled (by schedule)</legend>
-    <p class="field-hint">Each schedule is capped at <%= SEAT_CAP %> seats. Enter the real number of students enrolled in each schedule. At 0 the site shows only "Only <%= SEAT_CAP %> seats per schedule"; from 1 it shows "X of <%= SEAT_CAP %> seats filled" with a bar; at <%= SEAT_CAP %> it shows the schedule as full. The site never changes this number by itself.</p>
-    <div class="form-grid">
-      <%- include('../partials/field', { f: { id: 's-sw', name: 'seats_weekday', label: 'Weekday schedule: seats filled (0 to ' + SEAT_CAP + ')', type: 'number', inputmode: 'numeric', required: true, max: 2 } }) %>
-      <%- include('../partials/field', { f: { id: 's-se', name: 'seats_weekend', label: 'Weekend schedule: seats filled (0 to ' + SEAT_CAP + ')', type: 'number', inputmode: 'numeric', required: true, max: 2 } }) %>
-    </div>
-  </fieldset>
+
   <div class="form-foot"><button class="btn btn-primary" type="submit">Save settings</button></div>
 </form>
 <%- include('bottom') %>

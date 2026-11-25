@@ -84,3 +84,5 @@
 .btn-danger { color: #b3261e; }
 .settings-form input[type="file"] { display: block; margin: 6px 0 10px; }
 .settings-form input[type="url"] { width: 100%; }
+.admin .field input[type="checkbox"] { width: 20px; height: 20px; min-height: 0; padding: 0; flex: none; accent-color: var(--ink); }
+.settings-form .inline-check { display: flex; margin-top: 8px; }

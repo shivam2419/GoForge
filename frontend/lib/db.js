@@ -64,6 +64,13 @@ CREATE TABLE IF NOT EXISTS applications (
 CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+CREATE TABLE IF NOT EXISTS files (
+  key TEXT PRIMARY KEY,
+  filename TEXT NOT NULL,
+  content_type TEXT NOT NULL,
+  data BLOB NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+);
 `;
 
 const toArgs = a => a.map(v => (v === undefined ? null : v));
@@ -89,7 +96,35 @@ const DEFAULT_SETTINGS = {
   intern_fee: 'Contact for fees',
   // Real seats filled per batch, typed in by the admin (Admin > Settings). Never computed or auto-incremented.
   seats_weekday: '0',
-  seats_weekend: '0'
+  seats_weekend: '0',
+  // Batch, schedule, pricing, toggles and PDF overrides (Admin > Settings)
+  batch_label: 'January 2027 batch',
+  batch_starts: '8 January 2027',
+  batch_first_weekend: '9 January 2027',
+  batch_deadline: '5 January 2027',
+  batch_weekday_timing: 'Mon to Fri, 7:30 to 9:00 PM IST',
+  batch_weekend_timing: 'Sat and Sun, 11:00 AM to 2:00 PM IST',
+  seat_cap: '25',
+  schedule_note: 'Both schedules follow the same syllabus and fee; recordings are shared for missed classes; students may switch schedule once if seats are free.',
+  track_3m_label: '3-Month Programme',
+  track_3m_price: '1499',
+  track_6m_label: '6-Month Programme',
+  track_6m_price: '1999',
+  fee_note: 'All-inclusive fee: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, no instalments.',
+  show_home_stats: '1',
+  show_google_badge: '1',
+  google_rating: '4.9',
+  google_badge_text: 'on Google · 18 reviews',
+  prog_show_curriculum: '1',
+  prog_show_tools: '1',
+  prog_show_batches: '1',
+  prog_show_fees: '1',
+  kit_heading: 'Everything you get in one fee.',
+  kit_intro: 'Live classes, study material, mentor-reviewed assignments, real projects, a supervised internship, and your verifiable certificates.',
+  proof_heading: 'Credentials & certificates you can check.',
+  proof_intro: 'Every document carries your name, programme, dates, hours and a certificate ID verifiable at goforgedigital.com/verify, with college-specific formats or NOC support on request.',
+  guide_pdf_url: '',
+  college_pack_pdf_url: ''
 };
 
 async function init() {
@@ -140,4 +175,21 @@ async function saveSettings(values) {
   await loadSettings(true);
 }
 
-module.exports = { db, DATA_DIR, IS_REMOTE, DEFAULT_SETTINGS, ready, loadSettings, getSettings, saveSettings };
+async function getFile(key) {
+  return db.get('SELECT key, filename, content_type, data, updated_at FROM files WHERE key = ?', key);
+}
+async function saveFile(key, filename, contentType, buf) {
+  await db.run(
+    `INSERT INTO files (key, filename, content_type, data, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+     ON CONFLICT(key) DO UPDATE SET filename = excluded.filename, content_type = excluded.content_type, data = excluded.data, updated_at = excluded.updated_at`,
+    key, filename, contentType, new Uint8Array(buf)
+  );
+}
+async function deleteFile(key) {
+  await db.run('DELETE FROM files WHERE key = ?', key);
+}
+async function listFileKeys() {
+  return new Set((await db.all('SELECT key FROM files')).map(r => r.key));
+}
+
+module.exports = { db, DATA_DIR, IS_REMOTE, DEFAULT_SETTINGS, ready, loadSettings, getSettings, saveSettings, getFile, saveFile, deleteFile, listFileKeys };

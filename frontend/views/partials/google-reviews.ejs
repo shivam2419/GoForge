@@ -8,7 +8,7 @@
         <h2 id="<%= hid %>" class="h2" data-reveal><%- locals.kind === 'client' ? 'What clients say <em>on Google.</em>' : 'What students say <em>on Google.</em>' %></h2>
       </div>
       <div class="gr-meta" data-reveal>
-        <%- include('gr-badge') %>
+        <% if (locals.showBadge === true) { %><%- include('gr-badge') %><% } %>
         <a class="gr-all" href="<%= GREVIEWS.GOOGLE.url %>" target="_blank" rel="noopener">Read all reviews on Google <%- include('icon', { name: 'upright' }) %></a>
       </div>
     </div>

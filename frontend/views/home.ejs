@@ -133,7 +133,7 @@
   </div>
 </section>
 
-<%- include('partials/google-reviews', { kind: 'client', alt: true }) %>
+<%- include('partials/google-reviews', { kind: 'client', alt: true, showBadge: s.show_google_badge !== '0' }) %>
 <%- include('partials/people', { instructors: [], testimonials: clientTestimonials, tesEyebrow: 'What clients say' }) %>
 
 <section class="section section-alt" aria-labelledby="why-h">
@@ -183,7 +183,7 @@
     </a>
   </div>
 </section>
-<%- include('partials/google-reviews', { kind: 'student' }) %>
+<%- include('partials/google-reviews', { kind: 'student', showBadge: false }) %>
 
 <%- include('partials/webinar-card') %>
 

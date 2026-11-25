@@ -10,8 +10,9 @@
       <% }) %>
     </dl>
     <% } %>
-    <div class="trust-foot<%= cr.length ? '' : ' no-badges' %>">
-    <% const notes = st.filter(x => x.note); if (notes.length) { %>
+    <% const notes = st.filter(x => x.note); %>
+    <div class="trust-foot<%= cr.length ? '' : ' no-badges' %><%= notes.length ? '' : ' no-notes' %>">
+    <% if (notes.length) { %>
     <p class="trust-notes"><% notes.forEach((x, i) => { %><span><strong><%= x.label %>:</strong> <%= x.note %></span><% }) %></p>
     <% } %>
     <% if (cr.length) { %>

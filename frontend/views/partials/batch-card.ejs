@@ -17,10 +17,10 @@
   </div>
   <% } %>
   <p class="bc3-meta"><%= b.startsLabel %> &middot; Live online, recorded</p>
-  <p class="bc3-note"><%= st.full ? 'This schedule is full. Join the waitlist or choose the other schedule.' : b.note %></p>
+  <p class="bc3-note"><%= st.full ? 'This schedule is full. Choose the other schedule or book a call for the next batch.' : b.note %></p>
   <div class="bc3-ctas">
     <% if (st.full) { %>
-    <a class="btn btn-primary btn-sm" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining a later batch">Join the waitlist</a>
+    <a class="btn btn-primary btn-sm" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining a later batch">Book a free call</a>
     <% } else { %>
     <a class="btn btn-primary btn-sm" href="/internship#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="schedule" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Reserve your seat in the <%= b.name.toLowerCase() %>">Reserve your seat <%- include('icon', { name: 'arrow' }) %></a>
     <a class="bc3-link" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="batch" data-prefill-value="<%= BATCH_PREFS[i] %>" aria-label="Book a free call about the <%= b.name.toLowerCase() %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>

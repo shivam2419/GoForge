@@ -1038,7 +1038,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Stats pages: notes and a compact badge sit side by side under the stat pills. */
 .trust-foot { display: grid; grid-template-columns: 1fr auto; gap: 18px 32px; align-items: center; }
-.trust-foot.no-badges { grid-template-columns: 1fr; }
+.trust-foot.no-badges, .trust-foot.no-notes { grid-template-columns: 1fr; }
 .trust-foot .trust-notes { margin: 0; }
 .badge-row-compact { justify-content: flex-end; }
 .badge-row-compact .badge-card { flex-direction: row; text-align: left; width: auto; padding: 12px 18px 12px 12px; gap: 14px; border-radius: 18px; }
@@ -2043,3 +2043,7 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .gr-video:hover .gr-play { background: #CAA465; color: #141C30; }
 @media (max-width: 900px) { .gr-grid { grid-template-columns: 1fr; gap: 12px; } }
 @media (prefers-reduced-motion: reduce) { .gr-card, .gr-badge { transition: none; } .gr-card:hover, .gr-badge:hover { transform: none; } }
+
+.proof-samples { margin-top: 28px; }
+.free-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
+.schedule-note { margin: 16px 0 0; font-size: 14px; color: var(--ink-2); font-weight: 500; }

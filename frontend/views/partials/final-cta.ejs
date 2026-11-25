@@ -8,7 +8,7 @@
     <ul class="fcta-facts" data-reveal>
       <li><span>From</span><strong><%= inr(offer.fromPrice(CAREER_TRACKS)) %></strong></li>
       <% if (offer.registrationOpen && BATCHES.some(b => SEATS[b.key].show)) { BATCHES.forEach(b => { const st = SEATS[b.key]; %><li class="fcta-seat"><span><%= b.name %> seats</span><strong><%= st.full ? 'Full' : st.left + ' of ' + st.cap + ' left' %></strong></li><% }) } else { %><li><span>Seats</span><strong><%= SEAT_CAP %> per schedule</strong></li><% } %>
-      <li><span><%= offer.registrationOpen ? 'Registration closes' : 'Status' %></span><strong><%= offer.registrationOpen ? REGISTRATION.closesFull : 'Waitlist open' %></strong></li>
+      <li><span><%= offer.registrationOpen ? 'Registration closes' : 'Status' %></span><strong><%= offer.registrationOpen ? REGISTRATION.closesFull : 'Dates on call' %></strong></li>
       <li><span>Format</span><strong>Live online, recorded</strong></li>
     </ul>
     <div class="hero-actions fcta-actions" data-reveal>

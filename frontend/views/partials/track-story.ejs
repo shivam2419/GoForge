@@ -28,7 +28,7 @@
 
 <% const path5 = [
   { t: 'Free counselling call', d: '15 minutes on your goal, your college rule and your deadline.', tag: 'Free' },
-  { t: 'Pick your role and programme', d: 'Choose a role, then the 3-Month or 6-Month Programme, and a weekday or weekend batch.', tag: '3 or 6 months' },
+  { t: 'Pick your role and programme', d: 'Choose a role, then the 3-Month or 6-Month Programme, and a weekday or weekend schedule.', tag: '3 or 6 months' },
   { t: 'Live training with mentors', d: 'Live online classes, notes, weekly assignments and reviews.', tag: 'Live online' },
   { t: 'Real-project internship', d: 'Supervised work on studio or industry-style projects, with check-ins.', tag: 'Supervised' },
   { t: 'Certificate + letter', d: 'A training certificate and a letter with your dates, hours and work.', tag: 'Verifiable ID' }
@@ -58,7 +58,7 @@
         <p class="eyebrow" data-reveal>Choose your programme</p>
         <h2 id="tracks-h" class="h2" data-reveal>Two programmes, <em>one standard.</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Both have live training, mentor reviews, a supervised internship and a verifiable letter. Pick the one that matches your college rule and your time. All fees are all-inclusive and paid once.</p>
+      <p class="section-intro" data-reveal>Both have live training, mentor reviews, a supervised internship and a verifiable letter. Pick the one that matches your college rule and your time. All fees are all-inclusive. Paid once, no instalments.</p>
     </div>
     <ul class="track-grid track-grid-2" data-reveal-group>
       <% CAREER_TRACKS.forEach(t => { const label = careerTrackLabel(t); const tw = Math.round(100 * t.trainingMonths / t.months); %>
@@ -66,7 +66,7 @@
         <article class="track-card" aria-labelledby="track-<%= t.slug %>-h">
           <div class="track-top">
             <p class="track-weeks"><strong><%= t.months %></strong> months</p>
-            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
+            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive fee</small></p>
           </div>
           <h3 id="track-<%= t.slug %>-h" class="track-name"><%= t.name %></h3>
           <p class="track-best"><span>Best for</span> <%= t.bestFor %></p>
