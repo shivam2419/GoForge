@@ -727,15 +727,15 @@ app.get('/internship/guide.pdf', async (req, res) => {
   res.sendFile(GUIDE_FILE);
 });
 
-const SCHOOLS_DESC = 'NEP 2020 aligned skills programmes for Classes 5 to 12 (coding, AI, data science, robotics) and school software: websites, admission enquiry systems, ERP and parent updates. Goforge Digital, Faridabad.';
-const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For Schools: NEP 2020 Skills Programmes & School Software | Goforge Digital' });
-app.get('/schools', (req, res) => res.render('schools', { values: {}, errors: {}, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) }));
+const SCHOOLS_DESC = 'Goforge Digital builds websites and school software for school offices.';
+const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For schools | Goforge Digital', noindex: true, robots: 'noindex, follow' });
+app.get('/schools', (req, res) => res.render('schools', { ...schoolsMeta(req) }));
 app.post('/schools', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'school', 'Thanks. Your enquiry has been sent.');
   const { errors, values } = validateSchool(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
-    return res.status(422).render('schools', { errors, values, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) });
+    return res.status(422).render('schools', { errors, values, ...schoolsMeta(req) });
   }
   const msg = [values.role && 'Role: ' + values.role, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'school')",
@@ -873,7 +873,7 @@ const PAGE_UPDATED = { '/': '2026-11-25', '/internship': '2026-11-25', '/faq': '
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
-    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
+    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat(res.locals.offer.webinar ? [['/webinar', '0.6']] : [])
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);

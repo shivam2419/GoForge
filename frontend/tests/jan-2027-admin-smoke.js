@@ -126,6 +126,18 @@ async function run() {
       const buf = Buffer.from(await r.arrayBuffer());
       assert(buf.slice(0, 5).toString() === '%PDF-', `Expected %PDF- header for ${pdfPath}`);
     }
+    const schoolsHtml = await check200('/schools');
+    assert(schoolsHtml.includes('name="robots" content="noindex, follow"'), '/schools is noindex, follow');
+    assert(!schoolsHtml.includes('noindex, nofollow') || schoolsHtml.includes('noindex, follow'), '/schools robots is follow');
+    assert(!/school-stats|Students trained|Partner schools|NEP 2020|Classes 5|data-form="school"/.test(schoolsHtml), '/schools has no stats, programmes or form');
+    assert(schoolsHtml.includes('Goforge Digital builds websites and school software for school offices.'), '/schools has short description');
+    assert((schoolsHtml.match(/href="\/contact"/g) || []).length >= 1, '/schools has a contact link');
+    for (const [n, h] of [['/', homeHtml], ['/internship', internHtml], ['/program', progHtml], ['/colleges', collegesHtml], ['/about', aboutHtml], ['/faq', faqHtml]]) {
+      assert(!h.includes('href="/schools"'), 'No /schools promo link on ' + n);
+    }
+    const sm = await check200('/sitemap.xml');
+    assert(!sm.includes('/schools</loc>'), '/schools not in sitemap');
+
     console.log('PASS: default public invariants + direct PDF downloads');
 
     // 2. Admin login
