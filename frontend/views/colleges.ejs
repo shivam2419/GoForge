@@ -12,7 +12,7 @@ const benefits = [
   ['Industry-ready students', 'Students build portfolio projects on the tools employers use today.'],
   ['Internship requirements covered', 'Internship letters with dates, role and work completed, in your college’s format on request.'],
   ['Support for accreditation', 'Attendance, assessment and completion records you can use for NAAC/NBA documentation.'],
-  ['Trainers who build software', 'Sessions led by our team of 10+ instructors whose students have completed 150+ projects.'],
+  ['Trainers who build software', 'Sessions led by practitioners who build and ship software every day.'],
   ['Flexible delivery', 'On campus in Faridabad and Delhi NCR, live online anywhere in India, or a mix of both.'],
   ['MSME-registered partner', 'A registered company that signs a clear MoU and reports outcomes after every programme.']
 ];
@@ -39,12 +39,13 @@ const faqs = [
     <p class="lede" data-hero-item>Campus tie-ups, workshops, faculty development, bulk training and internship programmes, delivered by an MSME-registered software company that builds real products every day.</p>
     <div class="hero-actions" data-hero-item>
       <a class="btn btn-primary btn-lg" href="#college-enquiry">Send a partnership enquiry <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-ghost btn-lg" href="/colleges/pack.pdf" download="goforge-college-pack.pdf">Download college pack (PDF) <%- include('partials/icon', { name: 'upright' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/internship">See student programmes</a>
     </div>
   </div>
 </section>
 
-<%- include('partials/trust', { stats, credentials }) %>
+<%- include('partials/trust', { stats: [], credentials }) %>
 
 <section class="section" aria-labelledby="offer-h">
   <div class="wrap">

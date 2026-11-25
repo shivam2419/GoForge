@@ -145,18 +145,18 @@ const TRACKS = TRACK_DETAILS.map(t => t.name).concat([SIMILAR_ROLE]);
 
 // The two programmes a student can choose. Edit here; the /internship cards, the programme
 // pages, the counselling form, the brochure, the FAQ and the Course JSON-LD all read this list.
-// price is the festive launch price in rupees, all-inclusive and paid once (no instalments).
+// price is the all-inclusive fee in rupees, paid once (no instalments).
 // Batch dates, the seat cap and the referral offer live in lib/batch.js.
 const CAREER_TRACKS = [
   {
-    slug: '3-month', name: '3-Month Programme', short: '3 Months', months: 3, iso: 'P3M', price: 1499,
+    slug: '3-month', name: '3-Month Programme', short: '3 Months', months: 3, iso: 'P3M', price: 2999,
     trainingMonths: 1, internshipMonths: 2,
     bestFor: 'A semester or summer internship requirement',
     who: 'Students who need a 4 to 8-week internship letter, or want a first real project alongside college.',
     includes: ['1 month of live online training', '2-month supervised internship on a project', 'Training certificate + internship letter with dates and hours']
   },
   {
-    slug: '6-month', name: '6-Month Programme', short: '6 Months', months: 6, iso: 'P6M', price: 1999,
+    slug: '6-month', name: '6-Month Programme', short: '6 Months', months: 6, iso: 'P6M', price: 4999,
     trainingMonths: 3, internshipMonths: 3,
     bestFor: 'Final years, graduates and 6-month requirements',
     who: 'Final-year students and graduates who want deeper training, more project time and a portfolio to show employers.',
@@ -207,9 +207,8 @@ const WHY_SMALL = [
 ];
 
 // FAQ items with `until` (a timestamp) hide themselves after that moment; see visibleFaq().
-const { KEY_DATES } = require('./batch');
+const { KEY_DATES, BATCH_SUMMARY, SCHEDULE_NOTE } = require('./batch');
 const REGISTRATION_CLOSES = KEY_DATES.registrationCloses;
-const DIWALI_BREAK_ENDS = Date.parse('2026-11-12T00:00:00+05:30');
 const FAQ = [
   {
     id: 'students',
@@ -221,7 +220,7 @@ const FAQ = [
       },
       {
         q: 'How can I register for an internship?',
-        a: 'Fill in the contact form, then submit the application form for the programme you want. Our team reviews your application and schedules an interview call with you to discuss your goals, the programme and the next batch.',
+        a: 'Start with a free 15-minute counselling call to check your goals and college rules, then pick your role, 3-Month or 6-Month Programme, and weekday or weekend schedule on the application form.',
         link: ['/internship#apply', 'Open the application form']
       },
       {
@@ -241,27 +240,23 @@ const FAQ = [
       },
       {
         q: 'How much does the programme cost?',
-        a: 'The festive launch price is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, assignments, projects, the internship, the training certificate and the internship letter. It is paid once, with no instalments, and nothing is charged before you have spoken with us.', top: true
+        a: 'The fee is ₹2,999 for the 3-Month Programme and ₹4,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, mentor-reviewed assignments, projects, the internship, the training certificate and the internship letter. It is a single all-inclusive upfront fee with no instalments, and nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'], top: true
       },
       {
         q: 'What are the batch timings?',
-        a: 'Both batches are live online. Weekday batch: Monday to Friday, 7:30 to 9:00 PM IST, starting Mon 2 Nov 2026; Fridays are doubt and project sessions. Weekend batch: Saturday and Sunday, 11:00 AM to 2:00 PM IST with a 15-minute break; orientation on Sun 1 Nov, classes from Sat 14 Nov 2026. Each batch is capped at 25 students. Registration closes on Wed 28 Oct 2026.', until: REGISTRATION_CLOSES, top: true
-      },
-      {
-        q: 'Is there a Diwali break?',
-        a: 'Yes. The weekday batch starts on Mon 2 Nov, breaks for Diwali from 7 to 11 Nov and resumes on Thu 12 Nov. The weekend batch has its orientation on Sun 1 Nov and starts classes on Sat 14 Nov, after the festival.', until: DIWALI_BREAK_ENDS, top: true
+        a: BATCH_SUMMARY + '. Both schedules are live online. Weekday schedule: Monday to Friday, 7:30 to 9:00 PM IST, starting Fri 8 Jan 2027. Weekend schedule: Saturday and Sunday, 11:00 AM to 2:00 PM IST with a 15-minute break, first class Sat 9 Jan 2027. Each schedule is capped at 25 students. ' + SCHEDULE_NOTE, until: REGISTRATION_CLOSES, top: true
       },
       {
         q: 'What if I miss a class?',
-        a: 'Every live class is recorded, so you can watch it later and bring your questions to the next doubt session. On the weekday batch, Fridays are kept for doubts and project work.', top: true
+        a: 'Every live class is recorded and shared, so you can watch it later and bring your questions to the next session.'
       },
       {
         q: 'What if my college exams fall during the programme?',
-        a: 'Tell us your exam dates when you enrol. You can pause during your exams and catch up from the recordings, or switch once to the January 2027 batch at no cost.', top: true
+        a: 'Tell us your exam dates when you enrol. You can pause during your exams and catch up from the recordings, or switch once to a later batch at no cost.'
       },
       {
         q: 'How big is a batch?',
-        a: 'Each batch is capped at 25 students, so a mentor can review every assignment and project. The weekday batch and the weekend batch each have their own 25 seats.', top: true
+        a: 'Each schedule is capped at 25 students, so a mentor can review every assignment and project. The weekday schedule and weekend schedule each have their own 25 seats.'
       },
       {
         q: 'Do you offer job placement?',
@@ -269,31 +264,19 @@ const FAQ = [
       },
       {
         q: 'Is the programme AICTE approved?',
-        a: 'No. This is private industry training and an internship with Goforge Digital, an MSME (Udyam) registered software company. It is not an AICTE-approved course, and we do not claim it is. Your internship letter is issued by Goforge Digital. Only your college can confirm whether it accepts the internship, so please check its rules before you enrol.', top: true
+        a: 'No. This is private industry training and an internship with Goforge Digital, an MSME (Udyam) registered software company. It is not an AICTE-approved course, and we do not claim it is. Your internship letter is issued by Goforge Digital. Only your college can confirm whether it accepts the internship, so please check its rules before you enrol.'
       },
       {
         q: 'How does the referral offer work?',
-        a: 'Your friend gets ₹200 off, and you get ₹200 by UPI once your friend completes their first week. Your friend should write your name or phone number in the "Referred by" field when booking a call or applying.', top: true
+        a: 'Your friend gets ₹200 off, and you get ₹200 by UPI once your friend completes their first week. Your friend should write your name or phone number in the "Referred by" field when booking a call or applying.'
       },
       {
         q: 'How does the programme work?',
-        a: 'Seven steps, in this order: apply and sit a free demo class, a counselling call, enrolment (you get the study material), live online training, assignments and projects, an internship offer, and finally the training certificate and internship letter. How long training and internship run depends on the programme you choose: 3 or 6 months.'
+        a: 'Five steps, in this order: a free 15-minute counselling call on your goal and college rules; picking your role, 3-Month or 6-Month Programme and weekday or weekend schedule; live online training with reviewed assignments; a supervised real-project internship; and finally your training certificate and verifiable internship letter.', top: true
       },
       {
-        q: 'Will my college accept this?',
-        a: 'Only your college can decide that, so please check its internship rules (the number of weeks or hours, the dates, and whether it needs an NOC or its own format) before you choose a programme. What we can promise is the paperwork: your internship letter names Goforge Digital, an MSME (Udyam) registered company, your role, the exact start and end dates, the hours if your college counts them, and the work you did. It is signed by Rohit Sharma, Founder & Director, with a phone number, an email and a certificate ID that your college can verify. Tell us your requirement and deadline on the counselling call and we will suggest the programme that matches it, or tell you honestly if neither does.',
-      },
-      {
-        q: 'What does the letter include?',
-        a: 'When you complete the internship, your letter names Goforge Digital, your name, your college and course, the role, the exact start and end dates, that the work was online, a summary of the work you delivered, and a signatory: Rohit Sharma, Founder & Director, with a phone number and email for verification. Hours can be included if your college counts credit in hours. You also receive a separate training certificate.'
-      },
-      {
-        q: 'Who teaches the classes?',
-        a: 'Our team of 10+ instructors and mentors, led by Rohit Sharma, Founder & Director. Each programme has instructors who work in that field. You can ask on the counselling call who will teach your batch.'
-      },
-      {
-        q: 'What does the 98% success rate mean?',
-        a: 'It is the share of our students who completed the training and went on to successfully finish their internship project with us.'
+        q: 'Will my college accept this and what does the letter include?',
+        a: 'Only your college can decide whether it accepts an external internship, so please check its rules (weeks or hours, dates, and whether it needs an NOC or its own format) before you choose a programme. When you complete the internship, you receive a separate training certificate and an internship letter naming Goforge Digital (an MSME Udyam registered company), your name, college and course, role, exact start and end dates, online format, hours if your college counts credit in hours, and a summary of the work you delivered — signed by Rohit Sharma, Founder & Director, with a phone number, email and certificate ID for verification. Tell us your requirement and deadline on the counselling call and we will suggest the matching programme, or tell you honestly if neither does.', top: true
       },
       {
         q: 'How is my project chosen?',
@@ -309,7 +292,6 @@ const FAQ = [
     id: 'parents',
     title: 'For parents',
     items: [
-      { q: 'How much does the programme cost?', a: 'The festive launch price is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme, all-inclusive and paid once, with no instalments. Nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'] },
       { q: 'What if my child needs to stop or change plans?', a: 'Our refund policy is written down and available before you enrol. It explains when a refund applies and how long it takes, so you know the terms in advance.', link: ['/refund', 'Read the refund policy'] },
       { q: 'What does the certificate prove?', a: 'The training certificate confirms that your child completed the named programme on the stated dates. The internship letter names the role, dates and the work done. Each document carries a unique ID that colleges and employers can check with us.', link: ['/verify', 'How verification works'] },
       { q: 'Is it safe, and who supervises the students?', a: 'Classes are live and online, taught and reviewed by our instructors and mentors. During the internship each student works on assigned tasks with a named supervisor and regular check-ins. We contact students only through the details they share with us.' },
@@ -355,7 +337,19 @@ const TECH_STACK = ['Python', 'JavaScript', 'HTML & CSS', 'Node.js', 'React', 'S
 
 const visibleFaq = (now = Date.now()) => FAQ.map(g => ({ ...g, items: g.items.filter(i => !i.until || now <= i.until) }));
 
+function careerTracksFrom(settings = {}) {
+  const p1 = parseInt(settings.track_3m_price, 10);
+  const p2 = parseInt(settings.track_6m_price, 10);
+  const l1 = String(settings.track_3m_label || '').trim();
+  const l2 = String(settings.track_6m_label || '').trim();
+  return [
+    { ...CAREER_TRACKS[0], name: l1 || CAREER_TRACKS[0].name, price: Number.isFinite(p1) && p1 > 0 ? p1 : CAREER_TRACKS[0].price },
+    { ...CAREER_TRACKS[1], name: l2 || CAREER_TRACKS[1].name, price: Number.isFinite(p2) && p2 > 0 ? p2 : CAREER_TRACKS[1].price }
+  ];
+}
+const careerTrackOptionsFrom = tracks => tracks.map(careerTrackLabel).concat(['Not sure yet, help me choose']);
+
 module.exports = {
   visibleFaq, TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND,
-  WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel
+  WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, careerTracksFrom, careerTrackOptionsFrom, TRACK_RANGE, careerTrackLabel
 };

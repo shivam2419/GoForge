@@ -1,7 +1,9 @@
 // Real Google reviews of Goforge Digital, quoted verbatim (do not edit wording).
 // Source: Google Business Profile. Rating/count are as shown on Google; update when they change.
-// To add a student video testimonial, set videoUrl (YouTube/Drive/MP4 link) on an entry.
+// Video testimonials are hidden while empty (no placeholder renders). To enable, set SHOW_VIDEO_REVIEWS = true and add a videoUrl.
 // NOTE: no aggregateRating/Review schema here on purpose (Google disallows self-serving review markup).
+const SHOW_VIDEO_REVIEWS = false;
+
 const GOOGLE = {
   rating: '4.9',
   count: 18,
@@ -22,4 +24,4 @@ const CLIENT_REVIEWS = [
 
 const initials = name => name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
 
-module.exports = { GOOGLE, STUDENT_REVIEWS, CLIENT_REVIEWS, initials };
+module.exports = { GOOGLE, STUDENT_REVIEWS, CLIENT_REVIEWS, SHOW_VIDEO_REVIEWS, initials };

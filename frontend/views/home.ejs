@@ -5,7 +5,7 @@
   <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow" data-hero-item>Trusted by real estate firms and schools</p>
+      <p class="eyebrow" data-hero-item>Trusted by real estate firms and growing businesses</p>
       <h1 class="hero-title hero-title-seo">
         <span class="line"><span>Custom Software</span></span>
         <span class="line"><span>Development Company</span></span>
@@ -43,7 +43,7 @@
   </div>
 </section>
 
-<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot">Nov batch &middot; <%- include('partials/seat-mini') %> &middot; registration closes <%= REGISTRATION.closesShort %></span><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
+<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot"><%= BATCH_SUMMARY %></span> <%- include('partials/seat-mini') %><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
@@ -96,7 +96,7 @@
     </div>
     <ul class="ind-grid" data-reveal-group>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'pin' }) %></span><h3>Real estate</h3><p>Websites, lead capture and a simple CRM, so every property enquiry gets a quick follow-up.</p></li>
-      <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'book' }) %></span><h3>Schools</h3><p>A clear website, admission enquiries in one place, and timely updates for parents.</p><a class="ind-link" href="/schools">Explore for schools <%- include('partials/icon', { name: 'arrow' }) %></a></li>
+      <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'book' }) %></span><h3>Schools</h3><p>A clear website, admission enquiries in one place, and timely updates for parents.</p></li>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'cap' }) %></span><h3>Colleges</h3><p>Admission enquiry systems, college ERP and websites that make applying simple.</p></li>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'globe' }) %></span><h3>Universities</h3><p>Student portals, ERP and integrations that bring departments onto one system.</p></li>
       <li class="ind-card" data-reveal><%- include('partials/corners') %><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><h3>Startups</h3><p>MVPs, web apps and launch marketing to get your product in front of customers.</p></li>
@@ -133,7 +133,7 @@
   </div>
 </section>
 
-<%- include('partials/google-reviews', { kind: 'client', alt: true }) %>
+<%- include('partials/google-reviews', { kind: 'client', alt: true, showBadge: s.show_google_badge !== '0' }) %>
 <%- include('partials/people', { instructors: [], testimonials: clientTestimonials, tesEyebrow: 'What clients say' }) %>
 
 <section class="section section-alt" aria-labelledby="why-h">
@@ -178,12 +178,12 @@
     <a class="stu-card" href="/internship" data-reveal>
       <span class="audience-k">For students</span>
       <span id="stu-h" class="stu-t">Training + internship: 3 or 6 months</span>
-      <span class="stu-d">Festive launch price <%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (offer.registrationOpen) { %> <strong class="stu-hot">November batch: weekday from <%= BATCHES[0].startsShort %>, weekend from <%= BATCHES[1].startsShort %>. Only <%= SEAT_CAP %> seats per batch. Registration closes <%= REGISTRATION.closes %>.</strong><% } %></span>
+      <span class="stu-d"><%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (s.price_value_line) { %> <span class="price-value"><%= s.price_value_line %></span><% } %><% if (offer.registrationOpen) { %> <strong class="stu-hot"><%= BATCH_SUMMARY %>. Only <%= SEAT_CAP %> seats per schedule.</strong><% } %></span>
       <span class="stu-go">See batches <%- include('partials/icon', { name: 'arrow' }) %></span>
     </a>
   </div>
 </section>
-<%- include('partials/google-reviews', { kind: 'student' }) %>
+<%- include('partials/google-reviews', { kind: 'student', showBadge: false }) %>
 
 <%- include('partials/webinar-card') %>
 

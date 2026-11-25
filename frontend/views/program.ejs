@@ -24,16 +24,19 @@
   </div>
 </section>
 
-<% const tcProg = toolChips(p.toolsList); %>
-<%- include('partials/page-nav', { label: p.name, items: [['#curriculum', 'Curriculum'], ...(tcProg.chips.length ? [['#tools', 'Tools']] : []), ['#fit', 'Is it for you'], ['#kit', 'What you get'], ['#batch', 'Batch'], ['#fees', 'Fees'], ['#compare', 'Compare'], ['#apply', 'Apply']] }) %>
-
-<%- include('partials/trust', { stats, credentials }) %>
+<% const tcProg = toolChips(p.toolsList);
+   const showCur = s.prog_show_curriculum !== '0' && p.curriculumList.length;
+   const showTools = s.prog_show_tools !== '0' && tcProg.chips.length;
+   const showBatches = s.prog_show_batches !== '0';
+   const showFees = s.prog_show_fees !== '0';
+   const navItems = [...(showCur ? [['#curriculum', 'Curriculum']] : []), ...(showTools ? [['#tools', 'Tools']] : []), ...(showBatches ? [['#batch', 'Batch']] : []), ...(showFees ? [['#fees', 'Fees']] : []), ['#apply', 'Apply']]; %>
+<%- include('partials/page-nav', { label: p.name, items: navItems }) %>
 
 <% if (p.overview) { %>
 <section class="section section-tight"><div class="wrap prose"><p class="prose-lead" data-reveal><%= p.overview %></p></div></section>
 <% } %>
 
-<% if (p.curriculumList.length) { %>
+<% if (showCur) { %>
 <section class="section section-tight" id="curriculum" aria-labelledby="cur-h">
   <div class="wrap">
     <div class="section-head">
@@ -55,7 +58,7 @@
 </section>
 <% } %>
 
-<%- include('partials/tool-grid', { tools: p.toolsList }) %>
+<% if (s.prog_show_tools !== '0') { %><%- include('partials/tool-grid', { tools: p.toolsList }) %><% } %>
 
 <section class="section section-alt">
   <div class="wrap detail-grid">
@@ -87,18 +90,14 @@
   </div>
 </section>
 
-<%- include('partials/fit-check') %>
+<% if (showBatches) { %><%- include('partials/batch-panel', { rows: upcomingRows(p.batchesList) }) %><% } %>
 
-<%- include('partials/kit', { alt: true }) %>
-
-<%- include('partials/batch-panel', { rows: upcomingRows(p.batchesList) }) %>
-
-<section class="section section-alt" id="fees" aria-labelledby="price-h">
+<% if (showFees) { %><section class="section section-alt" id="fees" aria-labelledby="price-h">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>Programme length and price</p>
+      <p class="eyebrow" data-reveal>Programme length and fee</p>
       <h2 id="price-h" class="h2" data-reveal><%= p.name %>: <em>3 or 6 months.</em></h2>
-      <p class="section-intro" data-reveal>Festive launch price, all-inclusive: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, with no instalments.</p>
+      <p class="section-intro" data-reveal><%= s.fee_note %></p>
     </div>
     <ul class="track-grid track-grid-2" data-reveal-group>
       <% CAREER_TRACKS.forEach(t => { const tw = Math.round(100 * t.trainingMonths / t.months); %>
@@ -106,36 +105,20 @@
         <article class="track-card">
           <div class="track-top">
             <p class="track-weeks"><strong><%= t.months %></strong> months</p>
-            <p class="track-price"><span>Festive launch price</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
+            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small><%= s.tax_note ? 'All-inclusive fee · ' + s.tax_note : 'All-inclusive fee' %></small><% if (s.price_value_line) { %><span class="price-value"><%= s.price_value_line %></span><% } %></p>
           </div>
           <h3 class="track-name"><%= p.name %>: <%= t.name %></h3>
           <svg class="track-split" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="<%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship"><rect class="seg-train" x="0" y="0" width="<%= tw - 1 %>" height="10"/><rect class="seg-intern" x="<%= tw + 1 %>" y="0" width="<%= 99 - tw %>" height="10"/></svg>
           <p class="track-legend"><span class="lg lg-train"><%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> training</span><span class="lg lg-intern"><%= t.internshipMonths %> months internship</span></p>
           <p class="track-who"><%= t.who %></p>
-          <a class="btn btn-primary track-cta" href="/counselling?program=<%= encodeURIComponent(p.name) %>&amp;track=<%= t.slug %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="track" data-prefill-value="<%= careerTrackLabel(t) %>">Book a free call <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-primary track-cta" href="#apply">Apply for <%= t.name %> <%- include('partials/icon', { name: 'arrow' }) %></a>
         </article>
       </li>
       <% }) %>
     </ul>
     <%- include('partials/refund-note') %>
   </div>
-</section>
-
-<%- include('partials/compare') %>
-
-<section class="section" aria-labelledby="path-h">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>How it works</p>
-      <h2 id="path-h" class="h2" data-reveal>From training <em>to internship.</em></h2>
-    </div>
-    <%- include('partials/path') %>
-  </div>
-</section>
-
-<%- include('partials/people', { instructors, testimonials: [] }) %>
-
-<%- include('partials/final-cta', { inPageApply: true, program: p.name }) %>
+</section><% } %>
 
 <section class="section" id="apply" aria-labelledby="apply-h">
   <div class="wrap split split-form">

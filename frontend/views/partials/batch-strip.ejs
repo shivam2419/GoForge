@@ -1,13 +1,13 @@
-<%# One-line summary of the next batch, for heroes. Hides the November details after registration closes. %>
+<%# One-line summary of the January 2027 batch, for heroes. Hides batch dates after registration closes. %>
 <% if (offer.registrationOpen) { %>
 <p class="next-batch" data-hero-item>
   <strong><%= BATCH_LABEL %></strong>
-  <span>Weekday from <%= BATCHES[0].startsShort %></span>
-  <span>Weekend from <%= BATCHES[1].startsShort %></span>
+  <span>Starts <%= BATCH_STARTS_FULL %></span>
+  <span>Choose weekday or weekend schedule</span>
   <%- include('seat-mini', { fallbackCls: 'nb-hot' }) %>
-  <span class="nb-hot">Registration closes <%= REGISTRATION.closesShort %></span>
-  <a href="<%= locals.anchor || '/internship#batch' %>">Timings <%- include('icon', { name: 'arrow' }) %></a>
+  <span class="nb-hot">Registration closes <%= REGISTRATION.closesFull %></span>
+  <a href="<%= locals.anchor || '/internship#batch' %>">Schedule &amp; timings <%- include('icon', { name: 'arrow' }) %></a>
 </p>
 <% } else { %>
-<p class="next-batch" data-hero-item><strong>Next batch</strong><span><%= NEXT_AFTER %>: dates on your free counselling call</span><span class="nb-hot">Only <%= SEAT_CAP %> seats per batch</span></p>
+<p class="next-batch" data-hero-item><strong>Next batch</strong><span>Dates shared on your free counselling call</span><span class="nb-hot">Only <%= SEAT_CAP %> seats per schedule</span></p>
 <% } %>

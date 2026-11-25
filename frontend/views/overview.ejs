@@ -13,13 +13,13 @@
     <ul>
       <li>Two programmes, <%= TRACK_RANGE %>:
         <ul>
-          <% CAREER_TRACKS.forEach(t => { %><li><%= t.name %>: <%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship. Festive launch price <%= inr(t.price) %>, all-inclusive. Best for <%= t.bestFor.charAt(0).toLowerCase() + t.bestFor.slice(1) %>.</li><% }) %>
+          <% CAREER_TRACKS.forEach(t => { %><li><%= t.name %>: <%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship. Fee <%= inr(t.price) %>, all-inclusive. Best for <%= t.bestFor.charAt(0).toLowerCase() + t.bestFor.slice(1) %>.</li><% }) %>
         </ul>
       </li>
       <li>Training is live online. The internship is supervised and follows the training.</li>
       <li>Who can apply: BTech, BCA, MCA and similar courses, and recent graduates.</li>
       <li>Projects and internship included.</li>
-      <% if (offer.registrationOpen) { %><li><%= BATCH_LABEL %>: <% BATCHES.forEach((b, i) => { %><%= i ? '; ' : '' %><%= b.name.toLowerCase() %> <%= b.days %>, <%= b.time %>, from <%= b.starts %><% }) %>. Only <%= SEAT_CAP %> seats per batch. Registration closes <%= REGISTRATION.closes %>.</li><% } else { %><li>Next batch: <%= NEXT_AFTER %>. Dates are confirmed on a free counselling call.</li><% } %>
+      <% if (offer.registrationOpen) { %><li><%= BATCH_SUMMARY %>. <% BATCHES.forEach((b, i) => { %><%= i ? '; ' : '' %><%= b.name %> (<%= b.days %>, <%= b.time %>, <%= b.startsLabel.toLowerCase() %>)<% }) %>. Only <%= SEAT_CAP %> seats per schedule.</li><% } else { %><li>Next batch: dates are shared on a free counselling call.</li><% } %>
       <li>Every class is recorded. Students can pause during college exams, or switch once to a later batch at no cost.</li>
     </ul>
     <h2 class="h3">What you receive</h2>

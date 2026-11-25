@@ -9,18 +9,19 @@ const cookieParser = require('cookie-parser');
 const { rateLimit } = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 
-const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings } = require('./lib/db');
-const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel, visibleFaq } = require('./lib/content');
+const { db, DATA_DIR, ready, loadSettings, getSettings, saveSettings, getFile, saveFile, deleteFile, listFileKeys } = require('./lib/db');
+const { TECH_STACK, SERVICES, CONTACT_SERVICES, TRACKS, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, BRAND, WHY_SMALL, FAQ, OFFERS, CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel, careerTracksFrom, careerTrackOptionsFrom, visibleFaq } = require('./lib/content');
 const batch = require('./lib/batch');
 const GREVIEWS = require('./lib/reviews');
 const { toolChips } = require('./lib/tools');
 const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
 const { programmePdf, programmeLines } = require('./lib/pdf');
 const cms = require('./lib/cms');
-const { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode } = require('./lib/uploads');
+const { storeImage, storePdf, UPLOAD_DIR, MAX_BYTES, MAX_PDF_BYTES, uploadMode } = require('./lib/uploads');
 const multer = require('multer');
 const { notifyLead } = require('./lib/lead-alerts');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 4, fields: 40, fieldSize: 32 * 1024 } });
+const pdfUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_PDF_BYTES, files: 4, fields: 80, fieldSize: 64 * 1024 } });
 
 const PORT = Number(process.env.PORT) || 3000;
 // Canonical base URL. Vercel serves the site on www (the apex 308-redirects to it), so an apex SITE_URL is
@@ -158,7 +159,17 @@ function validateSchool(body) {
 }
 const MODES = ['Live online', 'Either is fine'];
 const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'Other'];
-function validateApplication(body, TRACKS) {
+// Snapshot the fee shown at the time of submission so later price changes do not rewrite past quotes.
+// Applications do not collect programme length, so they store both current prices; counselling stores the chosen length's price (or both if unset).
+function quotedFeeFor(trackLabel, tracks = CAREER_TRACKS) {
+  const list = Array.isArray(tracks) && tracks.length ? tracks : CAREER_TRACKS;
+  const both = list.map(t => batch.inr(t.price) + ' (' + t.name + ')').join(' / ');
+  if (!trackLabel) return both;
+  const t = list.find(x => trackLabel === careerTrackLabel(x) || trackLabel === x.name || String(trackLabel).startsWith(x.name + ' '));
+  return t ? batch.inr(t.price) : both;
+}
+
+function validateApplication(body, TRACKS, batchPrefs = batch.BATCH_PREFS) {
   const errors = {}, values = {};
   field(errors, values, body, 'full_name', 'your full name', { required: true, min: 2, max: 80 });
   field(errors, values, body, 'college', 'your college', { required: true, min: 2, max: 120 });
@@ -175,6 +186,8 @@ function validateApplication(body, TRACKS) {
   field(errors, values, body, 'city', 'your city', { max: 80 });
   values.mode = text(body.mode);
   if (values.mode && !MODES.includes(values.mode)) errors.mode = 'Please choose from the list.';
+  values.schedule = text(body.schedule);
+  if (values.schedule && !batchPrefs.includes(values.schedule)) errors.schedule = 'Please choose from the list.';
   values.source = text(body.source);
   if (values.source && !SOURCES.includes(values.source)) errors.source = 'Please choose from the list.';
   field(errors, values, body, 'referred_by', 'who referred you', { max: 80 });
@@ -251,15 +264,20 @@ app.use(async (req, res, next) => {
   const PROGRAMS = await cms.publishedPrograms(s);
   const TRACKS = PROGRAMS.map(p => p.name).concat([SIMILAR_ROLE]);
   const now = batch.nowMs();
-  const offer = batch.offerState(now);
+  const bv = batch.batchView(s, now);
+  const offer = bv.offer;
+  const tracks = careerTracksFrom(s);
+  const trackOptions = careerTrackOptionsFrom(tracks);
+  const cmsFaqs = await cms.faqGroups();
+  const faqList = cmsFaqs.some(g => g.items.length) ? cmsFaqs : visibleFaq(now);
   Object.assign(res.locals, {
-    offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR_PUBLIC, showAnn: offer.webinar && req.path !== '/counselling' && req.path !== '/webinar',
-    BATCH_LABEL: batch.BATCH_LABEL, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
-    COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now), TIMELINE: batch.timeline(now), toolChips,
+    offer, now, inr: batch.inr, SEAT_CAP: bv.SEAT_CAP, SEATS: bv.SEATS, REGISTRATION: bv.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR_PUBLIC, showAnn: offer.webinar && req.path !== '/counselling' && req.path !== '/webinar',
+    BATCH_LABEL: bv.BATCH_LABEL, BATCH_STARTS: bv.BATCH_STARTS, BATCH_STARTS_FULL: bv.BATCH_STARTS_FULL, BATCH_STARTS_SHORT: bv.BATCH_STARTS_SHORT, BATCH_SUMMARY: bv.BATCH_SUMMARY, SCHEDULE_NOTE: bv.SCHEDULE_NOTE, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: bv.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: bv.BATCH_PREFS,
+    COUNSEL_INTERESTS: counselInterests(offer, bv.BATCH_LABEL), upcomingRows: rows => batch.upcomingRows(rows, now), TIMELINE: bv.TIMELINE, toolChips,
     PROGRAMS, TRACKS, MODES, SOURCES, GREVIEWS,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
-    CAREER_TRACKS, CAREER_TRACK_OPTIONS, TRACK_RANGE, careerTrackLabel,
-    WHY_SMALL, FAQ: visibleFaq(now), OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
+    CAREER_TRACKS: tracks, CAREER_TRACK_OPTIONS: trackOptions, TRACK_RANGE, careerTrackLabel,
+    WHY_SMALL, FAQ: faqList, OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC, vercel: VERCEL_ANALYTICS },
     mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
@@ -278,7 +296,7 @@ app.use((req, res, next) => {
   res.locals.csrf = hmac('csrf:' + id);
   if (req.method === 'POST' && req.is('multipart/form-data')) {
     // Body is parsed later by multer on the admin content routes, which then call csrfAfterUpload.
-    if (!/^\/admin\/(programs|instructors|stats|testimonials|credentials|projects|gallery|samples)\/(new|\d+)$/.test(req.path)) return res.status(415).type('text').send('Unsupported form type.');
+    if (!/^\/admin\/((programs|instructors|stats|testimonials|credentials|projects|gallery|samples|faqs)\/(new|\d+)|settings)$/.test(req.path)) return res.status(415).type('text').send('Unsupported form type.');
     return next();
   }
   if (req.method === 'POST') {
@@ -423,7 +441,7 @@ function serviceJsonLd(sp) {
   ]).replace(/</g, '\\u003c');
 }
 
-function courseJsonLd(p, offer) {
+function courseJsonLd(p, offer, tracks = CAREER_TRACKS) {
   return JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Course', name: p.name + ' training + internship', description: p.summary,
     url: SITE_URL + '/internship/programs/' + p.slug, inLanguage: 'en-IN',
@@ -432,16 +450,16 @@ function courseJsonLd(p, offer) {
     teaches: p.coversList.length ? p.coversList : undefined,
     syllabusSections: p.curriculumList.map(m => ({ '@type': 'Syllabus', name: (m.label ? m.label + ': ' : '') + m.title, description: m.topics.join('; ') })),
     // One CourseInstance and one Offer per programme length (ISO 8601 durations: P3M, P6M). Prices in INR, all-inclusive.
-    hasCourseInstance: CAREER_TRACKS.map(t => ({ '@type': 'CourseInstance', name: t.name, courseMode: 'Online', courseWorkload: t.iso,
+    hasCourseInstance: tracks.map(t => ({ '@type': 'CourseInstance', name: t.name, courseMode: 'Online', courseWorkload: t.iso,
       courseSchedule: { '@type': 'Schedule', duration: t.iso, repeatFrequency: 'Daily', repeatCount: 1 },
       location: { '@type': 'VirtualLocation', url: SITE_URL + '/internship/programs/' + p.slug } })),
-    offers: CAREER_TRACKS.map(t => ({ '@type': 'Offer', name: t.name, category: 'Paid', price: String(offer.priceOf(t)), priceCurrency: 'INR',
+    offers: tracks.map(t => ({ '@type': 'Offer', name: t.name, category: 'Paid', price: String(offer.priceOf(t)), priceCurrency: 'INR',
       availability: offer.registrationOpen ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
       url: SITE_URL + '/internship/programs/' + p.slug }))
   }).replace(/</g, '\\u003c');
 }
-function faqJsonLd() {
-  const entities = visibleFaq(batch.nowMs()).flatMap(group => group.items.map(item => ({
+function faqJsonLd(faqList = visibleFaq(batch.nowMs())) {
+  const entities = faqList.flatMap(group => group.items.map(item => ({
     '@type': 'Question',
     name: item.q,
     acceptedAnswer: { '@type': 'Answer', text: item.a }
@@ -466,9 +484,8 @@ const loginLimiter = rateLimit({
 // ---------- public pages ----------
 app.get('/', async (req, res) => {
   const t = await trustData();
-  // Home is business-only: keep project/business metrics, leave student metrics to /internship.
-  // Only business-facing stats (e.g. labels mentioning clients or businesses); student/programme stats stay on /internship.
-  const stats = t.stats.filter(x => /client|business/i.test(x.label) && !/student|intern|project|instructor|success/i.test(x.label));
+  // Show the 100+/150+/98%/10+ stats block on the home page only.
+  const stats = getSettings().show_home_stats === '0' ? [] : t.stats;
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
     'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
 });
@@ -476,7 +493,7 @@ app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
   const { sampleDocs } = await trustData();
   res.render('verify', { certId: id, sampleDocs, ...pageMeta(req, 'Verify a certificate',
-    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: true, seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
+    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: Boolean(id), seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
 });
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
@@ -531,14 +548,26 @@ app.post('/colleges', formLimiter, async (req, res) => {
   respondOk(req, res, 'college', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our partnerships team will contact you within one working day.');
 });
 
+const COLLEGE_PACK_FILE = path.join(__dirname, 'assets', 'goforge-college-pack.pdf');
+app.get('/colleges/pack.pdf', async (req, res) => {
+  const s = getSettings();
+  if (s.college_pack_pdf_url && /^https:\/\//.test(s.college_pack_pdf_url)) return res.redirect(302, s.college_pack_pdf_url);
+  const f = await getFile('college_pack_pdf');
+  res.set('Content-Type', 'application/pdf');
+  res.set('Content-Disposition', 'attachment; filename="goforge-college-pack.pdf"');
+  if (f && f.data) return res.send(Buffer.from(f.data));
+  res.sendFile(COLLEGE_PACK_FILE);
+});
+
 const COUNSEL_TIMES = ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'];
 // What a student wants from the call. The webinar option is only offered until the webinar ends,
 // but older open forms may still send it, so validation accepts every option.
-const COUNSEL_INTEREST_ALL = ['Joining the ' + batch.BATCH_LABEL, batch.WEBINAR.interest, 'Joining the ' + batch.NEXT_AFTER + ' batch', 'Just exploring'];
-function counselInterests(offer) {
-  return COUNSEL_INTEREST_ALL.filter(o => (o !== batch.WEBINAR.interest || offer.webinar) && (o !== 'Joining the ' + batch.BATCH_LABEL || offer.registrationOpen));
+const COUNSEL_INTEREST_ALL = ['Joining the ' + batch.BATCH_LABEL, batch.WEBINAR.interest, 'Joining a later batch', 'Just exploring'];
+function counselInterests(offer, batchLabel = batch.BATCH_LABEL) {
+  const all = ['Joining the ' + batchLabel, batch.WEBINAR.interest, 'Joining a later batch', 'Just exploring'];
+  return all.filter(o => (o !== batch.WEBINAR.interest || offer.webinar) && (o !== 'Joining the ' + batchLabel || offer.registrationOpen));
 }
-function validateCounsel(body, programs) {
+function validateCounsel(body, programs, { batchPrefs = batch.BATCH_PREFS, trackOptions = CAREER_TRACK_OPTIONS, interests = COUNSEL_INTEREST_ALL } = {}) {
   const errors = {}, values = {};
   field(errors, values, body, 'name', 'your name', { required: true, min: 2, max: 80 });
   phoneField(errors, values, body, 'phone', 'phone number');
@@ -549,12 +578,12 @@ function validateCounsel(body, programs) {
   values.time = text(body.time);
   if (values.time && !COUNSEL_TIMES.includes(values.time)) errors.time = 'Please choose from the list.';
   values.track = text(body.track);
-  if (values.track && !CAREER_TRACK_OPTIONS.includes(values.track)) errors.track = 'Please choose from the list.';
+  if (values.track && !trackOptions.includes(values.track)) errors.track = 'Please choose from the list.';
   field(errors, values, body, 'college_req', 'your college requirement', { max: 160 });
   values.interest = text(body.interest);
-  if (values.interest && !COUNSEL_INTEREST_ALL.includes(values.interest)) errors.interest = 'Please choose from the list.';
+  if (values.interest && !interests.includes(values.interest)) errors.interest = 'Please choose from the list.';
   values.batch = text(body.batch);
-  if (values.batch && !batch.BATCH_PREFS.includes(values.batch)) errors.batch = 'Please choose from the list.';
+  if (values.batch && !batchPrefs.includes(values.batch)) errors.batch = 'Please choose from the list.';
   field(errors, values, body, 'referred_by', 'who referred you', { max: 80 });
   return { errors, values };
 }
@@ -563,20 +592,21 @@ const interestFromQuery = (q, res) => q === 'webinar' && res.locals.offer.webina
 app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track), interest: interestFromQuery(req.query.interest, res) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
 app.post('/counselling', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'counselling', 'Thanks. Your request has been sent.');
-  const { errors, values } = validateCounsel(req.body, res.locals.TRACKS);
+  const { errors, values } = validateCounsel(req.body, res.locals.TRACKS, { batchPrefs: res.locals.BATCH_PREFS, trackOptions: res.locals.CAREER_TRACK_OPTIONS, interests: ['Joining the ' + res.locals.BATCH_LABEL, batch.WEBINAR.interest, 'Joining a later batch', 'Just exploring'] });
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     if (req.body.from === 'webinar') return res.status(422).render('webinar', { errors, values, ...pageMeta(req, 'Free webinar', 'Free webinar', { noindex: true }) });
     return res.status(422).render('counselling', { errors, values, ...pageMeta(req, 'Book a free counselling call', 'Counselling', { noindex: true }) });
   }
   const msg = ['Preferred time: ' + (values.time || 'Any time'), values.interest && 'Interested in: ' + values.interest, values.batch && 'Batch: ' + values.batch].filter(Boolean).join('\n');
-  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
-    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null);
+  const quotedFee = quotedFeeFor(values.track, res.locals.CAREER_TRACKS);
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, quoted_fee, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
+    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null, quotedFee);
   // A webinar sign-up only counts as one while the webinar is still ahead (older open forms may send it later).
   const isWebinar = values.interest === batch.WEBINAR.interest && res.locals.offer.webinar;
   notifyLead({ title: isWebinar ? 'free webinar sign-up' : 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
     fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['Programme', values.program || 'Not sure yet'], ['Preferred programme length', values.track || 'Not sure yet'],
-      ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by]] });
+      ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by], ['Quoted fee', quotedFee]] });
   if (isWebinar) return respondOk(req, res, 'counselling',
     'Thanks, ' + values.name.split(' ')[0] + '. Your free seat is saved for ' + batch.WEBINAR.date + ', ' + batch.WEBINAR.time + '. Join with the Google Meet link below.',
     null, { title: "You're registered", webinar: webinarReg() });
@@ -686,23 +716,26 @@ app.post('/guide', formLimiter, async (req, res) => {
     fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Source', 'guide'], ['Downloaded', GUIDE_NAME]] });
   ok('Thanks, ' + values.name.split(' ')[0] + '. Your guide is ready to download.', guideUrl());
 });
-app.get('/internship/guide.pdf', (req, res) => {
-  res.set('X-Robots-Tag', 'noindex');
-  if (!guideTokenOk(req.query.t)) return res.redirect(303, '/internship#guide');
-  res.set('Cache-Control', 'private, no-store');
+app.get('/internship/guide.pdf', async (req, res) => {
+  const s = getSettings();
+  if (s.guide_pdf_url && /^https:\/\//.test(s.guide_pdf_url)) return res.redirect(302, s.guide_pdf_url);
+  const f = await getFile('guide_pdf');
+  res.set('Cache-Control', 'public, max-age=3600');
   res.set('Content-Disposition', 'attachment; filename="goforge-track-picker-guide.pdf"');
-  res.type('application/pdf').sendFile(GUIDE_FILE);
+  res.type('application/pdf');
+  if (f && f.data) return res.send(Buffer.from(f.data));
+  res.sendFile(GUIDE_FILE);
 });
 
-const SCHOOLS_DESC = 'NEP 2020 aligned skills programmes for Classes 5 to 12 (coding, AI, data science, robotics) and school software: websites, admission enquiry systems, ERP and parent updates. Goforge Digital, Faridabad.';
-const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For Schools: NEP 2020 Skills Programmes & School Software | Goforge Digital' });
-app.get('/schools', (req, res) => res.render('schools', { values: {}, errors: {}, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) }));
+const SCHOOLS_DESC = 'Goforge Digital builds websites and school software for school offices.';
+const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For schools | Goforge Digital', noindex: true, robots: 'noindex, follow' });
+app.get('/schools', (req, res) => res.render('schools', { ...schoolsMeta(req) }));
 app.post('/schools', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'school', 'Thanks. Your enquiry has been sent.');
   const { errors, values } = validateSchool(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
-    return res.status(422).render('schools', { errors, values, SCHOOL_INTERESTS, SCHOOL_SIZES, ...schoolsMeta(req) });
+    return res.status(422).render('schools', { errors, values, ...schoolsMeta(req) });
   }
   const msg = [values.role && 'Role: ' + values.role, values.city && 'City: ' + values.city, values.size && 'Students: ' + values.size, values.message].filter(Boolean).join('\n') || '(no message)';
   await db.run("INSERT INTO contacts (name, business, phone, service, message, email, kind) VALUES (?, ?, ?, ?, ?, ?, 'school')",
@@ -725,11 +758,11 @@ async function trustData() {
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. November 2026 batch, 25 seats per batch. Verifiable certificates.';
+const INTERNSHIP_DESC = '3-Month (₹2,999) and 6-Month (₹4,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training for Students in Faridabad & Online | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
+  ...pageMeta(req, 'Training & internship', res.locals.CAREER_TRACKS[0].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[0].price) + ') and ' + res.locals.CAREER_TRACKS[1].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[1].price) + ') training + internship programmes, live online. ' + res.locals.BATCH_SUMMARY + '. Verifiable certificates.', { seoTitle: 'Internship with Training for Students — ' + res.locals.BATCH_LABEL.replace(/^./, c => c.toUpperCase()) + ' | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
 }));
 
 app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
@@ -737,12 +770,13 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
   const program = await cms.programBySlug(req.params.slug, getSettings());
   if (!program) return next();
   const { instructors, credentials, stats } = await trustData();
+  const t0 = res.locals.CAREER_TRACKS[0], t1 = res.locals.CAREER_TRACKS[1];
   res.render('program', {
     program, instructors, credentials, stats, counselProgram: program.name,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' training + internship at Goforge Digital: 3-Month (₹1,499) or 6-Month (₹1,999) programme, live online. Curriculum, tools, projects, batch timings and the November 2026 batch.',
-      { seoTitle: program.name + ' Training with Internship | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
+      program.name + ' training + internship at Goforge Digital: ' + t0.name + ' (' + batch.inr(t0.price) + ') or ' + t1.name + ' (' + batch.inr(t1.price) + '), live online. Curriculum, tools, projects and the ' + res.locals.BATCH_SUMMARY + '.',
+      { seoTitle: program.name + ' Training with Internship — ' + res.locals.BATCH_LABEL + ' | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer, res.locals.CAREER_TRACKS), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
 // Old role pages moved to programme pages.
@@ -755,14 +789,14 @@ app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(re
 app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
   res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
-  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: CAREER_TRACKS, batchLines: res.locals.offer.registrationOpen
-    ? [batch.BATCH_LABEL + ' (registration closes ' + batch.REGISTRATION.closes + '):', ...batch.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ', from ' + b.starts + '.'), 'Only ' + batch.SEAT_CAP + ' seats per batch.']
-    : ['Next batch: ' + batch.NEXT_AFTER + '. Dates on the counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
+  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: res.locals.CAREER_TRACKS, batchLines: res.locals.offer.registrationOpen
+    ? [res.locals.BATCH_SUMMARY + '.', ...res.locals.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ' (' + b.startsLabel + ').'), 'Only ' + res.locals.SEAT_CAP + ' seats per schedule.']
+    : ['Next batch: dates shared on a free counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   'Answers for students and clients: how the internship works, certificates and college recognition, the letter, how projects are chosen, and how client work is priced.',
-  { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd() })));
+  { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd(res.locals.FAQ) })));
 
 app.get('/about', async (req, res) => {
   const { credentials, aboutGallery } = await trustData();
@@ -803,15 +837,16 @@ app.post('/contact', formLimiter, async (req, res) => {
 app.post('/internship', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'internship', 'Thanks. Your application has been sent.');
   if (req.body && req.body.track === 'Web Developer') req.body.track = 'Full Stack Web Development';
-  const { errors, values } = validateApplication(req.body, res.locals.TRACKS);
+  const { errors, values } = validateApplication(req.body, res.locals.TRACKS, res.locals.BATCH_PREFS);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
   const groupUrl = await cms.whatsappGroupFor(values.track);
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, referred_by, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0));
+  const quotedFee = quotedFeeFor(null, res.locals.CAREER_TRACKS);
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, schedule, source, referred_by, consent, group_link_shown, quoted_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.schedule || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0, quotedFee));
   notifyLead({ title: 'internship application', name: values.full_name, adminUrl: SITE_URL + '/admin/applications', replyTo: values.email,
-    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Note', values.note]] });
+    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Schedule', values.schedule], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Quoted fee', quotedFee], ['Note', values.note]] });
   // The group link is only ever sent in this response, after the application is saved.
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
@@ -831,18 +866,18 @@ app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow
 // Priorities put the business pages first. lastmod is the date the page content last changed
 // (SITE_UPDATED, bump when copy changes) rather than the request date.
 const SITE_UPDATED = '2026-10-18';
-// The November 2026 batch, prices and seat cap changed the training pages, home and FAQ on 2026-10-19.
-// Every page changed on 2026-10-18 (address PIN in the footer, new work section), so all share SITE_UPDATED for now.
-// Add a path here when only that page changes later, e.g. { '/faq': '2026-11-02' }.
-const PAGE_UPDATED = { '/': '2026-10-19', '/internship': '2026-10-19', '/faq': '2026-10-19', '/colleges': '2026-10-19', '/about': '2026-10-19', '/internship/overview': '2026-10-19' };
+// The January 2027 batch update changed training pages, home, FAQ, colleges and verify on 2026-11-25.
+// Every page changed on 2026-10-18 (address PIN in the footer, new work section), so unchanged pages share SITE_UPDATED.
+// Add a path here when only that page changes later, e.g. { '/faq': '2026-12-01' }.
+const PAGE_UPDATED = { '/': '2026-11-25', '/internship': '2026-11-25', '/faq': '2026-11-25', '/colleges': '2026-11-25', '/about': '2026-10-19', '/internship/overview': '2026-11-25', '/verify': '2026-11-25' };
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
-    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
+    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat(res.locals.offer.webinar ? [['/webinar', '0.6']] : [])
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-10-19' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-11-25' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });
 app.get('/js/analytics.js', (req, res) => {
   if (!GA_ID) return res.status(404).type('text').send('');
@@ -951,7 +986,7 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
     const counts = Object.fromEntries(await Promise.all(STATUSES.map(async st => [st, (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?${cfg.base ? ' AND ' + cfg.base : ''}`, st)).n])));
     res.render('admin/inbox', {
       ...pageMeta(req, cfg.title, 'Admin'), slug, cfg, rows, q, status, page, total,
-      pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved ? 'Status updated.' : null
+      pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved === 'fee' ? 'Quoted fee saved.' : (req.query.saved ? 'Status updated.' : null)
     });
   });
   app.post(`/admin/${slug}/:id/status`, requireAdmin, async (req, res) => {
@@ -968,30 +1003,141 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
   });
 }
 
-app.get('/admin/settings', requireAdmin, (req, res) => {
-  res.render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: getSettings(), errors: {}, flash: req.query.saved ? 'Saved. The public site now shows these details.' : null });
+for (const [slug, cfg] of Object.entries(INBOXES)) {
+  if (cfg.table !== 'applications' && slug !== 'counselling') continue;
+  app.post(`/admin/${slug}/:id/quoted-fee`, requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).type('text').send('Invalid item.');
+    const quoted = text(req.body.quoted_fee).slice(0, 80);
+    if (quoted && quoted.length > 80) return res.status(400).type('text').send('Quoted fee is too long.');
+    const where = cfg.base ? ' AND ' + cfg.base : '';
+    await db.run(`UPDATE ${cfg.table} SET quoted_fee = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?${where}`, quoted || null, id);
+    const back = new URLSearchParams();
+    if (req.body.q) back.set('q', text(req.body.q).slice(0, 100));
+    if (STATUSES.includes(req.body.f)) back.set('status', req.body.f);
+    if (parseInt(req.body.page, 10) > 1) back.set('page', String(parseInt(req.body.page, 10)));
+    back.set('saved', 'fee');
+    res.redirect(303, `/admin/${slug}?${back}#item-${id}`);
+  });
+}
+
+const pdfUploadFields = pdfUpload.fields([{ name: 'guide_pdf_file', maxCount: 1 }, { name: 'college_pack_pdf_file', maxCount: 1 }]);
+function maybeUploadSettings(req, res, next) {
+  if (!req.is('multipart/form-data')) return next();
+  return pdfUploadFields(req, res, err => {
+    if (err) { req.uploadError = err.code === 'LIMIT_FILE_SIZE' ? 'Please upload a PDF under 4 MB.' : 'The PDF upload could not be read.'; req.body = req.body || {}; }
+    csrfAfterUpload(req, res, next);
+  });
+}
+async function settingsPdfStatus(s) {
+  const keys = await listFileKeys();
+  const label = (url, dbKey) => (url && /^https:\/\//.test(url)) ? 'Custom URL' : (keys.has(dbKey) ? 'Uploaded PDF (DB)' : 'Built-in PDF');
+  return { guide: label(s.guide_pdf_url, 'guide_pdf'), collegePack: label(s.college_pack_pdf_url, 'college_pack_pdf') };
+}
+app.get('/admin/settings', requireAdmin, async (req, res) => {
+  const cur = getSettings();
+  res.render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: cur, errors: {}, pdfStatus: await settingsPdfStatus(cur), uploadMode, flash: req.query.saved ? 'Saved. The public site now shows these details.' : null });
 });
-app.post('/admin/settings', requireAdmin, async (req, res) => {
+app.post('/admin/settings', requireAdmin, maybeUploadSettings, async (req, res) => {
+  const cur = getSettings();
+  const body = req.body || {};
   const errors = {}, values = {};
-  phoneField(errors, values, req.body, 'phone1', 'first phone number');
-  phoneField(errors, values, req.body, 'phone2', 'second phone number');
-  values.email = text(req.body.email);
+  const isV2 = Boolean(body._settings_v2);
+  phoneField(errors, values, body, 'phone1', 'first phone number');
+  phoneField(errors, values, body, 'phone2', 'second phone number');
+  values.email = text(body.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email) || values.email.length > 120) errors.email = 'Please enter a valid email address.';
-  values.linkedin_company = text(req.body.linkedin_company);
+  values.linkedin_company = text(body.linkedin_company);
   if (values.linkedin_company && (!/^https:\/\/(www\.)?linkedin\.com\/company\/[A-Za-z0-9_\-%.]+\/?$/.test(values.linkedin_company) || values.linkedin_company.length > 200)) errors.linkedin_company = 'Please enter a LinkedIn company page URL, for example https://www.linkedin.com/company/143989208';
-  for (const k of ['blurb1', 'blurb2', 'blurb3', 'blurb4']) field(errors, values, req.body, k, 'the service line', { required: true, min: 10, max: 220 });
-  field(errors, values, req.body, 'intern_training', 'the training length', { required: true, max: 40 });
-  field(errors, values, req.body, 'intern_work', 'the internship length', { required: true, max: 40 });
-  field(errors, values, req.body, 'intern_fee', 'the fee line', { required: true, max: 80 });
+  for (const k of ['blurb1', 'blurb2', 'blurb3', 'blurb4']) field(errors, values, body, k, 'the service line', { required: true, min: 10, max: 220 });
+  field(errors, values, body, 'intern_training', 'the training length', { required: true, max: 40 });
+  field(errors, values, body, 'intern_work', 'the internship length', { required: true, max: 40 });
+  field(errors, values, body, 'intern_fee', 'the fee line', { required: true, max: 80 });
+
+  // Seat cap (optional on legacy posts)
+  let cap = Math.max(1, parseInt(cur.seat_cap, 10) || batch.SEAT_CAP);
+  if (body.seat_cap !== undefined) {
+    const sc = text(body.seat_cap);
+    if (!/^\d{1,3}$/.test(sc) || Number(sc) < 1 || Number(sc) > 999) errors.seat_cap = 'Enter a whole number from 1 to 999.';
+    else { cap = Number(sc); values.seat_cap = String(cap); }
+  }
   for (const k of ['seats_weekday', 'seats_weekend']) {
-    const v = text(req.body[k]) || '0';
+    const v = text(body[k]) || '0';
     values[k] = v;
-    if (!/^\d{1,2}$/.test(v) || Number(v) > batch.SEAT_CAP) errors[k] = 'Enter a whole number from 0 to ' + batch.SEAT_CAP + '.';
+    if (!/^\d{1,3}$/.test(v) || Number(v) > cap) errors[k] = 'Enter a whole number from 0 to ' + cap + '.';
     else values[k] = String(Number(v));
   }
-  if (Object.keys(errors).length) {
-    return res.status(422).render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: { ...getSettings(), ...values }, errors, flash: null });
+
+  // New text fields (preserve current value when omitted by legacy API/smoke POSTs)
+  const textDefs = [
+    ['batch_label', 'batch name', 60, true],
+    ['batch_starts', 'batch start date', 60, true],
+    ['batch_first_weekend', 'first weekend class date', 60, true],
+    ['batch_deadline', 'registration deadline', 60, true],
+    ['batch_weekday_timing', 'weekday timings', 100, true],
+    ['batch_weekend_timing', 'weekend timings', 100, true],
+    ['schedule_note', 'schedule note', 300, true],
+    ['track_3m_label', '3-month label', 60, true],
+    ['track_6m_label', '6-month label', 60, true],
+    ['fee_note', 'fee note', 300, true],
+    ['price_value_line', 'price value line', 160, false],
+    ['tax_note', 'tax note', 80, false],
+    ['google_rating', 'Google rating', 10, true],
+    ['google_badge_text', 'Google badge text', 80, true],
+    ['kit_heading', 'kit heading', 120, true],
+    ['kit_intro', 'kit intro', 300, true],
+    ['proof_heading', 'proof heading', 120, true],
+    ['proof_intro', 'proof intro', 360, true]
+  ];
+  for (const [k, label, max, reqd] of textDefs) {
+    if (body[k] !== undefined) field(errors, values, body, k, label, { required: reqd, max });
   }
+  for (const pk of ['track_3m_price', 'track_6m_price']) {
+    if (body[pk] !== undefined) {
+      const pv = text(body[pk]);
+      values[pk] = pv;
+      if (!/^\d{1,6}$/.test(pv) || Number(pv) < 1) errors[pk] = 'Enter a positive whole rupee amount.';
+      else values[pk] = String(Number(pv));
+    }
+  }
+  const boolKeys = ['show_home_stats', 'show_google_badge', 'prog_show_curriculum', 'prog_show_tools', 'prog_show_batches', 'prog_show_fees'];
+  if (isV2) {
+    for (const bk of boolKeys) values[bk] = body[bk] ? '1' : '0';
+  }
+
+  // Optional PDF URL overrides
+  for (const uk of ['guide_pdf_url', 'college_pack_pdf_url']) {
+    if (body[uk] !== undefined) {
+      const uv = text(body[uk]);
+      values[uk] = uv;
+      if (uv && (!/^https:\/\//.test(uv) || uv.length > 400)) errors[uk] = 'Paste a full https:// PDF link, or leave empty.';
+    }
+  }
+  // Optional PDF uploads (Vercel Blob if configured, else Turso files table)
+  const pdfJobs = [];
+  for (const [fieldKey, dbKey, urlKey, defName] of [
+    ['guide_pdf_file', 'guide_pdf', 'guide_pdf_url', 'goforge-track-picker-guide.pdf'],
+    ['college_pack_pdf_file', 'college_pack_pdf', 'college_pack_pdf_url', 'goforge-college-pack.pdf']
+  ]) {
+    const resetKey = dbKey + '_reset';
+    if (body[resetKey]) {
+      values[urlKey] = '';
+      pdfJobs.push(() => deleteFile(dbKey));
+    }
+    const f = req.files && req.files[fieldKey] && req.files[fieldKey][0];
+    if (req.uploadError && !f) errors[fieldKey] = req.uploadError;
+    if (f) {
+      const out = await storePdf(f, dbKey, defName);
+      if (out.error) errors[fieldKey] = out.error;
+      else if (out.url) { values[urlKey] = out.url; pdfJobs.push(() => deleteFile(dbKey)); }
+      else if (out.buffer) { values[urlKey] = ''; pdfJobs.push(() => saveFile(dbKey, defName, 'application/pdf', out.buffer)); }
+    }
+  }
+
+  if (Object.keys(errors).length) {
+    return res.status(422).render('admin/settings', { ...pageMeta(req, 'Site settings', 'Admin'), values: { ...cur, ...values }, errors, pdfStatus: await settingsPdfStatus(cur), uploadMode, flash: null });
+  }
+  for (const job of pdfJobs) await job();
   await saveSettings(values);
   res.redirect(303, '/admin/settings?saved=1');
 });

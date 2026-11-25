@@ -2,7 +2,7 @@
 // Admin-managed content: programmes, instructors, stats, testimonials, badges.
 // Each entity is described once here; the schema, admin forms and validation are built from it.
 const { db } = require('./db');
-const { TRACK_DETAILS } = require('./content');
+const { TRACK_DETAILS, FAQ } = require('./content');
 
 const ICONS = ['code', 'spark', 'chart', 'browser', 'megaphone', 'database', 'gear', 'globe', 'user', 'tag', 'eye', 'key', 'check', 'briefcase', 'flask'];
 
@@ -27,7 +27,7 @@ const ENTITIES = {
       { name: 'tools', label: 'Tools', type: 'lines', max: 1000, hint: 'One per line.' },
       { name: 'project', label: 'Typical project', type: 'textarea', rows: 3, max: 800 },
       { name: 'suits', label: 'Who it suits', type: 'textarea', rows: 2, max: 500 },
-      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'Optional. One per line: Start date | Timing | Seats. For example: 2 Nov 2026 | Mon–Fri, 7:30–9 PM IST | 25 seats. Leave empty to show the November 2026 weekday and weekend batches. Rows hide after their start date. Write only a real seat cap; leave Seats empty to show the standard 25-seat cap.' },
+      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'Optional. One per line: Start date | Timing | Seats. For example: 8 Jan 2027 | Mon–Fri, 7:30–9 PM IST | 25 seats. Leave empty to show the January 2027 batch schedules. Rows hide after their start date. Write only a real seat cap; leave Seats empty to show the standard 25-seat cap.' },
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
     ]
@@ -124,6 +124,20 @@ const ENTITIES = {
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
     ]
+  },
+  faqs: {
+    table: 'faqs', title: 'FAQs', singular: 'FAQ', nameField: 'question',
+    intro: 'Questions shown on /faq, and featured questions (up to 6) shown on /internship.',
+    fields: [
+      { name: 'group_id', label: 'Section', type: 'select', options: ['students', 'parents', 'clients'], required: true },
+      { name: 'question', label: 'Question', type: 'text', required: true, max: 200 },
+      { name: 'answer', label: 'Answer', type: 'textarea', rows: 4, required: true, max: 2000 },
+      { name: 'link_url', label: 'Optional link URL', type: 'text', max: 200, hint: 'Internal path such as /verify or /counselling' },
+      { name: 'link_label', label: 'Optional link label', type: 'text', max: 80, hint: 'For example: Verify a certificate' },
+      { name: 'show_on_internship', label: 'Feature on /internship short FAQ (up to 6)', type: 'bool' },
+      { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
+      { name: 'published', label: 'Show on the site', type: 'bool' }
+    ]
   }
 };
 
@@ -154,6 +168,7 @@ async function seed() {
   const progCount = (await db.get('SELECT COUNT(*) n FROM programs')).n;
   const statCount = (await db.get('SELECT COUNT(*) n FROM stats')).n;
   const credCount = (await db.get('SELECT COUNT(*) n FROM credentials')).n;
+  const faqCount = (await db.get('SELECT COUNT(*) n FROM faqs')).n;
   const stmts = [];
   if (!progCount) {
     TRACK_DETAILS.forEach((t, i) => stmts.push([
@@ -169,6 +184,18 @@ async function seed() {
       [98, '%', 'Success rate', 'Share of students who finished training and went on to complete their internship project.'],
       [10, '+', 'Instructors', 'Trainers and mentors who teach or review student work.']
     ].forEach(([v, s, l, n], i) => stmts.push(['INSERT INTO stats (value, suffix, label, note, sort_order, published) VALUES (?, ?, ?, ?, ?, 1)', v, s, l, n, (i + 1) * 10]));
+  }
+  if (!faqCount) {
+    let order = 10;
+    for (const g of FAQ) {
+      for (const item of g.items) {
+        stmts.push([
+          'INSERT INTO faqs (group_id, question, answer, link_url, link_label, show_on_internship, sort_order, published) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
+          g.id, item.q, item.a, item.link ? item.link[0] : null, item.link ? item.link[1] : null, item.top ? 1 : 0, order
+        ]);
+        order += 10;
+      }
+    }
   }
   if (!credCount) {
     stmts.push(['INSERT INTO credentials (title, issuer, sort_order, published) VALUES (?, ?, 10, 1)', 'MSME Registered', 'Ministry of MSME, Government of India (Udyam)']);
@@ -186,6 +213,10 @@ async function seed() {
   // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
   stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
   stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);
+  // Fix Ishant Hingorani's title typo and point hotlinked mentor photos to local static assets.
+  stmts.push(["UPDATE instructors SET title = REPLACE(title, 'Scenior Data Analyst', 'Senior Data Analyst'), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE title LIKE '%Scenior Data Analyst%'"]);
+  stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/shivam-sharma.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%shivam sharma%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
+  stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/ishant-hingorani.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%ishant hingorani%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
   if (stmts.length) await db.batch(stmts);
   await seedProgramsV2();
 }
@@ -226,7 +257,7 @@ async function seedProgramsV2() {
 }
 
 // Applications table gained columns; add them to existing databases.
-const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT' };
+const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', schedule: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT', quoted_fee: 'TEXT' };
 async function migrate() {
   await db.batch(schemaSql().map(sql => [sql]));
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
@@ -240,6 +271,8 @@ async function migrate() {
   if (!contactCols.has('college_req')) await db.run('ALTER TABLE contacts ADD COLUMN college_req TEXT');
   // Referral: who referred this student (free text, name or phone). Nullable.
   if (!contactCols.has('referred_by')) await db.run('ALTER TABLE contacts ADD COLUMN referred_by TEXT');
+  // Snapshot of the fee shown at submission (nullable so existing January enquiries stay untouched).
+  if (!contactCols.has('quoted_fee')) await db.run('ALTER TABLE contacts ADD COLUMN quoted_fee TEXT');
   const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
   if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
   // Testimonials: optional video link (student video reviews). Nullable, so old rows are untouched.
@@ -328,6 +361,7 @@ function validate(entity, body, clean) {
     if (v.length > max) errors[f.name] = `Please keep this under ${max} characters.`;
     if (f.type === 'select' && !f.options.includes(v)) errors[f.name] = 'Please choose from the list.';
     if ((f.type === 'url' || f.type === 'image') && !isSafeUrl(v, { allowRelative: f.type === 'image' })) errors[f.name] = 'Please enter a full link starting with https://';
+    if (entity === 'faqs' && f.name === 'link_url' && !isSafeUrl(v, { allowRelative: true })) errors[f.name] = 'Please enter a path starting with / or a full https:// link.';
   }
   if (entity === 'programs' && !values.slug) errors.slug = 'Please enter a slug.';
   return { errors, values };
@@ -345,4 +379,23 @@ async function save(entity, id, values) {
 }
 const remove = (entity, id) => db.run(`DELETE FROM ${ENTITIES[entity].table} WHERE id = ?`, id);
 
-module.exports = { WA_GROUP_RE, whatsappGroups, whatsappGroupFor, saveWhatsappGroups, ENTITIES, migrate, listAll, listPublished, getById, publishedPrograms, programBySlug, validate, save, remove, slugify };
+const FAQ_GROUPS = [
+  { id: 'students', title: 'For students' },
+  { id: 'parents', title: 'For parents' },
+  { id: 'clients', title: 'For clients' }
+];
+async function faqGroups() {
+  const rows = await listPublished('faqs');
+  return FAQ_GROUPS.map(g => ({
+    id: g.id,
+    title: g.title,
+    items: rows.filter(r => r.group_id === g.id).map(r => ({
+      q: r.question,
+      a: r.answer,
+      link: (r.link_url && r.link_label) ? [r.link_url, r.link_label] : undefined,
+      top: Boolean(r.show_on_internship)
+    }))
+  }));
+}
+
+module.exports = { WA_GROUP_RE, whatsappGroups, whatsappGroupFor, saveWhatsappGroups, ENTITIES, migrate, listAll, listPublished, getById, publishedPrograms, programBySlug, faqGroups, validate, save, remove, slugify };

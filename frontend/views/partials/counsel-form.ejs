@@ -11,9 +11,9 @@
     <%- include('field', { f: { id: px + '-interest', name: 'interest', label: 'I am interested in', as: 'select', options: COUNSEL_INTERESTS, placeholder: 'Choose one', wide: true } }) %>
     <%- include('field', { f: { id: px + '-program', name: 'program', label: 'Programme', as: 'select', options: progs, placeholder: 'Not sure yet', wide: true } }) %>
     <%- include('field', { f: { id: px + '-track', name: 'track', label: 'Programme length', as: 'select', options: CAREER_TRACK_OPTIONS, placeholder: 'Not sure yet', wide: true } }) %>
-    <%- include('field', { f: { id: px + '-batch', name: 'batch', label: 'Preferred batch', as: 'select', options: BATCH_PREFS, placeholder: 'Not sure yet', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-batch', name: 'batch', label: 'Schedule preference', as: 'select', options: BATCH_PREFS, placeholder: 'Not sure yet', wide: true, hint: BATCH_SUMMARY } }) %>
     <%- include('field', { f: { id: px + '-creq', name: 'college_req', label: 'College requirement (weeks or hours, deadline)', max: 160, wide: true, hint: 'For example: 8 weeks or 240 hours, letter needed by 15 July.' } }) %>
-    <%- include('field', { f: { id: px + '-ref', name: 'referred_by', label: 'Referred by (name or phone)', max: 80, wide: true, hint: 'If a Goforge Digital student referred you. ' + REFERRAL.terms } }) %>
+    <% if (path !== '/verify' && path !== '/colleges') { %><%- include('field', { f: { id: px + '-ref', name: 'referred_by', label: 'Referred by (name or phone)', max: 80, wide: true, hint: 'If a Goforge Digital student referred you. ' + REFERRAL.terms } }) %><% } %>
   </div>
   <div class="form-foot">
     <button class="btn btn-primary" type="submit" data-submit>Book my call <%- include('icon', { name: 'arrow' }) %></button>

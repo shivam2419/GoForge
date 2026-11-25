@@ -36,4 +36,17 @@ async function storeImage(file, folder) {
   return { url: '/uploads/' + name };
 }
 
-module.exports = { storeImage, UPLOAD_DIR, MAX_BYTES, uploadMode: mode };
+const MAX_PDF_BYTES = 4 * 1024 * 1024;
+async function storePdf(file, key, filename) {
+  if (!file || !file.buffer || !file.size) return {};
+  if (file.size > MAX_PDF_BYTES) return { error: 'Please upload a PDF under 4 MB.' };
+  if (file.buffer.slice(0, 5).toString('ascii') !== '%PDF-') return { error: 'Please upload a valid PDF file.' };
+  if (mode === 'blob') {
+    const { put } = require('@vercel/blob');
+    const out = await put(`goforge/${key}-${Date.now()}.pdf`, file.buffer, { access: 'public', contentType: 'application/pdf', addRandomSuffix: false });
+    return { url: out.url };
+  }
+  return { buffer: file.buffer, filename };
+}
+
+module.exports = { storeImage, storePdf, UPLOAD_DIR, MAX_BYTES, MAX_PDF_BYTES, uploadMode: mode };

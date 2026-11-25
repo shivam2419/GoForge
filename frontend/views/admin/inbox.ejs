@@ -59,6 +59,7 @@
         <% if (r.group_link_shown) { %><div><dt>WhatsApp group</dt><dd>Link shown</dd></div><% } %>
         <% if (r.email) { %><div><dt>Email</dt><dd><a href="mailto:<%= r.email %>"><%= r.email %></a></dd></div><% } %>
         <% if (r.city) { %><div><dt>City</dt><dd><%= r.city %></dd></div><% } %>
+        <% if (r.schedule) { %><div><dt>Schedule</dt><dd><%= r.schedule %></dd></div><% } %>
         <% if (r.mode) { %><div><dt>Mode</dt><dd><%= r.mode %></dd></div><% } %>
         <% if (r.source) { %><div><dt>Heard via</dt><dd><%= r.source %></dd></div><% } %>
         <% if (r.referred_by) { %><div><dt>Referred by</dt><dd><%= r.referred_by %></dd></div><% } %>
@@ -68,6 +69,17 @@
     </dl>
     <% const body = cfg.table === 'contacts' ? r.message : r.note; %>
     <% if (body) { %><p class="item-body"><%= body %></p><% } %>
+    <% if (cfg.table === 'applications' || slug === 'counselling') { %>
+    <form class="quoted-fee-form status-form" method="post" action="/admin/<%= slug %>/<%= r.id %>/quoted-fee">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input type="hidden" name="q" value="<%= q %>">
+      <input type="hidden" name="f" value="<%= status %>">
+      <input type="hidden" name="page" value="<%= page %>">
+      <label for="qf-<%= r.id %>">Quoted fee</label>
+      <input id="qf-<%= r.id %>" name="quoted_fee" type="text" value="<%= r.quoted_fee || '' %>" maxlength="80" placeholder="Not recorded — e.g. ₹1,499" aria-label="Quoted fee for <%= cfg.table === 'contacts' ? r.name : r.full_name %>">
+      <button class="btn btn-ghost btn-sm" type="submit">Save fee</button>
+    </form>
+    <% } %>
     <form class="status-form" method="post" action="/admin/<%= slug %>/<%= r.id %>/status">
       <input type="hidden" name="_csrf" value="<%= csrf %>">
       <input type="hidden" name="q" value="<%= q %>">

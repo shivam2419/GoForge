@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title><%= pageTitle %></title>
 <meta name="description" content="<%= pageDesc %>">
-<% if (locals.noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><link rel="canonical" href="<%= siteUrl + canonicalPath %>"><% } %>
+<% if (locals.robots) { %><meta name="robots" content="<%= robots %>"><% } else if (locals.noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><link rel="canonical" href="<%= siteUrl + canonicalPath %>"><% } %>
 <meta name="theme-color" content="#F0ECE3">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:type" content="website">

@@ -14,14 +14,14 @@
     <%- include('partials/batch-strip', { anchor: '#batch' }) %>
     <dl class="facts" data-reveal-group>
       <div data-reveal><dt>Length</dt><dd>3 or 6 months</dd></div>
-      <div data-reveal><dt>Festive launch price</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
+      <div data-reveal><dt>Programme fee</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
       <div data-reveal><dt>Format</dt><dd>Live online training, then a supervised internship</dd></div>
       <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
     </dl>
   </div>
 </section>
 
-<%- include('partials/trust', { stats, credentials }) %>
+<%- include('partials/trust', { stats: [], credentials }) %>
 <%- include('partials/batch-panel', { alt: true }) %>
 <%- include('partials/track-story') %>
 <% const tools = TECH_STACK; %>
@@ -33,20 +33,22 @@
 </div>
 <% } %>
 
-<section class="section" aria-labelledby="inc-h">
+<section class="section" id="kit" aria-labelledby="kit-h">
   <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>What is included</p>
-      <h2 id="inc-h" class="h2" data-reveal>Everything you need <em>to finish.</em></h2>
-      <p class="section-intro included-note" data-reveal><strong>Projects and internship included.</strong> Your classes, study material, assignments, projects and the internship all come in one programme.</p>
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>What is included</p>
+        <h2 id="kit-h" class="h2" data-reveal><%= s.kit_heading || "Everything you get in one fee." %></h2>
+      </div>
+      <p class="section-intro" data-reveal><%= s.kit_intro %></p>
     </div>
-    <ul class="values values-3" data-zoom data-reveal-group>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>Study material</h3><p>Notes, slides and reading for every module, yours to keep.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'browser' }) %></span><h3>Live classes</h3><p>Taught live online by an instructor, with time for questions.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><h3>Assignments</h3><p>A task after each module, checked by an instructor, so you practise instead of only watching.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'code' }) %></span><h3>Projects</h3><p>Mini projects during training and one capstone you can show and explain in an interview.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Mentor support</h3><p>Doubt sessions and code or work reviews from the instructor team.</p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Internship offer</h3><p>Complete the training and assessment, and you are offered a supervised internship on studio or practice work.</p></li>
+    <ul class="kit-list" data-reveal-group data-zoom>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'browser' }) %></span><div><h3>Live classes + recordings</h3><p>Taught live online by working practitioners, with recordings shared if you miss a session.</p></div></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><div><h3>Study material</h3><p>Notes, slides and practice files for every module, yours to keep.</p></div></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><div><h3>Reviewed assignments</h3><p>Practical tasks after each module checked by an instructor so you build real skill.</p></div></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'code' }) %></span><div><h3>Real projects</h3><p>Mini projects during training plus a capstone you can open and explain in interviews.</p></div></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><div><h3>Training certificate</h3><p>Issued when you complete the training, carrying a certificate ID anyone can <a href="/verify">verify</a>.</p></div></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><div><h3>Internship offer &amp; letter</h3><p>Supervised internship work plus a signed letter naming your role, dates, hours and work.</p></div></li>
     </ul>
   </div>
 </section>
@@ -88,43 +90,36 @@
 
 <%- include('partials/compare') %>
 <%- include('partials/free-start') %>
-<%- include('partials/google-reviews', { kind: 'student', alt: true }) %>
+<%- include('partials/google-reviews', { kind: 'student', alt: true, showBadge: false }) %>
 <%- include('partials/people', { instructors, testimonials }) %>
-<%- include('partials/why-trust', { credentials }) %>
-<%- include('partials/samples', { sampleDocs, alt: true }) %>
-<%- include('partials/student-work', { projects }) %>
-<%- include('partials/gallery', { gallery }) %>
 
-<section class="section section-alt" aria-labelledby="rules-h">
+<% const msme = (locals.credentials || []).find(c => /msme/i.test(c.title)); const docs = locals.sampleDocs || { certificate: '/img/samples/sample-certificate.webp', letter: '/img/samples/sample-internship-letter.webp' }; %>
+<section class="section section-alt section-tight trust-why" id="proof" aria-labelledby="why-h">
   <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow" data-reveal>What you take away</p>
-      <h2 id="rules-h" class="h2" data-reveal>Everything you earn <em>on the way.</em></h2>
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>Proof &amp; verification</p>
+        <h2 id="why-h" class="h2" data-reveal><%= s.proof_heading || "Credentials & certificates you can check." %></h2>
+      </div>
+      <p class="section-intro" data-reveal><%= s.proof_intro %> (<a href="/verify">goforgedigital.com/verify</a>)</p>
     </div>
-    <div class="rules" data-reveal-group>
-      <div class="rules-col rules-yes" data-reveal>
-        <h3>You receive</h3>
-        <ul>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Study material, live classes and reviewed assignments</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Projects you can explain in an interview</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>A training certificate when you finish the training</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>An internship offer, and an internship letter that names your role, dates and work</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>A certificate ID that anyone can <a href="/verify">check with us</a></span></li>
-        </ul>
-      </div>
-      <div class="rules-col rules-yes" data-reveal>
-        <h3>Easy to verify</h3>
-        <ul>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Issued by an MSME-registered company</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>Suitable for college internship requirements, with the dates, hours and work written down</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>A signed letter with contact details, so colleges and employers can confirm it</span></li>
-          <li><%- include('partials/icon', { name: 'check' }) %><span>College-specific formats, hours or NOC support on request</span></li>
-        </ul>
-      </div>
+    <ul class="why-grid" data-reveal-group>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><h3>MSME registered</h3><p>Udyam <%= msme && msme.number ? msme.number : 'registered' %>. <a href="<%= (msme && msme.link_url) || 'https://udyamregistration.gov.in/Udyam_Verify.aspx' %>" target="_blank" rel="noopener">Verify on Udyam</a></p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Verifiable certificates</h3><p>Every certificate and letter has an ID you can <a href="/verify">verify online</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Signed by our founder</h3><p>Issued and signed by <%= BRAND.founder %>, <%= BRAND.founderRole %>, with phone &amp; email for college checks.<% if (BRAND.linkedin) { %> <a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener">LinkedIn</a><% } %></p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'globe' }) %></span><h3>An office you can visit</h3><p><%= BRAND.address.line1 %>, Sector 81, Faridabad. <a href="/contact">Call before you visit</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>A written refund policy</h3><p>Clear terms before you enrol. <a href="/refund">Read the refund policy</a>.</p></li>
+      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'browser' }) %></span><h3>Free demo before you enrol</h3><p>Attend a free live class first, then decide. <a href="/contact?service=<%= encodeURIComponent(OFFERS.demo.name) %>" data-dialog="dlg-contact" data-fallback-form="contact" data-prefill-name="service" data-prefill-value="<%= OFFERS.demo.name %>">Book a demo class</a></p></li>
+    </ul>
+    <div class="samples-grid proof-samples" data-reveal-group>
+      <figure class="sample-doc" data-reveal><a href="<%= docs.certificate %>" target="_blank" rel="noopener"><img src="<%= docs.certificate %>" alt="Sample Goforge Digital training certificate with certificate ID GF-SAMPLE-0001" loading="lazy" width="1600" height="1131"></a><figcaption>Training certificate (sample)</figcaption></figure>
+      <figure class="sample-doc" data-reveal><a href="<%= docs.letter %>" target="_blank" rel="noopener"><img src="<%= docs.letter %>" alt="Sample Goforge Digital internship offer letter with reference GF-SAMPLE-0001" loading="lazy" width="1131" height="1600"></a><figcaption>Internship offer letter (sample)</figcaption></figure>
     </div>
   </div>
 </section>
 
+<%- include('partials/student-work', { projects }) %>
+<%- include('partials/gallery', { gallery }) %>
 <%- include('partials/fit-check') %>
 
 <section class="section" aria-labelledby="faq-h">
@@ -133,10 +128,8 @@
       <p class="eyebrow" data-reveal>Questions students ask</p>
       <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
-    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.filter(i => i.top).slice(0, 10), name: 'faq-internship', openFirst: true }) %>
-    <h3 class="h3 faq-sub" data-reveal>For parents</h3>
-    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'parents').items, name: 'faq-parents' }) %>
-    <p class="faq-more"><a class="text-link" href="/faq#students">All student questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.filter(i => i.top).slice(0, 6), name: 'faq-internship', openFirst: true }) %>
+    <p class="faq-more"><a class="text-link" href="/faq#students">All student &amp; parent questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
   </div>
 </section>
 
@@ -147,7 +140,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
-      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included in the price.<% if (offer.registrationOpen) { %> Registration for the November 2026 batch closes on <%= REGISTRATION.closes %>, with only <%= SEAT_CAP %> seats per batch.<% } %> Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included in the price.<% if (offer.registrationOpen) { %> <%= BATCH_SUMMARY %>, with only <%= SEAT_CAP %> seats per schedule.<% } %> Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form') %>

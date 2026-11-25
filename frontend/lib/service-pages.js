@@ -420,7 +420,7 @@ const PAGES = [
     lede: 'Admission enquiries, student records, fees, attendance and parent communication brought together in one system your office staff can use with ease.',
     intro: [
       'School offices handle a heavy load of administration: admission enquiries during the season, student records, fee collection and receipts, attendance, timetables, notices and a steady flow of parent questions. When this runs on registers and separate spreadsheets, staff spend long hours on paperwork and parents wait for answers.',
-      'Goforge Digital builds and sets up school management software for schools in Faridabad and Delhi NCR. We start with the area that matters most to your school, often admission enquiries or fees, and add further modules as your staff grow comfortable. The system is shaped around your classes, fee structure and processes. For student skill programmes, see our separate page for schools.'
+      'Goforge Digital builds and sets up school management software for schools in Faridabad and Delhi NCR. We start with the area that matters most to your school, often admission enquiries or fees, and add further modules as your staff grow comfortable. The system is shaped around your classes, fee structure and processes.'
     ],
     problems: [
       ['Admission enquiries get lost', 'Calls and walk-ins during admission season are noted on paper. An enquiry system tracks each family from first call to admission.'],
@@ -463,8 +463,7 @@ const PAGES = [
       ['What does school ERP software cost?', 'It depends on student numbers, branches and modules. We share a clear price on a call after understanding your school’s needs and priorities.'],
       ['Can we start with only admissions or fees?', 'Yes. Starting with one module is often the smoothest way to introduce new software to school staff.'],
       ['Is student data secure?', 'Access is limited by role, changes are logged and backups run regularly. The school owns the data and the hosting account.'],
-      ['Will teachers and office staff find it easy?', 'Screens are kept simple and training is hands-on. Most daily tasks take only a few clicks.'],
-      ['Do you also offer programmes for students?', 'Yes. Our skills programmes for Classes 5 to 12 are described on our page for schools.']
+      ['Will teachers and office staff find it easy?', 'Screens are kept simple and training is hands-on. Most daily tasks take only a few clicks.']
     ],
     related: ['erp-development', 'crm-development', 'website-development', 'custom-software-development']
   }

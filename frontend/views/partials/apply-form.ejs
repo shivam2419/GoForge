@@ -11,9 +11,10 @@
     <%- include('field', { f: { id: px + '-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email' } }) %>
     <%- include('field', { f: { id: px + '-city', name: 'city', label: 'City', max: 80, autocomplete: 'address-level2' } }) %>
     <%- include('field', { f: { id: px + '-track', name: 'track', label: 'Programme', as: 'select', required: true, options: TRACKS, placeholder: 'Choose a programme', wide: true } }) %>
+    <%- include('field', { f: { id: px + '-schedule', name: 'schedule', label: 'Schedule preference', as: 'select', options: BATCH_PREFS, placeholder: 'Choose weekday or weekend', wide: true, hint: BATCH_SUMMARY } }) %>
     <%- include('field', { f: { id: px + '-mode', name: 'mode', label: 'Preferred mode', as: 'select', options: MODES, placeholder: 'Choose one' } }) %>
     <%- include('field', { f: { id: px + '-source', name: 'source', label: 'How did you hear about us?', as: 'select', options: SOURCES, placeholder: 'Choose one' } }) %>
-    <%- include('field', { f: { id: px + '-ref', name: 'referred_by', label: 'Referred by (name or phone)', max: 80, wide: true, hint: 'If a Goforge Digital student referred you, so they get their ₹200.' } }) %>
+    <% if (path !== '/verify' && path !== '/colleges') { %><%- include('field', { f: { id: px + '-ref', name: 'referred_by', label: 'Referred by (name or phone)', max: 80, wide: true, hint: 'If a Goforge Digital student referred you, so they get their ₹200.' } }) %><% } %>
     <%- include('field', { f: { id: px + '-note', name: 'note', label: 'Short note', as: 'textarea', rows: 4, max: 1000, wide: true, hint: 'Why this programme, and anything you have already built or learned. If you chose a similar role, name it here.' } }) %>
     <div class="field field-wide field-check<%= errors.consent ? ' has-error' : '' %>">
       <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required<% if (values.consent) { %> checked<% } %> aria-describedby="<%= px %>-consent-err"> I agree that Goforge Digital may contact me by phone or email about this application. <span class="req" aria-hidden="true">*</span></label>
