@@ -159,6 +159,16 @@ function validateSchool(body) {
 }
 const MODES = ['Live online', 'Either is fine'];
 const SOURCES = ['Instagram', 'LinkedIn', 'Google search', 'College / friend', 'Other'];
+// Snapshot the fee shown at the time of submission so later price changes do not rewrite past quotes.
+// Applications do not collect programme length, so they store both current prices; counselling stores the chosen length's price (or both if unset).
+function quotedFeeFor(trackLabel, tracks = CAREER_TRACKS) {
+  const list = Array.isArray(tracks) && tracks.length ? tracks : CAREER_TRACKS;
+  const both = list.map(t => batch.inr(t.price) + ' (' + t.name + ')').join(' / ');
+  if (!trackLabel) return both;
+  const t = list.find(x => trackLabel === careerTrackLabel(x) || trackLabel === x.name || String(trackLabel).startsWith(x.name + ' '));
+  return t ? batch.inr(t.price) : both;
+}
+
 function validateApplication(body, TRACKS, batchPrefs = batch.BATCH_PREFS) {
   const errors = {}, values = {};
   field(errors, values, body, 'full_name', 'your full name', { required: true, min: 2, max: 80 });
@@ -589,13 +599,14 @@ app.post('/counselling', formLimiter, async (req, res) => {
     return res.status(422).render('counselling', { errors, values, ...pageMeta(req, 'Book a free counselling call', 'Counselling', { noindex: true }) });
   }
   const msg = ['Preferred time: ' + (values.time || 'Any time'), values.interest && 'Interested in: ' + values.interest, values.batch && 'Batch: ' + values.batch].filter(Boolean).join('\n');
-  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
-    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null);
+  const quotedFee = quotedFeeFor(values.track, res.locals.CAREER_TRACKS);
+  await db.run("INSERT INTO contacts (name, business, phone, service, message, email, track, college_req, referred_by, quoted_fee, kind) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'counselling')",
+    values.name, null, values.phone, values.program || 'Not sure yet', msg, values.email || null, values.track || null, values.college_req || null, values.referred_by || null, quotedFee);
   // A webinar sign-up only counts as one while the webinar is still ahead (older open forms may send it later).
   const isWebinar = values.interest === batch.WEBINAR.interest && res.locals.offer.webinar;
   notifyLead({ title: isWebinar ? 'free webinar sign-up' : 'counselling call request', name: values.name, adminUrl: SITE_URL + '/admin/counselling', replyTo: values.email,
     fields: [['Name', values.name], ['Phone', values.phone], ['Email', values.email], ['Interested in', values.interest], ['Programme', values.program || 'Not sure yet'], ['Preferred programme length', values.track || 'Not sure yet'],
-      ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by]] });
+      ['Preferred batch', values.batch], ['College requirement', values.college_req], ['Preferred time', values.time || 'Any time'], ['Referred by', values.referred_by], ['Quoted fee', quotedFee]] });
   if (isWebinar) return respondOk(req, res, 'counselling',
     'Thanks, ' + values.name.split(' ')[0] + '. Your free seat is saved for ' + batch.WEBINAR.date + ', ' + batch.WEBINAR.time + '. Join with the Google Meet link below.',
     null, { title: "You're registered", webinar: webinarReg() });
@@ -832,9 +843,10 @@ app.post('/internship', formLimiter, async (req, res) => {
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
   const groupUrl = await cms.whatsappGroupFor(values.track);
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, schedule, source, referred_by, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.schedule || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0));
+  const quotedFee = quotedFeeFor(null, res.locals.CAREER_TRACKS);
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, schedule, source, referred_by, consent, group_link_shown, quoted_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.schedule || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0, quotedFee));
   notifyLead({ title: 'internship application', name: values.full_name, adminUrl: SITE_URL + '/admin/applications', replyTo: values.email,
-    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Schedule', values.schedule], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Note', values.note]] });
+    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Schedule', values.schedule], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Quoted fee', quotedFee], ['Note', values.note]] });
   // The group link is only ever sent in this response, after the application is saved.
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
@@ -974,7 +986,7 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
     const counts = Object.fromEntries(await Promise.all(STATUSES.map(async st => [st, (await db.get(`SELECT COUNT(*) n FROM ${cfg.table} WHERE status = ?${cfg.base ? ' AND ' + cfg.base : ''}`, st)).n])));
     res.render('admin/inbox', {
       ...pageMeta(req, cfg.title, 'Admin'), slug, cfg, rows, q, status, page, total,
-      pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved ? 'Status updated.' : null
+      pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), counts, flash: req.query.saved === 'fee' ? 'Quoted fee saved.' : (req.query.saved ? 'Status updated.' : null)
     });
   });
   app.post(`/admin/${slug}/:id/status`, requireAdmin, async (req, res) => {
@@ -987,6 +999,24 @@ for (const [slug, cfg] of Object.entries(INBOXES)) {
     if (STATUSES.includes(req.body.f)) back.set('status', req.body.f);
     if (parseInt(req.body.page, 10) > 1) back.set('page', String(parseInt(req.body.page, 10)));
     back.set('saved', '1');
+    res.redirect(303, `/admin/${slug}?${back}#item-${id}`);
+  });
+}
+
+for (const [slug, cfg] of Object.entries(INBOXES)) {
+  if (cfg.table !== 'applications' && slug !== 'counselling') continue;
+  app.post(`/admin/${slug}/:id/quoted-fee`, requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).type('text').send('Invalid item.');
+    const quoted = text(req.body.quoted_fee).slice(0, 80);
+    if (quoted && quoted.length > 80) return res.status(400).type('text').send('Quoted fee is too long.');
+    const where = cfg.base ? ' AND ' + cfg.base : '';
+    await db.run(`UPDATE ${cfg.table} SET quoted_fee = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?${where}`, quoted || null, id);
+    const back = new URLSearchParams();
+    if (req.body.q) back.set('q', text(req.body.q).slice(0, 100));
+    if (STATUSES.includes(req.body.f)) back.set('status', req.body.f);
+    if (parseInt(req.body.page, 10) > 1) back.set('page', String(parseInt(req.body.page, 10)));
+    back.set('saved', 'fee');
     res.redirect(303, `/admin/${slug}?${back}#item-${id}`);
   });
 }
@@ -1050,6 +1080,7 @@ app.post('/admin/settings', requireAdmin, maybeUploadSettings, async (req, res) 
     ['track_3m_label', '3-month label', 60, true],
     ['track_6m_label', '6-month label', 60, true],
     ['fee_note', 'fee note', 300, true],
+    ['price_value_line', 'price value line', 160, false],
     ['tax_note', 'tax note', 80, false],
     ['google_rating', 'Google rating', 10, true],
     ['google_badge_text', 'Google badge text', 80, true],

@@ -108,6 +108,10 @@ async function run() {
     assert(internHtml.includes('From ₹2,999') && internHtml.includes('₹2,999') && internHtml.includes('₹4,999'), '/internship shows ₹2,999 and ₹4,999');
     assert(progHtml.includes('"price":"2999"') && progHtml.includes('"price":"4999"'), 'Course JSON-LD shows 2999 and 4999');
     assert(progHtml.includes('<small>All-inclusive fee</small>'), 'Default tax_note empty -> All-inclusive fee');
+    const VALUE_LINE = 'Includes live mentoring and real projects, not just a certificate.';
+    assert((internHtml.match(new RegExp(VALUE_LINE, 'g')) || []).length >= 2, 'Value line on /internship fee cards');
+    assert(progHtml.includes(VALUE_LINE), 'Value line on programme #fees');
+    assert(homeHtml.includes(VALUE_LINE), 'Value line on Home student card');
     for (const [n, h] of [['/', homeHtml], ['/internship', internHtml], ['/program', progHtml], ['/faq', faqHtml]]) {
       assert(!/1,?499|1,?999/.test(h), 'No stale 1499 or 1999 on ' + n);
     }
@@ -164,6 +168,7 @@ async function run() {
     fd.set('track_6m_price', '3999');
     fd.set('tax_note', 'incl. GST');
     fd.set('fee_note', 'Custom fee note. Paid once, no instalments.');
+    fd.set('price_value_line', 'Custom mentoring and projects line.');
     // Omit show_home_stats, show_google_badge, prog_show_* => toggled OFF
     fd.set('google_rating', '4.9');
     fd.set('google_badge_text', 'from verified clients');
@@ -198,6 +203,8 @@ async function run() {
     assert(internAfter.includes('Custom kit heading'), 'Updated kit_heading on /internship');
     assert(internAfter.includes('Custom proof heading'), 'Updated proof_heading on /internship');
     assert(internAfter.includes('₹2,499') && internAfter.includes('₹3,999') && internAfter.includes('All-inclusive fee · incl. GST'), 'Updated prices + tax_note on /internship');
+    assert(internAfter.includes('Custom mentoring and projects line.'), 'Updated price_value_line on /internship');
+    assert((await check200('/')).includes('Custom mentoring and projects line.'), 'Updated price_value_line on Home');
 
     const progAfter = await check200('/internship/programs/software-engineering');
     assert(!progAfter.includes('id="curriculum"'), 'Curriculum hidden when prog_show_curriculum=0');
@@ -288,6 +295,82 @@ async function run() {
     const faqAfterDel = await check200('/faq');
     assert(!faqAfterDel.includes('Smoke test custom FAQ question?'), 'Deleted FAQ removed from /faq');
     console.log('PASS: /admin/faqs create + publish + /internship + /faq + delete');
+
+    // 5. quoted_fee snapshot on new applications/counselling; existing rows stay NULL; admin can edit
+    const { createClient } = require('@libsql/client');
+    const raw = createClient({ url: 'file:' + require('path').join(TMP_DIR, 'goforge.db') });
+    const cols = (await raw.execute('PRAGMA table_info(applications)')).rows.map(r => r.name);
+    assert(cols.includes('quoted_fee'), 'applications.quoted_fee column exists');
+    const ccols = (await raw.execute('PRAGMA table_info(contacts)')).rows.map(r => r.name);
+    assert(ccols.includes('quoted_fee'), 'contacts.quoted_fee column exists');
+    await raw.execute({
+      sql: "INSERT INTO applications (full_name, college, course_year, whatsapp, track) VALUES (?, ?, ?, ?, ?)",
+      args: ['Old Quote Student', 'ABC College', 'BTech 3', '9876500001', 'Software Engineering']
+    });
+    const oldRow = (await raw.execute({ sql: "SELECT quoted_fee FROM applications WHERE full_name = ?", args: ['Old Quote Student'] })).rows[0];
+    assert.strictEqual(oldRow.quoted_fee, null, 'Existing application quoted_fee stays NULL');
+
+    const applyPage = await check200('/internship');
+    const applyBody = new URLSearchParams({
+      _csrf: csrfFrom(applyPage),
+      full_name: 'New Quote Student',
+      college: 'XYZ College',
+      course_year: 'BCA 2',
+      phone: '9876500002',
+      track: 'Software Engineering',
+      schedule: 'Not sure yet',
+      consent: 'yes'
+    });
+    const applyRes = await jar.fetch('/internship', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: applyBody
+    });
+    assert.ok([200, 303].includes(applyRes.status), 'Apply submission ok, got ' + applyRes.status);
+    const appsAdmin = await check200('/admin/applications');
+    assert(appsAdmin.includes('name="quoted_fee"'), 'Quoted fee field on /admin/applications');
+    assert(appsAdmin.includes('₹2,499 (3-Month Fast Track) / ₹3,999 (6-Month Pro Track)') || appsAdmin.includes('₹2,999 (3-Month Programme) / ₹4,999 (6-Month Programme)'), 'New application stores then-current prices');
+    assert(appsAdmin.includes('Old Quote Student') && appsAdmin.includes('placeholder="Not recorded — e.g. ₹1,499"'), 'Existing row shows empty quoted fee field');
+
+    // Edit old row to ₹1,499
+    const oldId = (await raw.execute({ sql: "SELECT id FROM applications WHERE full_name = ?", args: ['Old Quote Student'] })).rows[0].id;
+    const feeRes = await jar.fetch('/admin/applications/' + oldId + '/quoted-fee', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ _csrf: csrfFrom(appsAdmin), quoted_fee: '₹1,499' })
+    });
+    assert.strictEqual(feeRes.status, 303, 'Quoted fee save 303');
+    const appsAfter = await check200('/admin/applications');
+    assert(appsAfter.includes('value="₹1,499"'), 'Admin can set historical ₹1,499 quote');
+    const savedOld = (await raw.execute({ sql: "SELECT quoted_fee FROM applications WHERE full_name = ?", args: ['Old Quote Student'] })).rows[0];
+    assert.strictEqual(savedOld.quoted_fee, '₹1,499', 'quoted_fee persisted as ₹1,499');
+
+    const counselPage = await check200('/counselling');
+    const counselBody = new URLSearchParams({
+      _csrf: csrfFrom(counselPage),
+      name: 'Counsel Quote Student',
+      phone: '9876500003',
+      track: '3-Month Fast Track (1 month training + 2 months internship)'
+    });
+    // After settings edit, labels may be Fast Track; fall back to default label if 422
+    let counselRes = await jar.fetch('/counselling', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: counselBody
+    });
+    if (counselRes.status === 422) {
+      counselBody.set('track', '3-Month Programme (1 month training + 2 months internship)');
+      counselRes = await jar.fetch('/counselling', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: counselBody
+      });
+    }
+    assert.ok([200, 303].includes(counselRes.status), 'Counselling submission ok, got ' + counselRes.status);
+    const counselAdmin = await check200('/admin/counselling');
+    assert(counselAdmin.includes('Counsel Quote Student'), 'Counselling lead listed');
+    assert(counselAdmin.includes('value="₹2,499"') || counselAdmin.includes('value="₹2,999"'), 'Counselling quoted_fee is the 3-month price at submission');
+    console.log('PASS: quoted_fee snapshot, NULL existing rows, admin edit, counselling');
 
     console.log('ALL SMOKE CHECKS PASSED');
   } finally {

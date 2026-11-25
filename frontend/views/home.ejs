@@ -178,7 +178,7 @@
     <a class="stu-card" href="/internship" data-reveal>
       <span class="audience-k">For students</span>
       <span id="stu-h" class="stu-t">Training + internship: 3 or 6 months</span>
-      <span class="stu-d"><%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (offer.registrationOpen) { %> <strong class="stu-hot"><%= BATCH_SUMMARY %>. Only <%= SEAT_CAP %> seats per schedule.</strong><% } %></span>
+      <span class="stu-d"><%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (s.price_value_line) { %> <span class="price-value"><%= s.price_value_line %></span><% } %><% if (offer.registrationOpen) { %> <strong class="stu-hot"><%= BATCH_SUMMARY %>. Only <%= SEAT_CAP %> seats per schedule.</strong><% } %></span>
       <span class="stu-go">See batches <%- include('partials/icon', { name: 'arrow' }) %></span>
     </a>
   </div>

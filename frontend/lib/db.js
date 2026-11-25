@@ -112,6 +112,7 @@ const DEFAULT_SETTINGS = {
   track_6m_price: '4999',
   tax_note: '',
   fee_note: 'All-inclusive fee: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, no instalments.',
+  price_value_line: 'Includes live mentoring and real projects, not just a certificate.',
   show_home_stats: '1',
   show_google_badge: '1',
   google_rating: '4.9',

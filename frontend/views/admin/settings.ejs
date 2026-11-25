@@ -45,6 +45,7 @@
       <%- include('../partials/field', { f: { id: 's-t6p', name: 'track_6m_price', label: '6-month fee (INR)', type: 'number', inputmode: 'numeric', required: true, max: 6 } }) %>
       <%- include('../partials/field', { f: { id: 's-tn', name: 'tax_note', label: 'Tax / GST note', max: 80, wide: true, hint: 'Leave empty to just say "All-inclusive fee" on price cards.' } }) %>
       <%- include('../partials/field', { f: { id: 's-fn', name: 'fee_note', label: 'Fee note (shown on programme pages)', as: 'textarea', rows: 2, required: true, max: 300, wide: true } }) %>
+      <%- include('../partials/field', { f: { id: 's-pvl', name: 'price_value_line', label: 'Value line shown near every price', max: 160, wide: true, hint: 'Shown under fee cards on /internship, programme pages, and the Home student card. Leave empty to hide.' } }) %>
       <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Default training length (internal)', required: true, max: 40 } }) %>
       <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Default internship length (internal)', required: true, max: 40 } }) %>
       <%- include('../partials/field', { f: { id: 's-if', name: 'intern_fee', label: 'Internal fee note', required: true, max: 80, wide: true } }) %>

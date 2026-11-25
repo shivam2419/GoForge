@@ -257,7 +257,7 @@ async function seedProgramsV2() {
 }
 
 // Applications table gained columns; add them to existing databases.
-const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', schedule: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT' };
+const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', schedule: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT', quoted_fee: 'TEXT' };
 async function migrate() {
   await db.batch(schemaSql().map(sql => [sql]));
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));
@@ -271,6 +271,8 @@ async function migrate() {
   if (!contactCols.has('college_req')) await db.run('ALTER TABLE contacts ADD COLUMN college_req TEXT');
   // Referral: who referred this student (free text, name or phone). Nullable.
   if (!contactCols.has('referred_by')) await db.run('ALTER TABLE contacts ADD COLUMN referred_by TEXT');
+  // Snapshot of the fee shown at submission (nullable so existing January enquiries stay untouched).
+  if (!contactCols.has('quoted_fee')) await db.run('ALTER TABLE contacts ADD COLUMN quoted_fee TEXT');
   const insCols = new Set((await db.all('PRAGMA table_info(instructors)')).map(r => r.name));
   if (!insCols.has('company')) await db.run('ALTER TABLE instructors ADD COLUMN company TEXT');
   // Testimonials: optional video link (student video reviews). Nullable, so old rows are untouched.
