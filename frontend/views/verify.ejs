@@ -14,7 +14,7 @@
       <ol class="check-list numbered">
         <li><span>Enter the certificate ID printed on the certificate, for example <strong>GFD-2026-0042</strong>. The samples below show where the ID is printed (sample ID GF-SAMPLE-0001).</span></li>
         <li><span>Send it to us. We confirm the name, programme and dates.</span></li>
-        <li><span>Instant online lookup is being added. Until then, every check is answered by a person.</span></li>
+        <li><span>Certificate checks are done by our team and answered within 24 working hours.</span></li>
       </ol>
     </div>
     <div class="form-card">
@@ -28,7 +28,7 @@
       <% if (certId) { %>
       <div class="verify-result" role="status">
         <p><strong>Certificate ID: <%= certId %></strong></p>
-        <p>Send this ID to us and our team will confirm it for you.</p>
+        <p>Send this ID to us and our team will confirm it within 24 working hours.</p>
         <div class="hero-actions">
           <a class="btn btn-primary btn-sm" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Send a verification request <%- include('partials/icon', { name: 'arrow' }) %></a>
           <a class="btn btn-ghost btn-sm" href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Certificate verification: ' + certId) %>">Email us</a>

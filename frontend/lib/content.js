@@ -145,7 +145,7 @@ const TRACKS = TRACK_DETAILS.map(t => t.name).concat([SIMILAR_ROLE]);
 
 // The two programmes a student can choose. Edit here; the /internship cards, the programme
 // pages, the counselling form, the brochure, the FAQ and the Course JSON-LD all read this list.
-// price is the festive launch price in rupees, all-inclusive and paid once (no instalments).
+// price is the all-inclusive fee in rupees, paid once (no instalments).
 // Batch dates, the seat cap and the referral offer live in lib/batch.js.
 const CAREER_TRACKS = [
   {
@@ -207,7 +207,7 @@ const WHY_SMALL = [
 ];
 
 // FAQ items with `until` (a timestamp) hide themselves after that moment; see visibleFaq().
-const { KEY_DATES } = require('./batch');
+const { KEY_DATES, BATCH_SUMMARY } = require('./batch');
 const REGISTRATION_CLOSES = KEY_DATES.registrationCloses;
 const DIWALI_BREAK_ENDS = Date.parse('2026-11-12T00:00:00+05:30');
 const FAQ = [
@@ -241,11 +241,11 @@ const FAQ = [
       },
       {
         q: 'How much does the programme cost?',
-        a: 'The festive launch price is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, assignments, projects, the internship, the training certificate and the internship letter. It is paid once, with no instalments, and nothing is charged before you have spoken with us.', top: true
+        a: 'The fee is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, assignments, projects, the internship, the training certificate and the internship letter. It is paid once, with no instalments, and nothing is charged before you have spoken with us.', top: true
       },
       {
         q: 'What are the batch timings?',
-        a: 'Both batches are live online. Weekday batch: Monday to Friday, 7:30 to 9:00 PM IST, starting Mon 2 Nov 2026; Fridays are doubt and project sessions. Weekend batch: Saturday and Sunday, 11:00 AM to 2:00 PM IST with a 15-minute break; orientation on Sun 1 Nov, classes from Sat 14 Nov 2026. Each batch is capped at 25 students. Registration closes on Wed 28 Oct 2026.', until: REGISTRATION_CLOSES, top: true
+        a: BATCH_SUMMARY + '. Both schedules are live online. Weekday schedule: Monday to Friday, 7:30 to 9:00 PM IST, starting Fri 8 Jan 2027 (Fridays are doubt and project sessions). Weekend schedule: Saturday and Sunday, 11:00 AM to 2:00 PM IST with a 15-minute break, first class Sat 9 Jan 2027. Each schedule is capped at 25 students.', until: REGISTRATION_CLOSES, top: true
       },
       {
         q: 'Is there a Diwali break?',
@@ -257,7 +257,7 @@ const FAQ = [
       },
       {
         q: 'What if my college exams fall during the programme?',
-        a: 'Tell us your exam dates when you enrol. You can pause during your exams and catch up from the recordings, or switch once to the January 2027 batch at no cost.', top: true
+        a: 'Tell us your exam dates when you enrol. You can pause during your exams and catch up from the recordings, or switch once to a later batch at no cost.', top: true
       },
       {
         q: 'How big is a batch?',
@@ -309,7 +309,7 @@ const FAQ = [
     id: 'parents',
     title: 'For parents',
     items: [
-      { q: 'How much does the programme cost?', a: 'The festive launch price is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme, all-inclusive and paid once, with no instalments. Nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'] },
+      { q: 'How much does the programme cost?', a: 'The fee is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme, all-inclusive and paid once, with no instalments. Nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'] },
       { q: 'What if my child needs to stop or change plans?', a: 'Our refund policy is written down and available before you enrol. It explains when a refund applies and how long it takes, so you know the terms in advance.', link: ['/refund', 'Read the refund policy'] },
       { q: 'What does the certificate prove?', a: 'The training certificate confirms that your child completed the named programme on the stated dates. The internship letter names the role, dates and the work done. Each document carries a unique ID that colleges and employers can check with us.', link: ['/verify', 'How verification works'] },
       { q: 'Is it safe, and who supervises the students?', a: 'Classes are live and online, taught and reviewed by our instructors and mentors. During the internship each student works on assigned tasks with a named supervisor and regular check-ins. We contact students only through the details they share with us.' },

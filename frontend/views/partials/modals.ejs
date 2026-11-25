@@ -11,7 +11,7 @@
 <%- include('dialog-open', { id: 'dlg-counsel', wide: true }) %>
     <p class="eyebrow">Free, 15 minutes</p>
     <h2 class="modal-title" id="dlg-counsel-title">Book a free counselling call</h2>
-    <p class="modal-lede">Tell us when to call. We help you choose a programme and a batch, and answer every question about your college requirement. <% if (offer.registrationOpen) { %>November batch registration closes <%= REGISTRATION.closes %>.<% } %></p>
+    <p class="modal-lede">Tell us when to call. We help you choose a programme and your schedule, and answer every question about your college requirement. <% if (offer.registrationOpen) { %><%= BATCH_SUMMARY %>.<% } %></p>
     <%- include('counsel-form', { px: 'mcc', values: { program: locals.counselProgram || '', track: locals.counselTrack || '' }, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>
@@ -19,7 +19,7 @@
 <%- include('dialog-open', { id: 'dlg-apply', wide: true }) %>
     <p class="eyebrow">Internship program</p>
     <h2 class="modal-title" id="dlg-apply-title">Apply for the internship</h2>
-    <p class="modal-lede">3-Month Programme <%= inr(CAREER_TRACKS[0].price) %> or 6-Month Programme <%= inr(CAREER_TRACKS[1].price) %> (festive launch price, all-inclusive): live online training, then a supervised internship.<% if (offer.registrationOpen) { %> Only <%= SEAT_CAP %> seats per batch; registration closes <%= REGISTRATION.closesShort %>.<% } %></p>
+    <p class="modal-lede">3-Month Programme <%= inr(CAREER_TRACKS[0].price) %> or 6-Month Programme <%= inr(CAREER_TRACKS[1].price) %> (all-inclusive): live online training, then a supervised internship.<% if (offer.registrationOpen) { %> <%= BATCH_SUMMARY %>.<% } %></p>
     <%- include('apply-form', { px: 'ma', values: {}, errors: {} }) %>
 <%- include('dialog-close') %>
 <% } %>

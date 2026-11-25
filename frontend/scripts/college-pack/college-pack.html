@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<title>College Partnership &amp; Internship Pack | Goforge Digital</title>
+<style>
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-600.woff2") format("woff2"); font-weight: 600; }
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Cormorant Garamond"; src: url("../../public/fonts/cormorant-600-italic.woff2") format("woff2"); font-weight: 600; font-style: italic; }
+@font-face { font-family: "Manrope"; src: url("../../public/fonts/manrope.woff2") format("woff2"); font-weight: 200 800; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: "Manrope", system-ui, sans-serif; color: #141C30; font-size: 9.6pt; line-height: 1.46; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 14mm 15mm 12mm; background: #F0ECE3; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; }
+.top { display: flex; justify-content: space-between; align-items: center; font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #7C5C20; border-bottom: 1px solid rgba(20,28,48,.18); padding-bottom: 3.5mm; margin-bottom: 5.5mm; }
+.top b { color: #141C30; }
+h1, h2, h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 700; margin: 0; line-height: 1.06; }
+h1 { font-size: 42pt; }
+h2 { font-size: 23pt; margin-bottom: 2.5mm; }
+h2 em, h1 em { font-style: italic; font-weight: 600; color: #7C5C20; }
+h3 { font-size: 13.5pt; margin-bottom: 1.5mm; }
+p { margin: 0 0 2.5mm; }
+.eyebrow { font-size: 8pt; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #7C5C20; margin-bottom: 2mm; }
+.lede { font-size: 11.2pt; color: #47526C; max-width: 155mm; line-height: 1.5; }
+.note { font-size: 8.8pt; color: #47526C; line-height: 1.44; }
+.card { background: #FBF8F2; border: 1px solid rgba(20,28,48,.14); border-radius: 3.5mm; padding: 4.2mm 5mm; }
+.navy { background: #141C30; color: #F0ECE3; border-color: #141C30; }
+.navy .eyebrow, .navy h3 em { color: #CAA465; }
+.navy .note { color: rgba(240,236,227,.8); }
+
+/* Cover */
+.cover { background: #141C30; color: #F0ECE3; }
+.cover .top { color: #CAA465; border-color: rgba(240,236,227,.2); }
+.cover .top b { color: #F0ECE3; }
+.cover-brand { display: flex; align-items: center; gap: 4mm; margin-top: 12mm; }
+.cover-brand img { width: 13mm; height: 13mm; border-radius: 2.5mm; }
+.cover-brand span { font-size: 9pt; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #CAA465; }
+.cover h1 { color: #F0ECE3; margin: 14mm 0 5mm; }
+.cover h1 em { color: #CAA465; }
+.cover .lede { color: rgba(240,236,227,.84); font-size: 11.8pt; }
+.rings { position: absolute; right: -42mm; top: 34mm; width: 148mm; height: 148mm; border-radius: 50%; border: 1px solid rgba(202,164,101,.34); }
+.rings::after { content: ""; position: absolute; inset: 18mm; border-radius: 50%; border: 1px solid rgba(202,164,101,.2); }
+.cover-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 10mm; }
+.cover-points .card { background: rgba(240,236,227,.06); border-color: rgba(240,236,227,.2); color: #F0ECE3; padding: 4.5mm; }
+.cover-points b { display: block; font-family: "Cormorant Garamond", serif; font-size: 20pt; color: #CAA465; line-height: 1.05; margin-bottom: 1.5mm; }
+.cover-points span { font-size: 8.6pt; color: rgba(240,236,227,.82); display: block; }
+.cover-toc { margin-top: auto; background: rgba(240,236,227,.05); border: 1px solid rgba(202,164,101,.35); border-radius: 3.5mm; padding: 4.5mm 5.5mm; }
+.cover-toc .eyebrow { color: #CAA465; margin-bottom: 2.5mm; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8mm 6mm; font-size: 8.9pt; color: rgba(240,236,227,.86); }
+.toc-grid div b { color: #CAA465; margin-right: 1.5mm; }
+
+.foot { margin-top: auto; padding-top: 3.2mm; border-top: 1px solid rgba(20,28,48,.18); font-size: 7.7pt; color: #586077; display: flex; justify-content: space-between; gap: 4mm; }
+.cover .foot { border-color: rgba(240,236,227,.2); color: rgba(240,236,227,.72); margin-top: 6mm; }
+
+/* Grids & lists */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.2mm; }
+.mt { margin-top: 4mm; }
+.mt-sm { margin-top: 2.8mm; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 2mm; margin: 2mm 0 0; padding: 0; list-style: none; }
+.chips li { background: #FBF8F2; border: 1px solid rgba(20,28,48,.18); border-radius: 999px; padding: 1.2mm 3.2mm; font-size: 8.3pt; font-weight: 700; color: #141C30; }
+
+.prog .price { font-family: "Cormorant Garamond", serif; font-size: 26pt; font-weight: 700; line-height: 1; }
+.prog .lbl { font-size: 7.4pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #7C5C20; margin-bottom: 1mm; }
+.navy .lbl { color: #CAA465; }
+.bar { display: flex; height: 2.6mm; border-radius: 2mm; overflow: hidden; margin: 2.2mm 0 1.2mm; }
+.bar i { display: block; height: 100%; }
+.legend { font-size: 7.8pt; font-weight: 700; color: #586077; display: flex; justify-content: space-between; margin-bottom: 2.2mm; }
+.navy .legend { color: rgba(240,236,227,.78); }
+ul.check { list-style: none; padding: 0; margin: 0; }
+ul.check li { position: relative; padding-left: 4.5mm; margin-bottom: 1.2mm; font-size: 8.8pt; }
+ul.check li::before { content: ""; position: absolute; left: 0; top: 1.5mm; width: 2mm; height: 2mm; border-radius: 50%; background: #CAA465; }
+
+.steps6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.8mm; counter-reset: st; list-style: none; padding: 0; margin: 0; }
+.steps6 li { counter-increment: st; background: #FBF8F2; border: 1px solid rgba(20,28,48,.14); border-radius: 3mm; padding: 3mm 3.5mm 3mm 10.5mm; position: relative; font-size: 8.4pt; }
+.steps6 li::before { content: counter(st); position: absolute; left: 3mm; top: 3mm; width: 5.8mm; height: 5.8mm; border-radius: 50%; background: #141C30; color: #CAA465; font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 10.5pt; display: grid; place-items: center; }
+.steps6 li b { display: block; color: #141C30; font-size: 8.8pt; margin-bottom: 0.4mm; }
+
+table { width: 100%; border-collapse: collapse; background: #FBF8F2; border-radius: 3mm; overflow: hidden; font-size: 8.4pt; }
+th, td { text-align: left; padding: 2mm 2.8mm; border-bottom: 1px solid rgba(20,28,48,.11); vertical-align: top; }
+th { background: #141C30; color: #F0ECE3; font-size: 7.4pt; letter-spacing: .12em; text-transform: uppercase; }
+td b { color: #141C30; }
+
+/* Letter sample box */
+.letter { background: #FBF8F2; border: 1px solid rgba(20,28,48,.22); border-radius: 3mm; padding: 4.2mm 5mm; position: relative; }
+.letter-bar { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1.5px solid #CAA465; padding-bottom: 2.2mm; margin-bottom: 2.5mm; font-size: 7.8pt; color: #47526C; }
+.letter-bar strong { font-family: "Cormorant Garamond", serif; font-size: 13pt; color: #141C30; letter-spacing: .04em; display: block; }
+.letter-title { font-family: "Cormorant Garamond", serif; font-size: 14.5pt; font-weight: 700; color: #141C30; margin: 0 0 2mm; }
+.letter p { font-size: 8.4pt; line-height: 1.42; margin: 0 0 1.8mm; color: #1E273B; }
+.letter .ph { background: rgba(202,164,101,.22); color: #141C30; font-weight: 700; padding: 0 1mm; border-radius: 1mm; }
+.letter-sig { margin-top: 2.5mm; display: flex; justify-content: space-between; font-size: 8pt; color: #47526C; border-top: 1px dashed rgba(20,28,48,.18); padding-top: 2mm; }
+.letter-sig b { color: #141C30; display: block; }
+
+.letter .badge-pill { display: inline-block; font-size: 7.3pt; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 0.9mm 2.6mm; border-radius: 999px; background: #141C30; color: #CAA465; margin-bottom: 1.5mm; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<section class="page cover">
+  <div class="rings"></div>
+  <div class="top"><span><b>Goforge Digital</b> &middot; College Partnership Pack</span><span>January 2027 Edition</span></div>
+  <div class="cover-brand">
+    <img src="../../public/img/gf-logo-128.png" alt="Goforge Digital logo">
+    <span>Goforge Digital &middot; Digital Solutions &amp; Growth</span>
+  </div>
+  <h1>Campus partnerships &amp;<br><em>industry internships.</em></h1>
+  <p class="lede">A practical guide for Principals, Heads of Department and Training &amp; Placement Officers: our training + internship programmes, January 2027 batch schedule, MoU outline and ready-to-use letter templates.</p>
+
+  <div class="cover-points">
+    <div class="card"><b>MSME Regd.</b><span>Udyam No. UDYAM-HR-03-0170735 &middot; software company in Faridabad</span></div>
+    <div class="card"><b>3 or 6 Months</b><span>Live online training + supervised internship on real projects</span></div>
+    <div class="card"><b>Verifiable IDs</b><span>Certificates &amp; letters checkable at goforgedigital.com/verify</span></div>
+  </div>
+
+  <div class="cover-toc">
+    <p class="eyebrow">Inside this pack</p>
+    <div class="toc-grid">
+      <div><b>01</b> About Goforge Digital &amp; 7 student tracks (Page 2)</div>
+      <div><b>04</b> Standard MoU outline for discussion (Page 3)</div>
+      <div><b>02</b> 3-Month &amp; 6-Month structure &amp; Jan 2027 dates (Page 2)</div>
+      <div><b>05</b> Sample offer &amp; completion letters (Page 4)</div>
+      <div><b>03</b> Six partnership formats &amp; MoU process (Page 3)</div>
+      <div><b>06</b> Student NOC request template &amp; contact (Page 5)</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad, Haryana 121001 &middot; info@goforgedigital.com</span>
+    <span>goforgedigital.com/colleges</span>
+  </div>
+</section>
+
+<!-- PAGE 2: ABOUT, PROGRAMMES & JANUARY 2027 BATCH -->
+<section class="page">
+  <div class="top"><span><b>01 &middot; About &amp; Programmes</b></span><span>Page 2</span></div>
+  <p class="eyebrow">Who we are</p>
+  <h2>An MSME-registered software company <em>training students on real work.</em></h2>
+  <p class="note"><b>Goforge Digital</b> (Udyam Registration: <b>UDYAM-HR-03-0170735</b>), led by <b>Rohit Sharma, Founder &amp; Director</b> from Sector 81, Faridabad, builds custom software, CRM/ERP systems, AI automation, business websites and digital marketing for clients. Students train live online with practitioners and complete a supervised internship on studio or industry-style projects. <b>We do not claim AICTE approval and we do not promise job placements</b> &mdash; students graduate with real projects, a training certificate and an internship letter your college can verify.</p>
+
+  <p class="eyebrow mt-sm">Seven student tracks</p>
+  <ul class="chips">
+    <li>Software Engineering</li>
+    <li>AI/ML Engineer</li>
+    <li>Data Analyst</li>
+    <li>Full Stack Web Development</li>
+    <li>Digital Marketing</li>
+    <li>Business Analyst</li>
+    <li>Data Science</li>
+  </ul>
+
+  <div class="two mt">
+    <div class="card prog">
+      <p class="lbl">3-Month Programme</p>
+      <p><span class="price">₹1,499</span> <span class="note">all-inclusive fee</span></p>
+      <div class="bar"><i style="width:33%;background:#141C30"></i><i style="width:2%"></i><i style="width:65%;background:#CAA465"></i></div>
+      <div class="legend"><span>1 month live training</span><span>2 months internship</span></div>
+      <ul class="check">
+        <li>Fits 4 to 8-week semester or summer rules</li>
+        <li>Covers most 60 to 120-hour credit requirements</li>
+        <li>Includes project, training certificate &amp; letter</li>
+      </ul>
+    </div>
+    <div class="card prog navy">
+      <p class="lbl">6-Month Programme</p>
+      <p><span class="price">₹1,999</span> <span class="note">all-inclusive fee</span></p>
+      <div class="bar"><i style="width:49%;background:#F0ECE3"></i><i style="width:2%"></i><i style="width:49%;background:#CAA465"></i></div>
+      <div class="legend"><span>3 months live training</span><span>3 months internship</span></div>
+      <ul class="check">
+        <li>Built for final-year students &amp; graduates</li>
+        <li>Deeper portfolio &amp; capstone project review</li>
+        <li>Suitable for 6-month / final-semester rules</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <p class="eyebrow" style="margin-bottom:1.5mm">January 2027 batch &mdash; starts 8 January 2027 &middot; choose weekday or weekend schedule &middot; registration closes 5 January 2027</p>
+    <div class="two">
+      <div>
+        <h3>Weekday schedule</h3>
+        <p class="note" style="margin:0">Mon to Fri &middot; 7:30 to 9:00 PM IST.<br><b>Starts Friday 8 January 2027.</b> Fridays are dedicated doubt and project review sessions.</p>
+      </div>
+      <div>
+        <h3>Weekend schedule</h3>
+        <p class="note" style="margin:0">Sat and Sun &middot; 11:00 AM to 2:00 PM IST (with 15-min break).<br><b>First weekend class Saturday 9 January 2027.</b></p>
+      </div>
+    </div>
+    <p class="note" style="margin:2.5mm 0 0"><b>25-seat cap per schedule.</b> Live online, with every class recorded. Exam-friendly: students can pause during university exams or switch once to a later batch at no cost. College-specific letter formats, hours logs and NOC support are provided on request.</p>
+  </div>
+
+  <div class="foot"><span>Goforge Digital &middot; MSME Udyam UDYAM-HR-03-0170735 &middot; info@goforgedigital.com</span><span>goforgedigital.com</span></div>
+</section>
+
+<!-- PAGE 3: HOW COLLEGE PARTNERSHIPS WORK & MOU OUTLINE -->
+<section class="page">
+  <div class="top"><span><b>02 &middot; College Partnerships &amp; MoU Outline</b></span><span>Page 3</span></div>
+  <p class="eyebrow">How a college partnership works</p>
+  <h2>Six formats, <em>one clear process.</em></h2>
+
+  <div class="three">
+    <div class="card"><h3>Campus tie-up / MoU</h3><p class="note" style="margin:0">Year-round training, internships and expert sessions with defined deliverables.</p></div>
+    <div class="card"><h3>Workshops &amp; bootcamps</h3><p class="note" style="margin:0">1-day to 4-week hands-on sessions in AI, data, web or marketing.</p></div>
+    <div class="card"><h3>Faculty development</h3><p class="note" style="margin:0">Practical FDPs updating faculty on modern industry workflows and tools.</p></div>
+    <div class="card"><h3>Bulk batch training</h3><p class="note" style="margin:0">Live cohort training for a class or department aligned to your calendar.</p></div>
+    <div class="card"><h3>Internship cohorts</h3><p class="note" style="margin:0">3- or 6-month training + internship with verifiable completion letters.</p></div>
+    <div class="card"><h3>Guest talks &amp; expos</h3><p class="note" style="margin:0">Practitioner sessions, hackathons and student project evaluations.</p></div>
+  </div>
+
+  <p class="eyebrow mt-sm">From enquiry to outcome report</p>
+  <ol class="steps6">
+    <li><b>Enquiry</b>Send the college form or email info@goforgedigital.com.</li>
+    <li><b>Discovery call</b>Align with your TPO, HoD or Principal on goals &amp; rules.</li>
+    <li><b>Proposal</b>Receive topics, schedule, delivery mode &amp; institutional pricing.</li>
+    <li><b>MoU &amp; onboarding</b>Sign the MoU and confirm student cohort dates.</li>
+    <li><b>Delivery</b>Live sessions, labs, mentor reviews &amp; attendance logs.</li>
+    <li><b>Certificates &amp; report</b>Verifiable student letters + NAAC/NBA outcome summary.</li>
+  </ol>
+
+  <p class="eyebrow mt">Standard MoU outline <span style="font-weight:600;text-transform:none;letter-spacing:0;color:#47526C">(discussion outline only &mdash; not legal advice)</span></p>
+  <table>
+    <thead><tr><th style="width:26%">Clause</th><th>Summary of mutual understanding</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Parties</b></td><td><b>[College / University Name]</b>, [City, State] and <b>Goforge Digital</b> (MSME Udyam Reg. UDYAM-HR-03-0170735, Sector 81, Faridabad, Haryana).</td></tr>
+      <tr><td><b>2. Purpose</b></td><td>To collaborate on industry-aligned skill training, workshops, FDPs and supervised student internships that bridge classroom learning and workplace practice.</td></tr>
+      <tr><td><b>3. Scope</b></td><td>Jointly scheduled workshops, bulk training batches, 3- or 6-month training + internships, guest lectures, and project mentorship (online, on-campus in NCR, or hybrid).</td></tr>
+      <tr><td><b>4. Goforge responsibilities</b></td><td>Provide curriculum, practitioner mentors, live/recorded delivery, project supervision, attendance &amp; evaluation logs, and verifiable training certificates &amp; internship letters.</td></tr>
+      <tr><td><b>5. College responsibilities</b></td><td>Designate a faculty/TPO coordinator, share academic calendar &amp; internship format rules/NOC needs, circulate batch notices, and provide lab/hall support for on-campus sessions.</td></tr>
+      <tr><td><b>6. Duration &amp; review</b></td><td>Effective for <b>[1 / 2 / 3] academic year(s)</b> from signing, reviewed annually. Non-exclusive unless separately agreed in writing; individual batch fees are agreed per proposal.</td></tr>
+      <tr><td><b>7. Termination</b></td><td>Either party may terminate with <b>30 days&rsquo; written notice</b>; students already enrolled in an active batch complete their programme and receive their documents uninterrupted.</td></tr>
+      <tr><td><b>8. Signatories</b></td><td>Signed by <b>[Principal / Director / Registrar / TPO]</b> for the Institution and <b>Rohit Sharma, Founder &amp; Director</b> for Goforge Digital, with date and seal.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>Note: MoU outline is provided to speed up campus review and is not legal advice.</span><span>goforgedigital.com/colleges</span></div>
+</section>
+
+<!-- PAGE 4: SAMPLE OFFER LETTER & COMPLETION LETTER -->
+<section class="page">
+  <div class="top"><span><b>03 &middot; Sample Student Letters (1 of 2)</b></span><span>Page 4</span></div>
+  <p class="eyebrow">Verifiable documentation samples</p>
+  <h2>Sample offer &amp; <em>completion letters.</em></h2>
+
+  <div class="letter">
+    <div class="letter-bar">
+      <div><strong>GOFORGE DIGITAL</strong><span>MSME Registered &middot; UDYAM-HR-03-0170735</span></div>
+      <div style="text-align:right"><span>D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad 121001<br>info@goforgedigital.com &middot; goforgedigital.com</span></div>
+    </div>
+    <p style="display:flex;justify-content:space-between;font-size:8pt;color:#47526C;margin-bottom:1.5mm"><span>Ref: <span class="ph">[GFD-OFFER-YYYY-XXXX]</span></span><span>Date: <span class="ph">[Issue Date]</span></span></p>
+    <p class="letter-title">Internship Offer Letter</p>
+    <p>Dear <span class="ph">[Student Name]</span> (<span class="ph">[Course &amp; Year]</span>, <span class="ph">[College Name]</span>),</p>
+    <p>Following completion of your training phase and assessment, Goforge Digital is pleased to offer you a supervised online internship as <b><span class="ph">[Track / Role, e.g. Data Analyst Intern]</span></b>. Your internship runs from <b><span class="ph">[Internship Start Date]</span></b> to <b><span class="ph">[Internship End Date]</span></b> (<b><span class="ph">[Total Weeks / Hours]</span></b>), guided by your assigned mentor with weekly progress reviews.</p>
+    <p>During the internship you will complete assigned project deliverables, maintain task updates and present your final work. On successful completion, Goforge Digital will issue a formal Internship Completion Letter specifying your role, exact dates, hours and work completed.</p>
+    <div class="letter-sig">
+      <div><b>Rohit Sharma</b>Founder &amp; Director, Goforge Digital</div>
+      <div style="text-align:right"><b>Verification</b>info@goforgedigital.com &middot; goforgedigital.com/verify</div>
+    </div>
+  </div>
+
+  <div class="letter mt">
+    <div class="letter-bar">
+      <div><strong>GOFORGE DIGITAL</strong><span>MSME Registered &middot; UDYAM-HR-03-0170735</span></div>
+      <div style="text-align:right"><span>D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad 121001<br>info@goforgedigital.com &middot; goforgedigital.com</span></div>
+    </div>
+    <p style="display:flex;justify-content:space-between;font-size:8pt;color:#47526C;margin-bottom:1.5mm"><span>Certificate ID: <span class="ph">[GFD-YYYY-XXXX]</span></span><span>Date: <span class="ph">[Completion Date]</span></span></p>
+    <p class="letter-title">Internship Completion Letter &mdash; To Whom It May Concern</p>
+    <p>This is to certify that <b><span class="ph">[Student Name]</span></b>, Roll No. <span class="ph">[Roll Number]</span>, a student of <span class="ph">[Course &amp; Year]</span> at <b><span class="ph">[College Name]</span></b>, has successfully completed a supervised online internship with Goforge Digital as a <b><span class="ph">[Track / Role]</span></b> from <b><span class="ph">[Start Date]</span></b> to <b><span class="ph">[End Date]</span></b> (total duration: <span class="ph">[Weeks / Hours]</span>).</p>
+    <p><b>Summary of work completed:</b> <span class="ph">[2&ndash;3 lines describing the project built, tools used and deliverables reviewed by the mentor]</span>. Throughout the internship, <span class="ph">[Student Name]</span> met assigned milestones and demonstrated consistent effort.</p>
+    <p>This letter can be independently verified by submitting Certificate ID <b><span class="ph">[GFD-YYYY-XXXX]</span></b> at <b>goforgedigital.com/verify</b> or by emailing info@goforgedigital.com.</p>
+    <div class="letter-sig">
+      <div><b>Rohit Sharma</b>Founder &amp; Director, Goforge Digital</div>
+      <div style="text-align:right"><b>Verify ID <span class="ph">[GFD-YYYY-XXXX]</span></b>goforgedigital.com/verify</div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Highlighted fields like [Student Name] are sample placeholders filled per student.</span><span>goforgedigital.com/verify</span></div>
+</section>
+
+<!-- PAGE 5: SAMPLE NOC LETTER TEMPLATE & CONTACT -->
+<section class="page">
+  <div class="top"><span><b>04 &middot; College NOC Template &amp; Next Steps</b></span><span>Page 5</span></div>
+  <p class="eyebrow">Sample student request template</p>
+  <h2>College NOC / <em>internship request letter.</em></h2>
+
+  <div class="letter">
+    <p class="badge-pill">Template for students submitting to their TPO / HoD</p>
+    <p>To,<br>The Training &amp; Placement Officer / Head of Department,<br><span class="ph">[Department Name]</span>, <span class="ph">[College Name]</span>, <span class="ph">[City]</span></p>
+    <p><b>Date:</b> <span class="ph">[Date]</span></p>
+    <p><b>Subject:</b> Request for No Objection Certificate (NOC) / approval for online industry training &amp; internship at Goforge Digital</p>
+    <p>Respected Sir / Madam,</p>
+    <p>I am <b><span class="ph">[Student Name]</span></b> (Roll No. <span class="ph">[Roll Number]</span>), studying in <span class="ph">[Course, Branch &amp; Semester]</span>. As part of my academic curriculum, I wish to undertake the <b><span class="ph">[3-Month / 6-Month]</span> <span class="ph">[Track / Role]</span></b> training and supervised internship programme with <b>Goforge Digital</b> (MSME Udyam Reg. No. UDYAM-HR-03-0170735, Sector 81, Faridabad, Haryana).</p>
+    <p>The programme runs in live online mode from <b><span class="ph">[Start Date, e.g. 8 January 2027]</span></b> to <b><span class="ph">[End Date]</span></b> (<span class="ph">[Weekday / Weekend]</span> schedule, total <span class="ph">[Weeks / Hours]</span>), without clashing with regular college hours. On completion, the company will issue a training certificate and an internship completion letter with verifiable Certificate ID at goforgedigital.com/verify.</p>
+    <p>I kindly request you to grant permission and issue an NOC for the same. I assure you I will maintain my academic attendance and submit all required reports on time.</p>
+    <p style="margin-bottom:0">Thanking you,<br>Yours sincerely,<br><b><span class="ph">[Student Name]</span></b> &middot; <span class="ph">[Roll Number]</span> &middot; <span class="ph">[Student Email]</span></p>
+  </div>
+
+  <div class="card navy mt">
+    <p class="eyebrow">Next step for colleges</p>
+    <h3 style="font-size:17pt">Let&rsquo;s plan a programme <em>for your campus.</em></h3>
+    <p class="note">Share your department details, preferred dates, student strength and internship or credit format requirements. Our partnerships team replies within one working day with a tailored proposal.</p>
+    <div class="two mt-sm">
+      <div>
+        <p class="note" style="margin:0"><b style="color:#CAA465">Office address</b><br>Goforge Digital<br>D125b, 1st Floor, Puri Highstreet,<br>Sector 81, Faridabad, Haryana 121001</p>
+      </div>
+      <div>
+        <p class="note" style="margin:0"><b style="color:#CAA465">Institutional contact</b><br>Email: info@goforgedigital.com<br>College page: goforgedigital.com/colleges<br>Verify letters: goforgedigital.com/verify</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Goforge Digital &middot; D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad, Haryana 121001</span><span>info@goforgedigital.com</span></div>
+</section>
+
+</body>
+</html>

@@ -18,7 +18,7 @@ function programmeLines({ settings, brand, tracks, lengths = [], batchLines = []
     '# How it runs',
     'Two programmes, 3 or 6 months:',
     ...lengths.map(t => '- ' + t.name + ': ' + t.trainingMonths + ' month' + (t.trainingMonths > 1 ? 's' : '') + ' training + ' + t.internshipMonths + ' months internship.'),
-    ...lengths.map(t => '  ' + t.name + ' festive launch price: Rs ' + Number(t.price).toLocaleString('en-IN') + ', all-inclusive.'),
+    ...lengths.map(t => '  ' + t.name + ': Rs ' + Number(t.price).toLocaleString('en-IN') + ', all-inclusive.'),
     'Training is live online. The internship is supervised.',
     'Who can apply: BTech, BCA and similar courses.',
     'Projects and internship included.',

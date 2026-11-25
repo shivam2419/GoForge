@@ -1575,7 +1575,7 @@ img.brand-card-mark { width: 34%; height: auto; display: block; margin: 0 auto 1
   .track-name { min-height: 0; }
 }
 
-/* ---------- November 2026 batch: strip, batch cards, real seat cap, free webinar + guide, prices ---------- */
+/* ---------- Batch info: strip, batch cards, real seat cap, free webinar + guide, prices ---------- */
 .next-batch .nb-hot { font-weight: 800; color: var(--ink); }
 .next-batch a { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-weight: 700; color: var(--ink); text-decoration-color: var(--gold); text-underline-offset: 3px; }
 .next-batch a .icon { width: 14px; height: 14px; }
@@ -1649,7 +1649,9 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 @media (max-width: 380px) { .track-price strong { font-size: 36px; } }
 
 .student-band .sb-hot { color: var(--gold); font-weight: 700; }
-@media (max-width: 760px) { .student-band a > span.sb-hot { white-space: normal; flex-basis: 100%; } }
+.student-band a { flex-wrap: wrap; }
+.student-band a > span.sb-hot { white-space: normal; }
+@media (max-width: 760px) { .student-band a > span.sb-hot { flex-basis: 100%; } }
 .stu-hot { display: block; margin-top: 6px; color: var(--ink); font-weight: 750; }
 .hero-actions .btn-students .icon { width: 16px; height: 16px; }
 

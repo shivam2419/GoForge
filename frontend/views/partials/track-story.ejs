@@ -58,7 +58,7 @@
         <p class="eyebrow" data-reveal>Choose your programme</p>
         <h2 id="tracks-h" class="h2" data-reveal>Two programmes, <em>one standard.</em></h2>
       </div>
-      <p class="section-intro" data-reveal>Both have live training, mentor reviews, a supervised internship and a verifiable letter. Pick the one that matches your college rule and your time. Prices are the festive launch price, all-inclusive and paid once.</p>
+      <p class="section-intro" data-reveal>Both have live training, mentor reviews, a supervised internship and a verifiable letter. Pick the one that matches your college rule and your time. All fees are all-inclusive and paid once.</p>
     </div>
     <ul class="track-grid track-grid-2" data-reveal-group>
       <% CAREER_TRACKS.forEach(t => { const label = careerTrackLabel(t); const tw = Math.round(100 * t.trainingMonths / t.months); %>
@@ -66,7 +66,7 @@
         <article class="track-card" aria-labelledby="track-<%= t.slug %>-h">
           <div class="track-top">
             <p class="track-weeks"><strong><%= t.months %></strong> months</p>
-            <p class="track-price"><span>Festive launch price</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
+            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
           </div>
           <h3 id="track-<%= t.slug %>-h" class="track-name"><%= t.name %></h3>
           <p class="track-best"><span>Best for</span> <%= t.bestFor %></p>
@@ -78,7 +78,7 @@
           <ul class="track-inc">
             <% t.includes.forEach(item => { %><li><%- include('icon', { name: 'check' }) %><span><%= item %></span></li><% }) %>
           </ul>
-          <% if (offer.registrationOpen) { %><p class="track-seats"><strong>Only <%= SEAT_CAP %> seats per batch</strong> &middot; registration closes <%= REGISTRATION.closesShort %></p><% } %>
+          <% if (offer.registrationOpen) { %><p class="track-seats"><strong>Starts <%= BATCH_STARTS_FULL %></strong> &middot; weekday or weekend schedule &middot; closes <%= REGISTRATION.closesFull %></p><% } %>
           <a class="btn btn-primary track-cta" href="/counselling?track=<%= t.slug %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="track" data-prefill-value="<%= label %>" aria-label="Book a free call about the <%= t.name %>">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
         </article>
       </li>

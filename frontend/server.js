@@ -175,6 +175,8 @@ function validateApplication(body, TRACKS) {
   field(errors, values, body, 'city', 'your city', { max: 80 });
   values.mode = text(body.mode);
   if (values.mode && !MODES.includes(values.mode)) errors.mode = 'Please choose from the list.';
+  values.schedule = text(body.schedule);
+  if (values.schedule && !batch.BATCH_PREFS.includes(values.schedule)) errors.schedule = 'Please choose from the list.';
   values.source = text(body.source);
   if (values.source && !SOURCES.includes(values.source)) errors.source = 'Please choose from the list.';
   field(errors, values, body, 'referred_by', 'who referred you', { max: 80 });
@@ -254,7 +256,7 @@ app.use(async (req, res, next) => {
   const offer = batch.offerState(now);
   Object.assign(res.locals, {
     offer, now, inr: batch.inr, SEAT_CAP: batch.SEAT_CAP, SEATS: { weekday: batch.seatInfo(s.seats_weekday), weekend: batch.seatInfo(s.seats_weekend) }, REGISTRATION: batch.REGISTRATION, REFERRAL: batch.REFERRAL, WEBINAR: batch.WEBINAR_PUBLIC, showAnn: offer.webinar && req.path !== '/counselling' && req.path !== '/webinar',
-    BATCH_LABEL: batch.BATCH_LABEL, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
+    BATCH_LABEL: batch.BATCH_LABEL, BATCH_STARTS: batch.BATCH_STARTS, BATCH_STARTS_FULL: batch.BATCH_STARTS_FULL, BATCH_STARTS_SHORT: batch.BATCH_STARTS_SHORT, BATCH_SUMMARY: batch.BATCH_SUMMARY, NEXT_AFTER: batch.NEXT_AFTER, BATCHES: batch.BATCHES, BATCH_PROMISES: batch.BATCH_PROMISES, BATCH_PREFS: batch.BATCH_PREFS,
     COUNSEL_INTERESTS: counselInterests(offer), upcomingRows: rows => batch.upcomingRows(rows, now), TIMELINE: batch.timeline(now), toolChips,
     PROGRAMS, TRACKS, MODES, SOURCES, GREVIEWS,
     s, BRAND, SERVICES, SERVICE_PAGES, TRACK_DETAILS, SIMILAR_ROLE, PROCESS, STATUSES, CONTACT_SERVICES,
@@ -476,7 +478,7 @@ app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
   const { sampleDocs } = await trustData();
   res.render('verify', { certId: id, sampleDocs, ...pageMeta(req, 'Verify a certificate',
-    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: true, seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
+    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: Boolean(id), seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
 });
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
@@ -531,10 +533,17 @@ app.post('/colleges', formLimiter, async (req, res) => {
   respondOk(req, res, 'college', 'Thanks, ' + values.name.split(' ')[0] + '. Your enquiry is saved. Our partnerships team will contact you within one working day.');
 });
 
+const COLLEGE_PACK_FILE = path.join(__dirname, 'assets', 'goforge-college-pack.pdf');
+app.get('/colleges/pack.pdf', (req, res) => {
+  res.set('Content-Type', 'application/pdf');
+  res.set('Content-Disposition', 'attachment; filename="goforge-college-pack.pdf"');
+  res.sendFile(COLLEGE_PACK_FILE);
+});
+
 const COUNSEL_TIMES = ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'];
 // What a student wants from the call. The webinar option is only offered until the webinar ends,
 // but older open forms may still send it, so validation accepts every option.
-const COUNSEL_INTEREST_ALL = ['Joining the ' + batch.BATCH_LABEL, batch.WEBINAR.interest, 'Joining the ' + batch.NEXT_AFTER + ' batch', 'Just exploring'];
+const COUNSEL_INTEREST_ALL = ['Joining the ' + batch.BATCH_LABEL, batch.WEBINAR.interest, 'Joining a later batch', 'Just exploring'];
 function counselInterests(offer) {
   return COUNSEL_INTEREST_ALL.filter(o => (o !== batch.WEBINAR.interest || offer.webinar) && (o !== 'Joining the ' + batch.BATCH_LABEL || offer.registrationOpen));
 }
@@ -725,11 +734,11 @@ async function trustData() {
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. November 2026 batch, 25 seats per batch. Verifiable certificates.';
+const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training for Students in Faridabad & Online | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
+  ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC, { seoTitle: 'Internship with Training for Students — January 2027 Batch | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
 }));
 
 app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
@@ -741,8 +750,8 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
     program, instructors, credentials, stats, counselProgram: program.name,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' training + internship at Goforge Digital: 3-Month (₹1,499) or 6-Month (₹1,999) programme, live online. Curriculum, tools, projects, batch timings and the November 2026 batch.',
-      { seoTitle: program.name + ' Training with Internship | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
+      program.name + ' training + internship at Goforge Digital: 3-Month (₹1,499) or 6-Month (₹1,999) programme, live online. Curriculum, tools, projects and the ' + batch.BATCH_SUMMARY + '.',
+      { seoTitle: program.name + ' Training with Internship — January 2027 Batch | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
 // Old role pages moved to programme pages.
@@ -756,8 +765,8 @@ app.get('/internship/overview.pdf', (req, res) => {
   res.set('Content-Type', 'application/pdf');
   res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
   res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: CAREER_TRACKS, batchLines: res.locals.offer.registrationOpen
-    ? [batch.BATCH_LABEL + ' (registration closes ' + batch.REGISTRATION.closes + '):', ...batch.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ', from ' + b.starts + '.'), 'Only ' + batch.SEAT_CAP + ' seats per batch.']
-    : ['Next batch: ' + batch.NEXT_AFTER + '. Dates on the counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
+    ? [batch.BATCH_SUMMARY + '.', ...batch.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ' (' + b.startsLabel + ').'), 'Only ' + batch.SEAT_CAP + ' seats per schedule.']
+    : ['Next batch: dates shared on a free counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
@@ -809,9 +818,9 @@ app.post('/internship', formLimiter, async (req, res) => {
     return res.status(422).render('internship', { ...(await trustData()), ...pageMeta(req, 'Training & internship', INTERNSHIP_DESC), errors, values });
   }
   const groupUrl = await cms.whatsappGroupFor(values.track);
-  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, source, referred_by, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0));
+  (await db.run('INSERT INTO applications (full_name, college, course_year, whatsapp, track, note, email, city, mode, schedule, source, referred_by, consent, group_link_shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values.full_name, values.college, values.course_year, values.phone, values.track, values.note || null, values.email || null, values.city || null, values.mode || null, values.schedule || null, values.source || null, values.referred_by || null, 1, groupUrl ? 1 : 0));
   notifyLead({ title: 'internship application', name: values.full_name, adminUrl: SITE_URL + '/admin/applications', replyTo: values.email,
-    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Note', values.note]] });
+    fields: [['Name', values.full_name], ['Programme', values.track], ['College', values.college], ['Course / year', values.course_year], ['Phone', values.phone], ['Email', values.email], ['City', values.city], ['Mode', values.mode], ['Schedule', values.schedule], ['Heard about us', values.source], ['Referred by', values.referred_by], ['Note', values.note]] });
   // The group link is only ever sent in this response, after the application is saved.
   respondOk(req, res, 'internship', 'Thanks, ' + values.full_name.split(' ')[0] + '. Your application is saved. We will contact you soon.', groupUrl ? { url: groupUrl, program: values.track } : null);
 });
@@ -831,18 +840,18 @@ app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow
 // Priorities put the business pages first. lastmod is the date the page content last changed
 // (SITE_UPDATED, bump when copy changes) rather than the request date.
 const SITE_UPDATED = '2026-10-18';
-// The November 2026 batch, prices and seat cap changed the training pages, home and FAQ on 2026-10-19.
-// Every page changed on 2026-10-18 (address PIN in the footer, new work section), so all share SITE_UPDATED for now.
-// Add a path here when only that page changes later, e.g. { '/faq': '2026-11-02' }.
-const PAGE_UPDATED = { '/': '2026-10-19', '/internship': '2026-10-19', '/faq': '2026-10-19', '/colleges': '2026-10-19', '/about': '2026-10-19', '/internship/overview': '2026-10-19' };
+// The January 2027 batch update changed training pages, home, FAQ, colleges and verify on 2026-11-25.
+// Every page changed on 2026-10-18 (address PIN in the footer, new work section), so unchanged pages share SITE_UPDATED.
+// Add a path here when only that page changes later, e.g. { '/faq': '2026-12-01' }.
+const PAGE_UPDATED = { '/': '2026-11-25', '/internship': '2026-11-25', '/faq': '2026-11-25', '/colleges': '2026-11-25', '/about': '2026-10-19', '/internship/overview': '2026-11-25', '/verify': '2026-11-25' };
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
-    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/internship/overview', '0.4']])
+    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/schools', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat(res.locals.offer.webinar ? [['/webinar', '0.6']] : [])
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-10-19' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-11-25' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });
 app.get('/js/analytics.js', (req, res) => {
   if (!GA_ID) return res.status(404).type('text').send('');

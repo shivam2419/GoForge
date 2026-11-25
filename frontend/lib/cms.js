@@ -27,7 +27,7 @@ const ENTITIES = {
       { name: 'tools', label: 'Tools', type: 'lines', max: 1000, hint: 'One per line.' },
       { name: 'project', label: 'Typical project', type: 'textarea', rows: 3, max: 800 },
       { name: 'suits', label: 'Who it suits', type: 'textarea', rows: 2, max: 500 },
-      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'Optional. One per line: Start date | Timing | Seats. For example: 2 Nov 2026 | Mon–Fri, 7:30–9 PM IST | 25 seats. Leave empty to show the November 2026 weekday and weekend batches. Rows hide after their start date. Write only a real seat cap; leave Seats empty to show the standard 25-seat cap.' },
+      { name: 'batches', label: 'Upcoming batches', type: 'lines', max: 1000, hint: 'Optional. One per line: Start date | Timing | Seats. For example: 8 Jan 2027 | Mon–Fri, 7:30–9 PM IST | 25 seats. Leave empty to show the January 2027 batch schedules. Rows hide after their start date. Write only a real seat cap; leave Seats empty to show the standard 25-seat cap.' },
       { name: 'sort_order', label: 'Order', type: 'number', min: 0, max: 999 },
       { name: 'published', label: 'Show on the site', type: 'bool' }
     ]
@@ -186,6 +186,10 @@ async function seed() {
   // 150+ is a student-projects figure; relabel the old seeded row if the admin has not changed it.
   stmts.push(["UPDATE stats SET note = 'Projects completed by our students during training and internships.' WHERE label = 'Projects delivered' AND note = 'Client and studio projects completed by the team.'"]);
   stmts.push(["UPDATE stats SET label = 'Projects completed', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE label = 'Projects delivered'"]);
+  // Fix Ishant Hingorani's title typo and point hotlinked mentor photos to local static assets.
+  stmts.push(["UPDATE instructors SET title = REPLACE(title, 'Scenior Data Analyst', 'Senior Data Analyst'), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE title LIKE '%Scenior Data Analyst%'"]);
+  stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/shivam-sharma.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%shivam sharma%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
+  stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/ishant-hingorani.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%ishant hingorani%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
   if (stmts.length) await db.batch(stmts);
   await seedProgramsV2();
 }
@@ -226,7 +230,7 @@ async function seedProgramsV2() {
 }
 
 // Applications table gained columns; add them to existing databases.
-const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT' };
+const APPLICATION_COLUMNS = { email: 'TEXT', city: 'TEXT', mode: 'TEXT', schedule: 'TEXT', source: 'TEXT', consent: 'INTEGER', group_link_shown: 'INTEGER NOT NULL DEFAULT 0', referred_by: 'TEXT' };
 async function migrate() {
   await db.batch(schemaSql().map(sql => [sql]));
   const have = new Set((await db.all('PRAGMA table_info(applications)')).map(r => r.name));

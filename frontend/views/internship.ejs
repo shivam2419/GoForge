@@ -14,7 +14,7 @@
     <%- include('partials/batch-strip', { anchor: '#batch' }) %>
     <dl class="facts" data-reveal-group>
       <div data-reveal><dt>Length</dt><dd>3 or 6 months</dd></div>
-      <div data-reveal><dt>Festive launch price</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
+      <div data-reveal><dt>Programme fee</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
       <div data-reveal><dt>Format</dt><dd>Live online training, then a supervised internship</dd></div>
       <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
     </dl>
@@ -147,7 +147,7 @@
     <div>
       <p class="eyebrow" data-reveal>Apply</p>
       <h2 id="apply-h" class="h2" data-reveal>Send your <em>application</em></h2>
-      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included in the price.<% if (offer.registrationOpen) { %> Registration for the November 2026 batch closes on <%= REGISTRATION.closes %>, with only <%= SEAT_CAP %> seats per batch.<% } %> Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
+      <p class="section-intro" data-reveal>We read every application and reply by phone or email. Projects and the internship are included in the price.<% if (offer.registrationOpen) { %> <%= BATCH_SUMMARY %>, with only <%= SEAT_CAP %> seats per schedule.<% } %> Read the <a href="/faq#students">student FAQ</a> and the <a href="/internship/overview.pdf">programme overview (PDF)</a> before you apply.</p>
     </div>
     <div class="form-card" data-reveal>
       <%- include('partials/apply-form') %>

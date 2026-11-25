@@ -1,4 +1,4 @@
-<%# November 2026 batch: two batch cards with real dates, the real 25-seat cap and the seats-filled number from Admin > Settings.
+<%# January 2027 batch: one batch starting 8 Jan 2027 with two schedule choices (weekday or weekend), 25-seat cap per schedule.
     Data lives in lib/batch.js. Optional admin batch rows (per programme) are passed as rows and shown underneath. %>
 <% const rows = locals.rows || []; const head = locals.head !== false; %>
 <section class="section<%= locals.alt ? ' section-alt' : '' %>" id="batch" aria-labelledby="batch-h">
@@ -7,21 +7,22 @@
       <div>
         <p class="eyebrow" data-reveal>Next batch &middot; live online</p>
         <% if (offer.registrationOpen) { %>
-        <h2 id="batch-h" class="h2" data-reveal>November 2026 batch: <em>pick your timing.</em></h2>
+        <h2 id="batch-h" class="h2" data-reveal>January 2027 batch: <em>pick your schedule.</em></h2>
         <% } else { %>
-        <h2 id="batch-h" class="h2" data-reveal>Next batch: <em><%= NEXT_AFTER %>.</em></h2>
+        <h2 id="batch-h" class="h2" data-reveal>Next batch: <em>dates coming soon.</em></h2>
         <% } %>
       </div>
       <% if (offer.registrationOpen) { %>
-      <p class="section-intro" data-reveal>Two timings, both live online, for both programmes. Every batch is capped at <%= SEAT_CAP %> students so a mentor can review every assignment.</p>
+      <p class="section-intro" data-reveal><%= BATCH_SUMMARY %>. Both schedules are live online for both programmes, capped at <%= SEAT_CAP %> students per schedule so a mentor can review every assignment.</p>
       <% } else { %>
-      <p class="section-intro" data-reveal>Registration for the November 2026 batch closed on <%= REGISTRATION.closes %>. Book a free call for the <%= NEXT_AFTER %> dates and timings.</p>
+      <p class="section-intro" data-reveal>Registration for the <%= BATCH_LABEL %> closed on <%= REGISTRATION.closes %>. Book a free call for upcoming dates and timings.</p>
       <% } %>
     </div>
     <% if (offer.registrationOpen) { %>
     <ul class="batch-keys" data-reveal>
-      <li class="is-hot"><%- include('icon', { name: 'key' }) %><span><strong>Registration closes</strong><%= REGISTRATION.closes %></span></li>
-      <li class="is-hot"><%- include('icon', { name: 'user' }) %><span><strong>Only <%= SEAT_CAP %> seats</strong>per batch</span></li>
+      <li class="is-hot"><%- include('icon', { name: 'calendar' }) %><span><strong>Batch starts</strong><%= BATCH_STARTS_FULL %></span></li>
+      <li class="is-hot"><%- include('icon', { name: 'key' }) %><span><strong>Registration closes</strong><%= REGISTRATION.closesFull %></span></li>
+      <li class="is-hot"><%- include('icon', { name: 'user' }) %><span><strong>Only <%= SEAT_CAP %> seats</strong>per schedule</span></li>
       <li><%- include('icon', { name: 'browser' }) %><span><strong>Every class</strong>recorded</span></li>
       <li><%- include('icon', { name: 'check' }) %><span><strong>Exam-friendly</strong>pause or switch once</span></li>
     </ul>
@@ -39,7 +40,7 @@
     <%- include('batch-timeline') %>
     <% } else { %>
     <div class="hero-actions" data-reveal>
-      <a class="btn btn-primary" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining the <%= NEXT_AFTER %> batch">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-primary" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="interest" data-prefill-value="Joining a later batch">Book a free call <%- include('icon', { name: 'arrow' }) %></a>
     </div>
     <% } %>
     <% if (rows.length) { const anySeats = rows.some(r => r.seats); %>

@@ -98,7 +98,7 @@
     <div class="section-head">
       <p class="eyebrow" data-reveal>Programme length and price</p>
       <h2 id="price-h" class="h2" data-reveal><%= p.name %>: <em>3 or 6 months.</em></h2>
-      <p class="section-intro" data-reveal>Festive launch price, all-inclusive: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, with no instalments.</p>
+      <p class="section-intro" data-reveal>All-inclusive fee: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, with no instalments.</p>
     </div>
     <ul class="track-grid track-grid-2" data-reveal-group>
       <% CAREER_TRACKS.forEach(t => { const tw = Math.round(100 * t.trainingMonths / t.months); %>
@@ -106,7 +106,7 @@
         <article class="track-card">
           <div class="track-top">
             <p class="track-weeks"><strong><%= t.months %></strong> months</p>
-            <p class="track-price"><span>Festive launch price</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
+            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive &middot; no instalments</small></p>
           </div>
           <h3 class="track-name"><%= p.name %>: <%= t.name %></h3>
           <svg class="track-split" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="<%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship"><rect class="seg-train" x="0" y="0" width="<%= tw - 1 %>" height="10"/><rect class="seg-intern" x="<%= tw + 1 %>" y="0" width="<%= 99 - tw %>" height="10"/></svg>

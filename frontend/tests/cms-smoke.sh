@@ -32,8 +32,8 @@ chk "testimonial on public" 1 $(curl -s $B/internship | grep -c 'Riya TEST')
 PID=$(curl -s -b ck $B/admin/programs | grep -o '/admin/programs/[0-9]*"' | head -1 | grep -o '[0-9]*')
 EDIT=$(curl -s -b ck $B/admin/programs/$PID); NAME=$(echo "$EDIT" | grep -o 'name="name" type="text" value="[^"]*"' | sed 's/.*value="//;s/"//'); echo "editing $PID $NAME"
 T=$(tok /admin/programs/$PID)
-R=$(curl -s -b ck -o /dev/null -w %{http_code} -F "_csrf=$T" -F "name=$NAME" -F "slug=software-engineering" -F "icon=code" -F "summary=Build features in a real codebase." -F "fee=₹4,999 internal note" -F "batches=18 Jan 2027 | Mon–Fri, 7:30–9 PM IST | 25 seats" -F "curriculum=Week 1: Foundations | Git, CLI" -F "published=1" -F "sort_order=10" $B/admin/programs/$PID); chk "program save 303" 303 $R
-P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "admin batch row in table" 1 $(echo "$P" | grep -c '<td>18 Jan 2027</td>'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
+R=$(curl -s -b ck -o /dev/null -w %{http_code} -F "_csrf=$T" -F "name=$NAME" -F "slug=software-engineering" -F "icon=code" -F "summary=Build features in a real codebase." -F "fee=₹4,999 internal note" -F "batches=8 Jan 2027 | Mon–Fri, 7:30–9 PM IST | 25 seats" -F "curriculum=Week 1: Foundations | Git, CLI" -F "published=1" -F "sort_order=10" $B/admin/programs/$PID); chk "program save 303" 303 $R
+P=$(curl -s $B/internship/programs/software-engineering); chk "admin fee not shown publicly" 0 $(echo "$P" | grep -c '₹4,999'); chk "admin batch row in table" 1 $(echo "$P" | grep -c '<td>8 Jan 2027</td>'); chk "jsonld course" 1 $(echo "$P" | grep -c '"@type":"Course"')
 chk "no fee text on programme" 0 $(curl -s $B/internship/programs/data-analyst | grep -ci 'contact for fees\|training fee')
 chk "no fee text on internship" 0 $(curl -s $B/internship | grep -ci 'contact for fees\|training fee')
 # programmes v2
@@ -163,7 +163,7 @@ chk "tool trademark note" 1 $(echo "$PG" | grep -c 'shown only to name the tools
 chk "faq honest no-guarantee" 1 $(echo "$PG" | grep -c 'We do not promise jobs or placements')
 chk "kit section" 1 $(echo "$PG" | grep -c 'id="kit"')
 chk "compare table" 1 $(echo "$PG" | grep -c 'class="cmp"')
-chk "timeline 8 steps" 8 $(echo "$PG" | grep -c 'class="tl-item')
+chk "timeline 5 steps" 5 $(echo "$PG" | grep -c 'class="tl-item')
 chk "refund note" 1 $(echo "$PG" | grep -c 'Full refund if you cancel before your first live class')
 chk "final band" 1 $(echo "$PG" | grep -c 'cta-band-students')
 chk "programme og + twitter image" 2 $(echo "$PG" | grep -c 'og/program-data-analyst.png')

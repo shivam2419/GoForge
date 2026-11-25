@@ -43,7 +43,7 @@
   </div>
 </section>
 
-<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot">Nov batch &middot; <%- include('partials/seat-mini') %> &middot; registration closes <%= REGISTRATION.closesShort %></span><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
+<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot"><%= BATCH_SUMMARY %></span> <%- include('partials/seat-mini') %><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
@@ -178,7 +178,7 @@
     <a class="stu-card" href="/internship" data-reveal>
       <span class="audience-k">For students</span>
       <span id="stu-h" class="stu-t">Training + internship: 3 or 6 months</span>
-      <span class="stu-d">Festive launch price <%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (offer.registrationOpen) { %> <strong class="stu-hot">November batch: weekday from <%= BATCHES[0].startsShort %>, weekend from <%= BATCHES[1].startsShort %>. Only <%= SEAT_CAP %> seats per batch. Registration closes <%= REGISTRATION.closes %>.</strong><% } %></span>
+      <span class="stu-d"><%= inr(CAREER_TRACKS[0].price) %> (3 months) or <%= inr(CAREER_TRACKS[1].price) %> (6 months), all-inclusive. Live online training, then an internship on real projects.<% if (offer.registrationOpen) { %> <strong class="stu-hot"><%= BATCH_SUMMARY %>. Only <%= SEAT_CAP %> seats per schedule.</strong><% } %></span>
       <span class="stu-go">See batches <%- include('partials/icon', { name: 'arrow' }) %></span>
     </a>
   </div>
