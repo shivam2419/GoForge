@@ -104,6 +104,15 @@ async function run() {
     assert.strictEqual((internHtml.match(/Paid once, no instalments/g) || []).length, 1, 'Paid once appears once on /internship');
     assert.strictEqual((progHtml.match(/Paid once, no instalments/g) || []).length, 1, 'Paid once appears once on programme page');
     assert(!/<h[1-3][^>]*>[^<]*paid[^<]*<\/h[1-3]>/i.test(internHtml + progHtml), 'No "paid" in any heading');
+    assert(homeHtml.includes('from ₹2,999') && homeHtml.includes('₹2,999 (3 months) or ₹4,999 (6 months)'), 'Home shows ₹2,999 and ₹4,999');
+    assert(internHtml.includes('From ₹2,999') && internHtml.includes('₹2,999') && internHtml.includes('₹4,999'), '/internship shows ₹2,999 and ₹4,999');
+    assert(progHtml.includes('"price":"2999"') && progHtml.includes('"price":"4999"'), 'Course JSON-LD shows 2999 and 4999');
+    assert(progHtml.includes('<small>All-inclusive fee</small>'), 'Default tax_note empty -> All-inclusive fee');
+    for (const [n, h] of [['/', homeHtml], ['/internship', internHtml], ['/program', progHtml], ['/faq', faqHtml]]) {
+      assert(!/1,?499|1,?999/.test(h), 'No stale 1499 or 1999 on ' + n);
+    }
+    const overviewPdfBuf = Buffer.from(await (await jar.fetch('/internship/overview.pdf')).arrayBuffer());
+    assert(overviewPdfBuf.toString('latin1').includes('2,999') && overviewPdfBuf.toString('latin1').includes('4,999'), 'overview.pdf uses 2,999 and 4,999');
 
     // Direct PDF downloads (no form gate)
     for (const pdfPath of ['/internship/guide.pdf', '/colleges/pack.pdf']) {
@@ -153,6 +162,7 @@ async function run() {
     fd.set('track_3m_price', '2499');
     fd.set('track_6m_label', '6-Month Pro Track');
     fd.set('track_6m_price', '3999');
+    fd.set('tax_note', 'incl. GST');
     fd.set('fee_note', 'Custom fee note. Paid once, no instalments.');
     // Omit show_home_stats, show_google_badge, prog_show_* => toggled OFF
     fd.set('google_rating', '4.9');
@@ -187,7 +197,7 @@ async function run() {
     assert(internAfter.includes('Custom schedule note for March batch.'), 'Updated schedule_note on /internship');
     assert(internAfter.includes('Custom kit heading'), 'Updated kit_heading on /internship');
     assert(internAfter.includes('Custom proof heading'), 'Updated proof_heading on /internship');
-    assert(internAfter.includes('₹2,499') && internAfter.includes('₹3,999'), 'Updated prices on /internship');
+    assert(internAfter.includes('₹2,499') && internAfter.includes('₹3,999') && internAfter.includes('All-inclusive fee · incl. GST'), 'Updated prices + tax_note on /internship');
 
     const progAfter = await check200('/internship/programs/software-engineering');
     assert(!progAfter.includes('id="curriculum"'), 'Curriculum hidden when prog_show_curriculum=0');

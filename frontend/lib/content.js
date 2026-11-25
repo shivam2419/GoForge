@@ -149,14 +149,14 @@ const TRACKS = TRACK_DETAILS.map(t => t.name).concat([SIMILAR_ROLE]);
 // Batch dates, the seat cap and the referral offer live in lib/batch.js.
 const CAREER_TRACKS = [
   {
-    slug: '3-month', name: '3-Month Programme', short: '3 Months', months: 3, iso: 'P3M', price: 1499,
+    slug: '3-month', name: '3-Month Programme', short: '3 Months', months: 3, iso: 'P3M', price: 2999,
     trainingMonths: 1, internshipMonths: 2,
     bestFor: 'A semester or summer internship requirement',
     who: 'Students who need a 4 to 8-week internship letter, or want a first real project alongside college.',
     includes: ['1 month of live online training', '2-month supervised internship on a project', 'Training certificate + internship letter with dates and hours']
   },
   {
-    slug: '6-month', name: '6-Month Programme', short: '6 Months', months: 6, iso: 'P6M', price: 1999,
+    slug: '6-month', name: '6-Month Programme', short: '6 Months', months: 6, iso: 'P6M', price: 4999,
     trainingMonths: 3, internshipMonths: 3,
     bestFor: 'Final years, graduates and 6-month requirements',
     who: 'Final-year students and graduates who want deeper training, more project time and a portfolio to show employers.',
@@ -240,7 +240,7 @@ const FAQ = [
       },
       {
         q: 'How much does the programme cost?',
-        a: 'The fee is ₹1,499 for the 3-Month Programme and ₹1,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, assignments, projects, the internship, the training certificate and the internship letter. It is a single all-inclusive upfront fee, and nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'], top: true
+        a: 'The fee is ₹2,999 for the 3-Month Programme and ₹4,999 for the 6-Month Programme. It is all-inclusive: live classes, study material, mentor-reviewed assignments, projects, the internship, the training certificate and the internship letter. It is a single all-inclusive upfront fee with no instalments, and nothing is charged before you have spoken with us and, if you like, attended a free demo class.', link: ['/counselling', 'Book a free counselling call'], top: true
       },
       {
         q: 'What are the batch timings?',

@@ -66,7 +66,7 @@
         <article class="track-card" aria-labelledby="track-<%= t.slug %>-h">
           <div class="track-top">
             <p class="track-weeks"><strong><%= t.months %></strong> months</p>
-            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small>All-inclusive fee</small></p>
+            <p class="track-price"><span>Programme fee</span><strong><%= inr(offer.priceOf(t)) %></strong><small><%= s.tax_note ? 'All-inclusive fee · ' + s.tax_note : 'All-inclusive fee' %></small></p>
           </div>
           <h3 id="track-<%= t.slug %>-h" class="track-name"><%= t.name %></h3>
           <p class="track-best"><span>Best for</span> <%= t.bestFor %></p>

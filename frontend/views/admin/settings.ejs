@@ -43,6 +43,7 @@
       <%- include('../partials/field', { f: { id: 's-t3p', name: 'track_3m_price', label: '3-month fee (INR)', type: 'number', inputmode: 'numeric', required: true, max: 6 } }) %>
       <%- include('../partials/field', { f: { id: 's-t6l', name: 'track_6m_label', label: '6-month label', required: true, max: 60 } }) %>
       <%- include('../partials/field', { f: { id: 's-t6p', name: 'track_6m_price', label: '6-month fee (INR)', type: 'number', inputmode: 'numeric', required: true, max: 6 } }) %>
+      <%- include('../partials/field', { f: { id: 's-tn', name: 'tax_note', label: 'Tax / GST note', max: 80, wide: true, hint: 'Leave empty to just say "All-inclusive fee" on price cards.' } }) %>
       <%- include('../partials/field', { f: { id: 's-fn', name: 'fee_note', label: 'Fee note (shown on programme pages)', as: 'textarea', rows: 2, required: true, max: 300, wide: true } }) %>
       <%- include('../partials/field', { f: { id: 's-it', name: 'intern_training', label: 'Default training length (internal)', required: true, max: 40 } }) %>
       <%- include('../partials/field', { f: { id: 's-iw', name: 'intern_work', label: 'Default internship length (internal)', required: true, max: 40 } }) %>

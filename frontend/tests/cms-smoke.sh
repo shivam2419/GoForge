@@ -115,8 +115,8 @@ chk "careers & training nav" 1 $(curl -s $B/ | grep -c 'data-nav-group>Careers &
 for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
 rm -f ck3
 # November batch: prices, seat cap, seats filled, referral, webinar, guide
-chk "internship prices (card + final band)" 2 $(echo "$IN" | grep -c '₹1,499</strong>')
-chk "internship 6-month price (card + compare)" 2 $(echo "$IN" | grep -c '₹1,999</strong>')
+chk "internship prices (card + final band)" 2 $(echo "$IN" | grep -c '₹2,999</strong>')
+chk "internship 6-month price (card + compare)" 2 $(echo "$IN" | grep -c '₹4,999</strong>')
 chk "no early-bird" 0 $(echo "$IN" | grep -ci 'early-bird\|early bird\|₹1,299\|₹1,799')
 chk "no GST" 0 $(echo "$IN" | grep -c 'GST')
 chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'Only 25 seats</span>')

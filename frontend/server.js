@@ -747,7 +747,7 @@ async function trustData() {
   return { stats, credentials, instructors, projects, sampleDocs,
     gallery: gallery.filter(g => g.placement !== 'About only'), aboutGallery: gallery.filter(g => g.placement !== 'Internship only'), testimonials: testimonials.filter(t => t.kind !== 'client'), clientTestimonials: testimonials.filter(t => t.kind === 'client') };
 }
-const INTERNSHIP_DESC = '3-Month (₹1,499) and 6-Month (₹1,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
+const INTERNSHIP_DESC = '3-Month (₹2,999) and 6-Month (₹4,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
@@ -1050,6 +1050,7 @@ app.post('/admin/settings', requireAdmin, maybeUploadSettings, async (req, res) 
     ['track_3m_label', '3-month label', 60, true],
     ['track_6m_label', '6-month label', 60, true],
     ['fee_note', 'fee note', 300, true],
+    ['tax_note', 'tax note', 80, false],
     ['google_rating', 'Google rating', 10, true],
     ['google_badge_text', 'Google badge text', 80, true],
     ['kit_heading', 'kit heading', 120, true],
