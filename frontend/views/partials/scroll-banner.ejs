@@ -1,0 +1,22 @@
+<%# Slim January-batch reminder hanging just below the sticky header (absolutely positioned, so it never overlaps the header or shifts the page). Home page only (scrollBanner local),
+    only while registration is open. Hidden until the visitor scrolls past the hero; site.js shows it and remembers
+    a dismissal for the browser session (sessionStorage). Text: Admin > Settings > "Scroll banner text";
+    empty = the default line below, built from the batch name and registration deadline in settings. %>
+<% if (locals.scrollBanner && offer.registrationOpen) {
+     const sbCustom = String((s && s.scroll_banner_text) || '').trim();
+     const sbLabel = BATCH_LABEL.replace(/^./, c => c.toUpperCase());
+     const sbText = sbCustom || (sbLabel + ' — admissions open. Registration closes ' + REGISTRATION.closesFull + '.');
+     const sbShort = sbCustom || (sbLabel.replace(/^(January|February|March|April|June|July|August|September|October|November|December)\b/, m => m.slice(0, 3)) + ' · closes ' + String(REGISTRATION.closesShort).replace(/^[A-Za-z]{3}\s+/, '')); %>
+<div class="scroll-banner" data-scroll-banner hidden>
+  <div class="scroll-banner-in">
+    <div class="wrap sbn-row">
+      <a class="sbn-link" href="/internship#apply">
+        <span class="sbn-dot" aria-hidden="true"></span>
+        <span class="sbn-text"><span class="sbn-long"><%= sbText %></span><span class="sbn-short"><%= sbShort %></span></span>
+        <span class="sbn-cta">Reserve your seat <%- include('icon', { name: 'arrow' }) %></span>
+      </a>
+      <button class="sbn-x" type="button" data-scroll-banner-close aria-label="Dismiss the January batch banner"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+</div>
+<% } %>

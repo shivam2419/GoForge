@@ -487,7 +487,7 @@ app.get('/', async (req, res) => {
   // Show the 100+/150+/98%/10+ stats block on the home page only.
   const stats = getSettings().show_home_stats === '0' ? [] : t.stats;
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
+    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }), heroPhoto: true, scrollBanner: true });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
@@ -1081,6 +1081,7 @@ app.post('/admin/settings', requireAdmin, maybeUploadSettings, async (req, res) 
     ['track_6m_label', '6-month label', 60, true],
     ['fee_note', 'fee note', 300, true],
     ['price_value_line', 'price value line', 160, false],
+    ['scroll_banner_text', 'scroll banner text', 90, false],
     ['tax_note', 'tax note', 80, false],
     ['google_rating', 'Google rating', 10, true],
     ['google_badge_text', 'Google badge text', 80, true],

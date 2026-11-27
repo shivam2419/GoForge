@@ -7,7 +7,7 @@
     <p class="lede" data-hero-item>Choose a 3-Month or 6-Month Programme: live online training with mentors, then supervised work on real projects with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
     <p class="lede hero-trust-line" data-hero-item>Every certificate has an ID you can <a href="/verify">verify online</a>.</p>
     <div class="hero-actions" data-hero-item>
-      <a class="btn btn-primary btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-cta btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
       <a class="btn btn-ghost btn-lg" href="#tracks">Compare programmes</a>
     </div>
@@ -72,7 +72,7 @@
           <ul class="program-meta">
             <li>3 or 6 months</li><li>From <%= inr(offer.fromPrice(CAREER_TRACKS)) %></li>
           </ul>
-          <a class="btn btn-primary btn-apply" href="/internship/programs/<%= t.slug %>" aria-label="Apply now: <%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-cta btn-apply" href="/internship/programs/<%= t.slug %>" aria-label="Apply now: <%= t.name %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
         </div>
       </li>
       <% }) %>
@@ -81,7 +81,7 @@
           <span class="service-top"><span class="service-icon"><%- include('partials/icon', { name: 'spark' }) %></span><span class="service-num">+</span></span>
           <h3 class="service-name">And similar roles</h3>
           <p class="service-blurb">Interested in a related field? Apply with "Similar role" and tell us which one in your note.</p>
-          <a class="btn btn-primary btn-apply" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-cta btn-apply" href="/internship?track=<%= encodeURIComponent(SIMILAR_ROLE) %>#apply" data-dialog="dlg-apply" data-fallback-form="apply" data-prefill-name="track" data-prefill-value="<%= SIMILAR_ROLE %>">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
         </div>
       </li>
     </ul>

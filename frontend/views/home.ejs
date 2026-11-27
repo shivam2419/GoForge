@@ -1,7 +1,9 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
 
-<section class="hero">
+<section class="hero hero-photo" data-hero>
+  <%# Background photo: Ilya Pavlov on Unsplash (Unsplash License), https://unsplash.com/photos/OqtafYT5kTw. Self-hosted WebP; preloaded in partials/head. %>
+  <img class="hero-bg" src="/img/hero/hero-code-1280.webp" srcset="/img/hero/hero-code-768.webp 768w, /img/hero/hero-code-1280.webp 1280w, /img/hero/hero-code-1920.webp 1920w" sizes="100vw" width="1920" height="1282" alt="" fetchpriority="high" decoding="async">
   <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
@@ -14,9 +16,9 @@
       <p class="hero-sub" data-hero-item>Software and marketing that grow your business.</p>
       <p class="lede" data-hero-item>Goforge Digital is an MSME-registered software development company in Sector 81, Faridabad. We build <a href="/services/custom-software-development">custom software</a> and web apps, <a href="/services/crm-development">CRM</a> and <a href="/services/erp-development">ERP systems</a>, <a href="/services/ai-automation">AI automation</a>, <a href="/services/website-development">business websites</a> and <a href="/services/digital-marketing">digital marketing</a> for growing businesses in Faridabad, Delhi NCR and across India.</p>
       <div class="hero-actions" data-hero-item>
-        <a class="btn btn-primary btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
-        <a class="btn btn-ghost btn-lg" href="#services">See our services</a>
-        <a class="btn btn-ghost btn-lg btn-students" href="/internship">Students: training + internship <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-cta btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-ghost btn-ghost-light btn-lg" href="#services">See our services</a>
+        <a class="btn btn-ghost btn-ghost-light btn-lg btn-students" href="/internship">Students: training + internship <%- include('partials/icon', { name: 'arrow' }) %></a>
       </div>
       <p class="hero-note" data-hero-item>A short call to understand your goals. A clear plan agreed before work begins.</p>
     </div>

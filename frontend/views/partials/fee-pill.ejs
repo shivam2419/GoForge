@@ -1,0 +1,3 @@
+<%# Short pricing note above the fee cards. Built from the live programme list, so it always matches the cards. %>
+<% const mo = n => n + ' month' + (n > 1 ? 's' : ''); %>
+<p class="fee-pill" data-reveal><%- include('icon', { name: 'check' }) %><span><strong>All-inclusive fees</strong></span><span class="fp-sep" aria-hidden="true">&middot;</span><span><%= CAREER_TRACKS.map(t => t.months + '-Month (' + mo(t.trainingMonths) + ' training + ' + mo(t.internshipMonths) + ' internship)').join(' and ') %> programmes</span></p>

@@ -1991,3 +1991,87 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .price-value { display: block; margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-style: normal; line-height: 1.45; max-width: 28ch; text-transform: none; letter-spacing: 0; }
 .track-price .price-value { text-align: right; font-size: 12.5px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ink-2); }
 .stu-d .price-value { margin-top: 4px; max-width: none; }
+
+/* ===================================================================
+   Visual refresh (hero photo, fee cards, primary CTAs, scroll banner)
+   =================================================================== */
+:root { --cta: #E3B04B; --cta-hi: #EDBF5E; --cta-ink: #141C30; }
+
+/* Hero: self-hosted photo under a navy brand overlay; text switches to light for AA contrast. */
+.hero-photo { background: var(--ink-deep); color: var(--paper); isolation: isolate; }
+.hero-photo .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; z-index: -2; }
+.hero-photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 70% at 85% 30%, rgba(202, 164, 101, .14), transparent 70%),
+    linear-gradient(100deg, rgba(20, 28, 48, .96) 0%, rgba(20, 28, 48, .9) 42%, rgba(27, 39, 68, .74) 72%, rgba(27, 39, 68, .62) 100%); }
+.hero-photo .hero-visual { color: var(--ink); }
+.hero-photo .hero-rings span { border-color: rgba(202, 164, 101, .28); }
+.hero-photo .hero-title, .hero-photo .hero-sub { color: var(--paper); }
+.hero-photo .hero-title em, .hero-photo .eyebrow { color: var(--gold); }
+.hero-photo .lede { color: rgba(240, 236, 227, .86); }
+.hero-photo .lede a { color: var(--paper); text-decoration-color: rgba(202, 164, 101, .8); }
+.hero-photo .lede a:hover { color: var(--gold); }
+.hero-photo .hero-note { color: rgba(240, 236, 227, .72); }
+.hero-photo :focus-visible { outline-color: var(--gold); }
+.btn-ghost-light { color: var(--paper); border-color: rgba(240, 236, 227, .38); }
+.btn-ghost-light:hover { color: var(--paper); border-color: var(--gold); background: rgba(240, 236, 227, .06); }
+@media (max-width: 760px) {
+  .hero-photo::before { background: linear-gradient(180deg, rgba(20, 28, 48, .93) 0%, rgba(20, 28, 48, .9) 60%, rgba(27, 39, 68, .86) 100%); }
+}
+
+/* Primary CTA: brighter, more saturated brand gold, larger, clear hover and focus. */
+.btn-cta { position: relative; background: linear-gradient(180deg, var(--cta-hi), var(--cta)); color: var(--cta-ink); border-color: transparent;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .35) inset, 0 12px 26px -14px rgba(176, 124, 24, .85); }
+.btn-cta .icon { color: var(--cta-ink); }
+.btn-cta:hover { background: linear-gradient(180deg, #F2C96C, var(--cta-hi)); color: var(--cta-ink); transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 16px 30px -14px rgba(176, 124, 24, .95); }
+.btn-cta:active { transform: translateY(0) scale(.98); }
+.btn-cta:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 6px rgba(227, 176, 75, .45); }
+.hero-photo .btn-cta:focus-visible, .cta-band .btn-cta:focus-visible { outline-color: var(--paper); }
+.btn-cta.btn-lg { --h: 60px; padding: 0 32px; font-size: 16.5px; }
+.btn-cta.btn-sm { --h: 46px; padding: 0 20px; }
+.btn-apply.btn-cta { padding: 12px 22px; font-size: 14.5px; }
+.btn-apply.btn-cta .icon { color: var(--cta-ink); }
+@media (max-width: 600px) { .btn-cta.btn-lg { --h: 58px; font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .btn-cta:hover, .btn-cta:active { transform: none; } }
+
+/* Fee cards: a little taller, soft elevated shadow, subtle hover lift; uniform height via the existing stretch grid. */
+.track-grid-2 .track-card { padding: 36px 30px 30px; gap: 2px; box-shadow: 0 1px 2px rgba(27, 39, 68, .05), 0 22px 44px -26px rgba(27, 39, 68, .4);
+  transition: border-color .3s, transform .4s var(--ease-out), box-shadow .4s var(--ease-out); }
+.track-grid-2 .track-card:hover { transform: translateY(-4px); border-color: var(--gold-soft); box-shadow: 0 2px 4px rgba(27, 39, 68, .05), 0 34px 60px -30px rgba(27, 39, 68, .5); }
+.track-grid-2 .track-card .track-cta { margin-top: auto; }
+@media (max-width: 600px) { .track-grid-2 .track-card { padding: 30px 22px 24px; } }
+@media (prefers-reduced-motion: reduce) { .track-grid-2 .track-card:hover { transform: none; } }
+
+/* Pricing note above the fee cards */
+.fee-pill { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0 0 20px; padding: 8px 16px; border: 1px solid var(--gold-soft); border-radius: 999px; background: var(--gold-wash); font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.fee-pill strong { color: var(--ink); font-weight: 800; }
+.fee-pill .icon { width: 16px; height: 16px; color: var(--gold-deep); flex: none; }
+.fp-sep { color: var(--gold-deep); }
+@media (max-width: 480px) { .fee-pill { border-radius: 14px; font-size: 13.5px; } }
+
+/* Scroll banner: hangs just below the sticky header (never over it, no layout shift); shown after the hero. */
+.scroll-banner { position: absolute; left: 0; right: 0; top: calc(100% + 1px); display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s var(--ease-out), opacity .3s; opacity: 0; pointer-events: none; }
+.scroll-banner[hidden] { display: none; }
+.scroll-banner.is-on { grid-template-rows: 1fr; opacity: 1; pointer-events: auto; }
+.scroll-banner-in { overflow: hidden; min-height: 0; background: var(--ink); color: var(--paper); box-shadow: 0 10px 24px -18px rgba(20, 28, 48, .8); }
+.sbn-row { position: relative; display: flex; align-items: center; justify-content: center; min-height: 40px; padding-right: 44px; }
+.sbn-link { display: inline-flex; align-items: center; gap: 6px 12px; padding: 7px 0; font-size: 13.5px; font-weight: 600; color: var(--paper); text-decoration: none; }
+.sbn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cta); box-shadow: 0 0 0 4px rgba(227, 176, 75, .2); flex: none; }
+.sbn-short { display: none; }
+.sbn-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--cta); border-bottom: 1px solid rgba(227, 176, 75, .5); white-space: nowrap; }
+.sbn-cta .icon { width: 14px; height: 14px; transition: transform .25s var(--ease); }
+.sbn-link:hover .sbn-cta { border-bottom-color: var(--cta); }
+.sbn-link:hover .sbn-cta .icon { transform: translateX(3px); }
+.sbn-link:focus-visible, .sbn-x:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.sbn-x { position: absolute; right: max(8px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: rgba(240, 236, 227, .75); cursor: pointer; }
+.sbn-x:hover { color: var(--paper); background: rgba(240, 236, 227, .1); }
+.site-header:has(.menu-btn[aria-expanded="true"]) .scroll-banner { display: none; }
+@media (max-width: 640px) {
+  .sbn-row { justify-content: flex-start; padding-right: 40px; }
+  .sbn-long { display: none; } .sbn-short { display: inline; }
+  .sbn-link { font-size: 12.5px; gap: 8px; white-space: nowrap; min-width: 0; }
+  .sbn-dot { display: none; }
+  .sbn-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .scroll-banner { transition: none; } .sbn-cta .icon { transition: none; } }

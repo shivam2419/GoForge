@@ -417,6 +417,31 @@
     });
   }
 
+  /* ---------- home: January-batch banner after the hero; dismissal remembered for this browser session ---------- */
+  var sbn = doc.querySelector('[data-scroll-banner]');
+  var heroEl = doc.querySelector('[data-hero]');
+  if (sbn && heroEl) {
+    var sbnKey = 'gf-sbn-off';
+    var sbnOff = false; try { sbnOff = sessionStorage.getItem(sbnKey) === '1'; } catch (_) {}
+    if (!sbnOff) {
+      sbn.hidden = false;
+      var sbnShow = function (on) { sbn.classList.toggle('is-on', on); sbn.inert = !on; if (!on) sbn.setAttribute('aria-hidden', 'true'); else sbn.removeAttribute('aria-hidden'); };
+      sbnShow(false);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { if (!sbn.hidden) sbnShow(!en.isIntersecting && en.boundingClientRect.top < 0); });
+        }).observe(heroEl);
+      }
+      var sbnClose = sbn.querySelector('[data-scroll-banner-close]');
+      if (sbnClose) sbnClose.addEventListener('click', function () {
+        try { sessionStorage.setItem(sbnKey, '1'); } catch (_) {}
+        sbnShow(false);
+        setTimeout(function () { sbn.hidden = true; }, motionOff() ? 0 : 320);
+        var b = doc.querySelector('.site-header .brand'); if (b) b.focus({ preventScroll: true });
+      });
+    }
+  }
+
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
   var mt = doc.querySelector('[data-motion-toggle]');
   function setMotion(paused) {
