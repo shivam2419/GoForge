@@ -2223,8 +2223,9 @@ main:has(.tr-hero) .tr-fold-body > section { padding: 8px 0 18px; }
   .hb-grid { grid-template-columns: 1fr; gap: 22px; }
 }
 @media (max-width: 600px) {
-  .hb-title { font-size: 29px; }
-  .hb-sub { font-size: 21px; }
+  /* Needs .hb-hero .hb-title: '.hero-photo .hero-title' (2 classes, clamp min 40px) otherwise wins on phones. */
+  .hb-hero .hb-title { font-size: clamp(30px, 8.6vw, 34px); line-height: 1.08; }
+  .hb-hero .hb-sub { font-size: clamp(18px, 5vw, 20px); margin-top: 8px; }
   .hb-hero .lede { font-size: 15px; }
   .hb-proof { gap: 10px 16px; }
   .hb-proof .hb-stat strong { font-size: 22px; }
