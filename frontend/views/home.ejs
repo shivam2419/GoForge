@@ -1,51 +1,45 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
 
-<section class="hero hero-photo" data-hero>
+<%# Home hero: one message for both audiences. Left: who we are + proof. Right: two clear paths (businesses / students).
+    Every number comes from Admin (stats, credentials), Settings (Google badge) or CAREER_TRACKS (fees). %>
+<% const mo = n => n + ' month' + (n > 1 ? 's' : '');
+   const hst = (stats || []).slice(0, 3); %>
+<section class="hero hero-photo hb-hero" data-hero aria-labelledby="hb-h1">
   <%# Background photo: Ilya Pavlov on Unsplash (Unsplash License), https://unsplash.com/photos/OqtafYT5kTw. Self-hosted WebP; preloaded in partials/head. %>
   <img class="hero-bg" src="/img/hero/hero-code-1280.webp" srcset="/img/hero/hero-code-768.webp 768w, /img/hero/hero-code-1280.webp 1280w, /img/hero/hero-code-1920.webp 1920w" sizes="100vw" width="1920" height="1282" alt="" fetchpriority="high" decoding="async">
-  <div class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></div>
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <p class="eyebrow" data-hero-item>Trusted by real estate firms and growing businesses</p>
-      <h1 class="hero-title hero-title-seo">
-        <span class="line"><span>Custom Software</span></span>
-        <span class="line"><span>Development Company</span></span>
-        <span class="line"><span><em class="hl">in Faridabad</em></span></span>
-      </h1>
-      <p class="hero-sub" data-hero-item>Software and marketing that grow your business.</p>
-      <p class="lede" data-hero-item>Goforge Digital is an MSME-registered software development company in Sector 81, Faridabad. We build <a href="/services/custom-software-development">custom software</a> and web apps, <a href="/services/crm-development">CRM</a> and <a href="/services/erp-development">ERP systems</a>, <a href="/services/ai-automation">AI automation</a>, <a href="/services/website-development">business websites</a> and <a href="/services/digital-marketing">digital marketing</a> for growing businesses in Faridabad, Delhi NCR and across India.</p>
-      <div class="hero-actions" data-hero-item>
-        <a class="btn btn-cta btn-lg" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
-        <a class="btn btn-ghost btn-ghost-light btn-lg" href="#services">See our services</a>
-        <a class="btn btn-ghost btn-ghost-light btn-lg btn-students" href="/internship">Students: training + internship <%- include('partials/icon', { name: 'arrow' }) %></a>
-      </div>
-      <p class="hero-note" data-hero-item>A short call to understand your goals. A clear plan agreed before work begins.</p>
+  <div class="wrap hb-grid">
+    <div class="hb-copy">
+      <p class="eyebrow" data-hero-item>Custom software development company in Faridabad</p>
+      <h1 id="hb-h1" class="hero-title hb-title">Industry training + internship, <em>inside a working software company.</em></h1>
+      <p class="lede" data-hero-item>Goforge Digital is an MSME-registered software company in Sector 81, Faridabad. We build <a href="/services/custom-software-development">custom software</a>, <a href="/services/website-development">websites</a>, <a href="/services/crm-development">CRM</a> and <a href="/services/erp-development">ERP systems</a> for businesses, and train students on the same kind of real-world projects.</p>
+      <ul class="hb-proof" data-hero-item aria-label="Goforge Digital at a glance">
+        <% if (s.show_google_badge !== '0') { %><li class="hb-proof-g"><%- include('partials/gr-badge') %></li><% } %>
+        <% if (s.show_home_stats !== '0') { hst.forEach(x => { %><li class="hb-stat"><strong><%= x.value %><%= x.suffix || '' %></strong><span><%= x.label %></span></li><% }) } %>
+      </ul>
     </div>
 
-    <div class="hero-visual" aria-hidden="true">
-      <div class="board" data-parallax="0.04">
-        <%- include('partials/corners') %>
-        <div class="board-bar">
-          <span class="board-brand"><%- include('partials/mark', { cls: 'board-mark', decorative: true, uid: 'board' }) %>Goforge / project board</span>
-          <span class="board-tag">Illustration</span>
-        </div>
-        <p class="board-eyebrow">How a project moves</p>
-        <p class="board-title">From first call to handover.</p>
-        <ol class="board-steps">
-          <li class="is-done"><span class="bs-num">01</span><span class="bs-name">Listen<small>What is in the way</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
-          <li class="is-done"><span class="bs-num">02</span><span class="bs-name">Shape<small>A clear plan agreed</small></span><span class="bs-state"><%- include('partials/icon', { name: 'check' }) %></span></li>
-          <li class="is-active"><span class="bs-num">03</span><span class="bs-name">Build<small>Progress you can see</small></span><span class="bs-progress"><span></span></span></li>
-          <li><span class="bs-num">04</span><span class="bs-name">Hand over<small>A short note on how to run it</small></span><span class="bs-state bs-wait"></span></li>
-        </ol>
-      </div>
-      <div class="chip chip-a" data-parallax="-0.06"><span class="chip-icon"><%- include('partials/icon', { name: 'tag' }) %></span><span>Clear plan,<strong>agreed first</strong></span></div>
-      <div class="chip chip-b" data-parallax="0.09"><span class="chip-icon"><%- include('partials/icon', { name: 'user' }) %></span><span>A person<strong>in the loop</strong></span></div>
+    <div class="hb-paths" data-hero-item>
+      <section class="hb-path" aria-labelledby="hb-biz">
+        <p class="hb-k"><%- include('partials/icon', { name: 'briefcase' }) %>For businesses</p>
+        <h2 id="hb-biz" class="hb-h">Software, websites, CRM &amp; ERP built for you.</h2>
+        <p class="hb-line">A short call, a clear plan agreed before work begins.</p>
+        <a class="btn btn-cta hb-btn" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Book a free consultation <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="hb-more" href="#services">See our services</a>
+      </section>
+      <section class="hb-path" aria-labelledby="hb-stu">
+        <p class="hb-k"><%- include('partials/icon', { name: 'cap' }) %>For students</p>
+        <h2 id="hb-stu" class="hb-h">Training + internship on real-world projects.</h2>
+        <ul class="hb-fees" aria-label="Programmes and fees">
+          <% CAREER_TRACKS.forEach(t => { %><li><strong><%= inr(offer.priceOf(t)) %></strong><span><b><%= t.name %></b> &middot; <%= mo(t.trainingMonths) %> training + <%= mo(t.internshipMonths) %> internship</span></li><% }) %>
+        </ul>
+        <p class="hb-line">All-inclusive fees.<% if (offer.registrationOpen) { %> <%= BATCH_LABEL.replace(/^./, c => c.toUpperCase()) %> starts <%= BATCH_STARTS_FULL %> &middot; registration closes <%= REGISTRATION.closesFull %>.<% } %></p>
+        <a class="btn btn-cta hb-btn" href="/internship#apply"><% if (offer.registrationOpen) { %>Apply for <%= BATCH_LABEL.replace(/^January/, 'Jan') %><% } else { %>Explore training + internship<% } %> <%- include('partials/icon', { name: 'arrow' }) %></a>
+        <a class="hb-more" href="/internship">Programme details</a>
+      </section>
     </div>
   </div>
 </section>
-
-<aside class="student-band" aria-label="For students"><a href="/internship#batch"><strong>Students:</strong> <span>training + internship from <%= inr(offer.fromPrice(CAREER_TRACKS)) %></span><% if (offer.registrationOpen) { %> <span class="sb-hot"><%= BATCH_SUMMARY %></span> <%- include('partials/seat-mini') %><% } %> <%- include('partials/icon', { name: 'arrow' }) %></a></aside>
 
 <% if (stats.length) { %><%- include('partials/trust', { stats, credentials }) %><% } else { %><%- include('partials/trust-band', { credentials }) %><% } %>
 
@@ -135,7 +129,8 @@
   </div>
 </section>
 
-<%- include('partials/google-reviews', { kind: 'client', alt: true, showBadge: s.show_google_badge !== '0' }) %>
+<%# Google badge sits in the hero proof row on Home, so the reviews section skips it (one badge per page). %>
+<%- include('partials/google-reviews', { kind: 'client', alt: true, showBadge: false }) %>
 <%- include('partials/people', { instructors: [], testimonials: clientTestimonials, tesEyebrow: 'What clients say' }) %>
 
 <section class="section section-alt" aria-labelledby="why-h">
