@@ -2196,7 +2196,8 @@ main:has(.tr-hero) .tr-fold-body > section { padding: 8px 0 18px; }
 
 /* ===== Home hero blend: company + training, two paths, one proof row ===== */
 .hb-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 52px); align-items: center; }
-.hb-title { font-size: clamp(34px, 3.9vw, 54px); line-height: 1.06; margin: 0; }
+.hb-title { font-size: clamp(34px, 3.7vw, 52px); line-height: 1.06; margin: 0; }
+.hb-sub { margin: 10px 0 0; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.2; color: var(--gold); max-width: 30ch; }
 .hb-hero .lede { max-width: 60ch; margin-top: 14px; font-size: 16.5px; }
 .hb-proof { list-style: none; margin: 22px 0 0; padding: 14px 0 0; border-top: 1px solid rgba(202, 164, 101, .32); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; }
 .hb-proof .hb-stat { display: flex; flex-direction: column; line-height: 1.15; }
@@ -2223,6 +2224,7 @@ main:has(.tr-hero) .tr-fold-body > section { padding: 8px 0 18px; }
 }
 @media (max-width: 600px) {
   .hb-title { font-size: 32px; }
+  .hb-sub { font-size: 21px; }
   .hb-hero .lede { font-size: 15px; }
   .hb-proof { gap: 10px 16px; }
   .hb-proof .hb-stat strong { font-size: 22px; }
