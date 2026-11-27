@@ -5,7 +5,7 @@
   { icon: 'eye', q: 'Web, data, AI, marketing... which one should I learn?', a: 'A free call with someone who does the work helps you choose.' },
   { icon: 'briefcase', q: 'Every fresher job asks for experience.', a: 'Projects you can explain and a letter you can verify are your first proof.' }
 ]; %>
-<section class="section pain-band" aria-labelledby="pain-h">
+<% if (!locals.hidePains) { %><section class="section pain-band" aria-labelledby="pain-h">
   <div class="wrap">
     <div class="section-head split-head">
       <div>
@@ -24,7 +24,7 @@
       <% }) %>
     </ul>
   </div>
-</section>
+</section><% } %>
 
 <% const path5 = [
   { t: 'Free counselling call', d: '15 minutes on your goal, your college rule and your deadline.', tag: 'Free' },
@@ -33,7 +33,7 @@
   { t: 'Real-project internship', d: 'Supervised work on studio or industry-style projects, with check-ins.', tag: 'Supervised' },
   { t: 'Certificate + letter', d: 'A training certificate and a letter with your dates, hours and work.', tag: 'Verifiable ID' }
 ]; %>
-<section class="section section-alt" aria-labelledby="yp-h">
+<% if (!locals.hidePath) { %><section class="section section-alt" aria-labelledby="yp-h">
   <div class="wrap">
     <div class="section-head center">
       <p class="eyebrow" data-reveal>Your path with Goforge</p>
@@ -49,7 +49,7 @@
       <% }) %>
     </ol>
   </div>
-</section>
+</section><% } %>
 
 <section class="section" id="tracks" aria-labelledby="tracks-h">
   <div class="wrap">

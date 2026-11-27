@@ -760,6 +760,7 @@ async function trustData() {
 }
 const INTERNSHIP_DESC = '3-Month (₹2,999) and 6-Month (₹4,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
+  heroPhoto: true,
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
   ...pageMeta(req, 'Training & internship', res.locals.CAREER_TRACKS[0].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[0].price) + ') and ' + res.locals.CAREER_TRACKS[1].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[1].price) + ') training + internship programmes, live online. ' + res.locals.BATCH_SUMMARY + '. Verifiable certificates.', { seoTitle: 'Internship with Training for Students — ' + res.locals.BATCH_LABEL.replace(/^./, c => c.toUpperCase()) + ' | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })

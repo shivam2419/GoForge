@@ -1995,10 +1995,24 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 /* ===================================================================
    Visual refresh (hero photo, fee cards, primary CTAs, scroll banner)
    =================================================================== */
-:root { --cta: #E3B04B; --cta-hi: #EDBF5E; --cta-ink: #141C30; }
+:root { --cta: #CAA465; --cta-hi: #D2AF6C; --cta-ink: #141C30; }
 
 /* Hero: self-hosted photo under a navy brand overlay; text switches to light for AA contrast. */
 .hero-photo { background: var(--ink-deep); color: var(--paper); isolation: isolate; }
+.hero.hero-photo { padding: 36px 0 44px; }
+.hero-photo .hero-title { font-size: clamp(40px, 4.7vw, 66px); }
+.hero-photo .lede { margin-top: 14px; font-size: clamp(16px, 1.3vw, 17.5px); max-width: 64ch; }
+.hero-photo .hero-sub { margin: 10px 0 6px; }
+.hero-photo .eyebrow { margin-bottom: 12px; }
+.hero-photo .hero-actions { gap: 10px; }
+@media (min-width: 1001px) { .hero-photo .hero-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, .8fr); gap: clamp(28px, 4vw, 56px); } .hero-photo .hero-actions { flex-wrap: nowrap; } .hero-photo .btn-cta.btn-lg { padding: 0 26px; } }
+@media (min-width: 1001px) and (max-width: 1240px) { .hero-photo .hero-actions { flex-wrap: wrap; } }
+.hero-photo .hero-actions .btn-ghost-light { --h: 50px; padding: 0 20px; font-size: 14.5px; }
+.hero-photo .hero-note { margin-top: 10px; }
+.hero-photo .board { transform: scale(.92); transform-origin: center; }
+@media (max-width: 1000px) { .hero-photo .board { transform: none; } }
+.hero-photo .hero-actions { margin-top: 24px; }
+.hero-photo .hero-visual { min-height: 0; }
 .hero-photo .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; z-index: -2; }
 .hero-photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -2020,13 +2034,13 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 }
 
 /* Primary CTA: brighter, more saturated brand gold, larger, clear hover and focus. */
-.btn-cta { position: relative; background: linear-gradient(180deg, var(--cta-hi), var(--cta)); color: var(--cta-ink); border-color: transparent;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .35) inset, 0 12px 26px -14px rgba(176, 124, 24, .85); }
+.btn-cta { position: relative; background: var(--cta); color: var(--cta-ink); border-color: transparent;
+  box-shadow: 0 12px 26px -14px rgba(124, 92, 32, .85); }
 .btn-cta .icon { color: var(--cta-ink); }
-.btn-cta:hover { background: linear-gradient(180deg, #F2C96C, var(--cta-hi)); color: var(--cta-ink); transform: translateY(-1px);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 16px 30px -14px rgba(176, 124, 24, .95); }
+.btn-cta:hover { background: var(--cta-hi); color: var(--cta-ink); transform: translateY(-1px);
+  box-shadow: 0 16px 30px -14px rgba(124, 92, 32, .95); }
 .btn-cta:active { transform: translateY(0) scale(.98); }
-.btn-cta:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 6px rgba(227, 176, 75, .45); }
+.btn-cta:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 6px rgba(202, 164, 101, .45); }
 .hero-photo .btn-cta:focus-visible, .cta-band .btn-cta:focus-visible { outline-color: var(--paper); }
 .btn-cta.btn-lg { --h: 60px; padding: 0 32px; font-size: 16.5px; }
 .btn-cta.btn-sm { --h: 46px; padding: 0 20px; }
@@ -2057,9 +2071,9 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .scroll-banner-in { overflow: hidden; min-height: 0; background: var(--ink); color: var(--paper); box-shadow: 0 10px 24px -18px rgba(20, 28, 48, .8); }
 .sbn-row { position: relative; display: flex; align-items: center; justify-content: center; min-height: 40px; padding-right: 44px; }
 .sbn-link { display: inline-flex; align-items: center; gap: 6px 12px; padding: 7px 0; font-size: 13.5px; font-weight: 600; color: var(--paper); text-decoration: none; }
-.sbn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cta); box-shadow: 0 0 0 4px rgba(227, 176, 75, .2); flex: none; }
+.sbn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cta); box-shadow: 0 0 0 4px rgba(202, 164, 101, .2); flex: none; }
 .sbn-short { display: none; }
-.sbn-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--cta); border-bottom: 1px solid rgba(227, 176, 75, .5); white-space: nowrap; }
+.sbn-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--cta); border-bottom: 1px solid rgba(202, 164, 101, .5); white-space: nowrap; }
 .sbn-cta .icon { width: 14px; height: 14px; transition: transform .25s var(--ease); }
 .sbn-link:hover .sbn-cta { border-bottom-color: var(--cta); }
 .sbn-link:hover .sbn-cta .icon { transform: translateX(3px); }
@@ -2075,3 +2089,107 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
   .sbn-text { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .scroll-banner { transition: none; } .sbn-cta .icon { transition: none; } }
+
+/* ---------- /internship: training hero (photo + proof card) and compact page flow ---------- */
+.tr-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, .9fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.tr-title { font-size: clamp(34px, 3.7vw, 52px); line-height: 1.06; margin: 0; }
+.tr-hero .lede { max-width: 62ch; margin-top: 12px; font-size: 16px; }
+.tr-hero .hero-actions { margin-top: 18px; }
+.tr-fees { margin-top: 16px; }
+.tr-batch { margin-top: 12px; }
+.tr-fees { list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.tr-fees li { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border: 1px solid rgba(202, 164, 101, .45); border-radius: 14px; background: rgba(240, 236, 227, .06); }
+.tr-fees strong { font-family: var(--serif); font-size: 26px; line-height: 1; font-weight: 700; color: var(--gold); font-variant-numeric: lining-nums; }
+.tr-fees span { display: flex; flex-direction: column; font-size: 12.5px; line-height: 1.35; color: rgba(240, 236, 227, .82); }
+.tr-fees b { font-size: 13.5px; color: var(--paper); font-weight: 800; }
+.tr-fees .tr-fees-note { border: 0; background: none; padding: 0 4px; gap: 6px; font-size: 13px; font-weight: 700; color: var(--paper); }
+.tr-fees .tr-fees-note .icon { width: 16px; height: 16px; color: var(--gold); }
+.tr-batch { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 16px 0 0; font-size: 14px; color: rgba(240, 236, 227, .86); }
+.tr-batch .icon { width: 18px; height: 18px; color: var(--gold); flex: none; }
+.tr-batch strong { color: var(--paper); }
+.tr-batch a { color: var(--gold); font-weight: 700; }
+.tr-proof { background: var(--sheet); color: var(--ink); border: 1px solid rgba(202, 164, 101, .5); border-radius: 20px; padding: 22px 22px 18px; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6); }
+.tr-proof-k { margin: 0 0 12px; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-deep); }
+.tr-proof-badge { margin-bottom: 14px; }
+.tr-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.tr-stats > div { padding: 10px 12px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); }
+.tr-stats dt { font-family: var(--serif); font-size: 28px; font-weight: 700; line-height: 1; color: var(--ink); }
+.tr-stats dd { margin: 4px 0 0; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.tr-notes { margin: 8px 0 0; font-size: 12px; color: var(--ink-3); }
+.tr-notes summary { cursor: pointer; font-weight: 700; color: var(--ink-2); min-height: 32px; display: flex; align-items: center; }
+.tr-notes ul { margin: 4px 0 0; padding-left: 16px; }
+.tr-checks { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.tr-checks li { display: flex; gap: 10px; align-items: flex-start; }
+.tr-checks .icon { width: 16px; height: 16px; color: var(--gold-deep); flex: none; margin-top: 2px; }
+.tr-checks strong { color: var(--ink); }
+@media (max-width: 1000px) {
+  .tr-grid { grid-template-columns: 1fr; }
+  .tr-proof { max-width: 560px; }
+}
+@media (max-width: 600px) {
+  .tr-fees li { flex: 1 1 100%; }
+  .tr-fees strong { font-size: 26px; }
+  .tr-hero .hero-actions .btn { width: 100%; }
+}
+
+/* compact flow */
+.tr-work .showcase-grid { gap: 14px; }
+.tr-more .tr-more-h { margin: 28px 0 10px; }
+.tr-fold-body > section { padding: 8px 0 18px; background: none; }
+.tr-fold-body > section > .wrap { padding: 0; max-width: none; }
+.tr-fold-body .section-head { margin-bottom: 16px; }
+.tr-fold-body .section-head .eyebrow { display: none; }
+.tr-fold-body .h2 { font-size: clamp(24px, 2.4vw, 30px); }
+.tr-more .faq-more { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+@media (max-width: 600px) {
+  #programs .role-card .service-blurb { display: none; }
+  #programs .role-card .service-top { display: none; }
+  #programs .role-card { padding: 18px 18px 16px; }
+  #programs .role-grid { gap: 10px; }
+  #programs .role-card .program-meta { margin-bottom: 12px; }
+}
+#proof .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 20px 40px; align-items: start; }
+#proof .section-head { grid-column: 1 / -1; margin-bottom: 4px; }
+#proof .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+#proof .why-grid li { padding: 18px 18px 16px; }
+#proof .why-grid .service-icon { width: 40px; height: 40px; margin-bottom: 10px; }
+#proof .proof-samples { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
+#proof .sample-doc img { max-height: 280px; width: 100%; object-fit: contain; }
+#programs .role-card { padding-top: 22px; padding-bottom: 20px; }
+#programs .role-card .service-blurb { margin-bottom: 0; font-size: 14px; }
+#programs .role-card .service-top .service-icon { width: 38px; height: 38px; border-radius: 11px; }
+@media (max-width: 760px) { .tr-work .showcase-grid { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; } .tr-work .showcase-card { scroll-snap-align: start; } }
+.tr-work .showcase-card img { aspect-ratio: 16 / 8; object-fit: cover; object-position: top; height: auto; }
+@media (max-width: 760px) {
+  #proof .wrap { grid-template-columns: 1fr; }
+  #proof .why-grid { grid-template-columns: 1fr 1fr; }
+  #proof .why-grid li p { font-size: 13px; }
+}
+@media (max-width: 420px) { #proof .why-grid { grid-template-columns: 1fr; } }
+/* /internship compaction: kit and role list */
+#kit .kit-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+#kit .kit-list li { padding: 16px; }
+#programs .role-card .service-name { margin: 10px 0 6px; }
+#programs .role-card .program-meta { margin: 10px 0 14px; }
+@media (max-width: 900px) { #kit .kit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  #kit .kit-list { grid-template-columns: 1fr; gap: 8px; }
+  #kit .kit-list li { padding: 12px 14px; }
+  #kit .kit-list p { font-size: 13px; }
+  #programs .role-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: 14px 16px; }
+  #programs .role-card .service-name { grid-column: 1; margin: 0; font-size: 20px; }
+  #programs .role-card .program-meta { grid-column: 1; margin: 0; }
+  #programs .role-card .btn-apply { grid-column: 2; grid-row: 1 / span 2; align-self: center; margin: 0; padding: 10px 14px; font-size: 13.5px; }
+}
+@media (max-width: 600px) {
+  #programs .role-card .service-blurb, #programs .role-card .service-top { display: none; }
+  #programs .role-card .program-meta { flex-wrap: nowrap; }
+  #programs .role-card .program-meta li { padding: 3px 8px; font-size: 12px; white-space: nowrap; }
+  #programs .section-intro { font-size: 15px; }
+}
+#programs .role-card .service-top { margin-bottom: 0; }
+#programs .role-card .service-name { font-size: 24px; }
+/* /internship: tighter vertical rhythm (no big empty gaps) */
+main:has(.tr-hero) .section { padding: clamp(44px, 5.2vw, 72px) 0; }
+main:has(.tr-hero) .section-head { margin-bottom: clamp(20px, 2.6vw, 36px); }
+main:has(.tr-hero) .tr-fold-body > section { padding: 8px 0 18px; }

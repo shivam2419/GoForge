@@ -1,29 +1,8 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
-<section class="page-hero">
-  <div class="wrap">
-    <p class="eyebrow" data-hero-item>Training + internship</p>
-    <h1 class="h1 hero-title-sm"><span class="line"><span>Industry Training + Internship</span></span> <span class="line"><span><em>for College Students &amp; Graduates</em></span></span></h1>
-    <p class="lede" data-hero-item>Choose a 3-Month or 6-Month Programme: live online training with mentors, then supervised work on real projects with Goforge Digital, an MSME-registered software company. For BTech, BCA, MCA and similar students and recent graduates.</p>
-    <p class="lede hero-trust-line" data-hero-item>Every certificate has an ID you can <a href="/verify">verify online</a>.</p>
-    <div class="hero-actions" data-hero-item>
-      <a class="btn btn-cta btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
-      <a class="btn btn-ghost btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
-      <a class="btn btn-ghost btn-lg" href="#tracks">Compare programmes</a>
-    </div>
-    <%- include('partials/batch-strip', { anchor: '#batch' }) %>
-    <dl class="facts" data-reveal-group>
-      <div data-reveal><dt>Length</dt><dd>3 or 6 months</dd></div>
-      <div data-reveal><dt>Programme fee</dt><dd><%= inr(CAREER_TRACKS[0].price) %> / <%= inr(CAREER_TRACKS[1].price) %>, all-inclusive</dd></div>
-      <div data-reveal><dt>Format</dt><dd>Live online training, then a supervised internship</dd></div>
-      <div data-reveal><dt>Who can apply</dt><dd>BTech, BCA, MCA and similar</dd></div>
-    </dl>
-  </div>
-</section>
-
-<%- include('partials/trust', { stats: [], credentials }) %>
-<%- include('partials/batch-panel', { alt: true }) %>
-<%- include('partials/track-story') %>
+<%- include('partials/training-hero') %>
+<%- include('partials/batch-panel', { alt: true, noTimeline: true }) %>
+<%- include('partials/track-story', { hidePains: true, hidePath: true }) %>
 <% const tools = TECH_STACK; %>
 <% if (tools.length) { %>
 <div class="ticker ticker-light" aria-label="Tools and technologies taught">
@@ -88,12 +67,22 @@
   </div>
 </section>
 
-<%- include('partials/compare') %>
-<%- include('partials/free-start') %>
+<section class="section section-tight tr-work" id="real-work" aria-labelledby="rw-h">
+  <div class="wrap">
+    <div class="section-head split-head">
+      <div>
+        <p class="eyebrow" data-reveal>A working software company</p>
+        <h2 id="rw-h" class="h2" data-reveal>Learn where <em>real work ships.</em></h2>
+      </div>
+      <p class="section-intro" data-reveal>Goforge Digital builds websites, CRM and ERP systems, web apps and AI automation for clients. Your training projects follow the same kind of work, reviewed by people who do it every day. <a href="/work">See all our work</a>.</p>
+    </div>
+    <%- include('partials/showcase', { ids: ['vaishnavi', 'harold', 'scrapbridge'], cols: 3 }) %>
+  </div>
+</section>
 <%- include('partials/google-reviews', { kind: 'student', alt: true, showBadge: false }) %>
 <%- include('partials/people', { instructors, testimonials }) %>
 
-<% const msme = (locals.credentials || []).find(c => /msme/i.test(c.title)); const docs = locals.sampleDocs || { certificate: '/img/samples/sample-certificate.webp', letter: '/img/samples/sample-internship-letter.webp' }; %>
+<% const docs = locals.sampleDocs || { certificate: '/img/samples/sample-certificate.webp', letter: '/img/samples/sample-internship-letter.webp' }; %>
 <section class="section section-alt section-tight trust-why" id="proof" aria-labelledby="why-h">
   <div class="wrap">
     <div class="section-head split-head">
@@ -104,8 +93,6 @@
       <p class="section-intro" data-reveal><%= s.proof_intro %> (<a href="/verify">goforgedigital.com/verify</a>)</p>
     </div>
     <ul class="why-grid" data-reveal-group>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'check' }) %></span><h3>MSME registered</h3><p>Udyam <%= msme && msme.number ? msme.number : 'registered' %>. <a href="<%= (msme && msme.link_url) || 'https://udyamregistration.gov.in/Udyam_Verify.aspx' %>" target="_blank" rel="noopener">Verify on Udyam</a></p></li>
-      <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'key' }) %></span><h3>Verifiable certificates</h3><p>Every certificate and letter has an ID you can <a href="/verify">verify online</a>.</p></li>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'user' }) %></span><h3>Signed by our founder</h3><p>Issued and signed by <%= BRAND.founder %>, <%= BRAND.founderRole %>, with phone &amp; email for college checks.<% if (BRAND.linkedin) { %> <a href="<%= BRAND.linkedin %>" target="_blank" rel="noopener">LinkedIn</a><% } %></p></li>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'globe' }) %></span><h3>An office you can visit</h3><p><%= BRAND.address.line1 %>, Sector 81, Faridabad. <a href="/contact">Call before you visit</a>.</p></li>
       <li data-reveal><span class="service-icon"><%- include('partials/icon', { name: 'tag' }) %></span><h3>A written refund policy</h3><p>Clear terms before you enrol. <a href="/refund">Read the refund policy</a>.</p></li>
@@ -120,20 +107,23 @@
 
 <%- include('partials/student-work', { projects }) %>
 <%- include('partials/gallery', { gallery }) %>
-<%- include('partials/fit-check') %>
-
-<section class="section" aria-labelledby="faq-h">
+<section class="section tr-more" aria-labelledby="faq-h">
   <div class="wrap faq-wrap">
     <div class="section-head">
       <p class="eyebrow" data-reveal>Questions students ask</p>
       <h2 id="faq-h" class="h2" data-reveal>Questions, <em>answered.</em></h2>
     </div>
-    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.filter(i => i.top).slice(0, 6), name: 'faq-internship', openFirst: true }) %>
-    <p class="faq-more"><a class="text-link" href="/faq#students">All student &amp; parent questions <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+    <%- include('partials/faq-accordion', { items: FAQ.find(group => group.id === 'students').items.filter(i => i.top).slice(0, 6), name: 'faq-internship', openFirst: false }) %>
+    <p class="mini-h tr-more-h">More before you decide</p>
+    <div class="faq-acc tr-fold">
+      <details class="faq-q tr-fold-q"><summary><span class="faq-dot" aria-hidden="true"></span><span class="faq-text">Why not just learn on YouTube? An honest comparison</span><span class="faq-chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary><div class="tr-fold-body"><%- include('partials/compare') %></div></details>
+      <details class="faq-q tr-fold-q"><summary><span class="faq-dot" aria-hidden="true"></span><span class="faq-text">Free guides: track picker, college rules and programme overview (PDF)</span><span class="faq-chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary><div class="tr-fold-body"><%- include('partials/free-start') %></div></details>
+      <details class="faq-q tr-fold-q"><summary><span class="faq-dot" aria-hidden="true"></span><span class="faq-text">Is this right for you?</span><span class="faq-chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary><div class="tr-fold-body"><%- include('partials/fit-check') %></div></details>
+    </div>
+    <p class="faq-more"><a class="text-link" href="/faq#students">All student &amp; parent questions <%- include('partials/icon', { name: 'arrow' }) %></a> <a class="text-link" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a></p>
   </div>
 </section>
 
-<%- include('partials/final-cta', { inPageApply: true }) %>
 
 <section class="section section-alt" id="apply" aria-labelledby="apply-h">
   <div class="wrap split split-form">
