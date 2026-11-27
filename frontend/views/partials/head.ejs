@@ -30,6 +30,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin>
+<% if (locals.heroPhoto) { %><link rel="preload" as="image" type="image/webp" href="/img/hero/hero-code-1280.webp" imagesrcset="/img/hero/hero-code-768.webp 768w, /img/hero/hero-code-1280.webp 1280w, /img/hero/hero-code-1920.webp 1920w" imagesizes="100vw" fetchpriority="high"><% } %>
 <link rel="stylesheet" href="/css/site.css?v=<%= assetV %>">
 <% if (locals.adminCss) { %><link rel="stylesheet" href="/css/admin.css?v=<%= assetV %>"><% } %>
 <% if (locals.showAnn) { %><script src="/js/ann.js?v=<%= assetV %>"></script><% } %>

@@ -113,6 +113,8 @@ const DEFAULT_SETTINGS = {
   tax_note: '',
   fee_note: 'All-inclusive fee: live classes, study material, projects, the internship, the training certificate and the internship letter. Paid once, no instalments.',
   price_value_line: 'Includes live mentoring and real projects, not just a certificate.',
+  // Home page January-batch banner shown after scrolling past the hero. Empty = default line built from batch_label and batch_deadline.
+  scroll_banner_text: '',
   show_home_stats: '1',
   show_google_badge: '1',
   google_rating: '4.9',

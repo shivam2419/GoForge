@@ -117,13 +117,13 @@ for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o 
 rm -f ck3
 # November batch: prices, seat cap, seats filled, referral, webinar, guide
 chk "internship prices (card + final band)" 2 $(echo "$IN" | grep -c '₹2,999</strong>')
-chk "internship 6-month price (card + compare)" 2 $(echo "$IN" | grep -c '₹4,999</strong>')
+chk "internship 6-month price (hero chip + card + compare)" 3 $(echo "$IN" | grep -c '₹4,999</strong>')
 chk "no early-bird" 0 $(echo "$IN" | grep -ci 'early-bird\|early bird\|₹1,299\|₹1,799')
 chk "no GST" 0 $(echo "$IN" | grep -c 'GST')
 chk "seat cap shown (0 filled)" 2 $(echo "$IN" | grep -c 'Only 25 seats</span>')
 chk "no count-up at 0" 0 $(echo "$IN" | grep -c 'data-countup')
 chk "no filling-fast at 0" 0 $(echo "$IN" | grep -c 'class="bc3-tag"')
-chk "registration closes (key chip + timeline)" 2 $(echo "$IN" | grep -c 'Registration closes</strong>')
+chk "registration closes (key chip; timeline hidden on /internship)" 1 $(echo "$IN" | grep -c 'Registration closes</strong>')
 chk "old tracks gone" 0 $(echo "$IN" | grep -ci '6-Week\|1-Month\|4-Month\|18 weeks')
 T=$(tok /admin/settings); SET=$(curl -s -b ck $B/admin/settings)
 v(){ echo "$SET" | grep -o "name=\"$1\" type=\"[a-z]*\" value=\"[^\"]*\"" | sed 's/.*value="//;s/"$//'; }
@@ -166,7 +166,7 @@ chk "kit section on internship" 1 $(curl -s $B/internship | grep -c 'id="kit"')
 chk "compare table on internship" 1 $(curl -s $B/internship | grep -c 'class="cmp"')
 chk "timeline 5 steps" 5 $(echo "$PG" | grep -c 'class="tl-item')
 chk "refund note" 1 $(echo "$PG" | grep -c 'Full refund if you cancel before your first live class')
-chk "final band on internship" 1 $(curl -s $B/internship | grep -c 'cta-band-students')
+chk "final band removed from internship (page trim)" 0 $(curl -s $B/internship | grep -c 'cta-band-students')
 chk "programme og + twitter image" 2 $(echo "$PG" | grep -c 'og/program-data-analyst.png')
 chk "og file served" 200 $(curl -s -o /dev/null -w %{http_code} $B/img/og/program-data-analyst.png)
 chk "no GST on programme" 0 $(echo "$PG" | grep -c 'GST')
@@ -182,7 +182,7 @@ chk "filling fast only on weekend (17/25 = 68%)" 1 $(echo "$IN" | grep -c 'class
 chk "weekday 15 left" 1 $(echo "$IN" | grep -c '>15 seats left</span>')
 chk "weekend 8 left" 1 $(echo "$IN" | grep -c '>8 seats left</span>')
 chk "enrolling now on both" 2 $(echo "$IN" | grep -c 'Enrolling now')
-chk "seat-mini on strip + sticky bar" 2 $(echo "$IN" | grep -c 'Seats left: weekday <strong>15</strong>')
+chk "seat-mini on hero batch line + sticky bar" 2 $(echo "$IN" | grep -c 'Seats left: weekday <strong>15</strong>')
 chk "reserve your seat CTA" 2 $(echo "$IN" | grep -c '>Reserve your seat')
 
 # ---- free webinar: bar, cards, /webinar page, Event JSON-LD, registrant-only Meet link ----

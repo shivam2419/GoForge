@@ -487,7 +487,7 @@ app.get('/', async (req, res) => {
   // Show the 100+/150+/98%/10+ stats block on the home page only.
   const stats = getSettings().show_home_stats === '0' ? [] : t.stats;
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }) });
+    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }), heroPhoto: true, scrollBanner: true });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
@@ -760,6 +760,7 @@ async function trustData() {
 }
 const INTERNSHIP_DESC = '3-Month (₹2,999) and 6-Month (₹4,999) training + internship programmes for college students and graduates, live online: software, AI/ML, data, web, business analysis and digital marketing. ' + batch.BATCH_SUMMARY + '. Verifiable certificates.';
 app.get('/internship', async (req, res) => res.render('internship', {
+  heroPhoto: true,
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
   ...pageMeta(req, 'Training & internship', res.locals.CAREER_TRACKS[0].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[0].price) + ') and ' + res.locals.CAREER_TRACKS[1].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[1].price) + ') training + internship programmes, live online. ' + res.locals.BATCH_SUMMARY + '. Verifiable certificates.', { seoTitle: 'Internship with Training for Students — ' + res.locals.BATCH_LABEL.replace(/^./, c => c.toUpperCase()) + ' | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
@@ -1081,6 +1082,7 @@ app.post('/admin/settings', requireAdmin, maybeUploadSettings, async (req, res) 
     ['track_6m_label', '6-month label', 60, true],
     ['fee_note', 'fee note', 300, true],
     ['price_value_line', 'price value line', 160, false],
+    ['scroll_banner_text', 'scroll banner text', 90, false],
     ['tax_note', 'tax note', 80, false],
     ['google_rating', 'Google rating', 10, true],
     ['google_badge_text', 'Google badge text', 80, true],

@@ -1,0 +1,48 @@
+<%# /internship hero: same photo + navy overlay as Home. Left: message, fees, batch line, one gold CTA.
+    Right: proof you can check, all from real data (Google badge from Settings, stats + MSME from Admin, live client work on /work). %>
+<% const mo = n => n + ' month' + (n > 1 ? 's' : '');
+   const st = locals.stats || [];
+   const msmeC = (locals.credentials || []).find(c => /msme|udyam/i.test(c.title + ' ' + (c.issuer || ''))); %>
+<section class="hero hero-photo tr-hero" data-hero aria-labelledby="tr-h1">
+  <img class="hero-bg" src="/img/hero/hero-code-1280.webp" srcset="/img/hero/hero-code-768.webp 768w, /img/hero/hero-code-1280.webp 1280w, /img/hero/hero-code-1920.webp 1920w" sizes="100vw" width="1920" height="1282" alt="" fetchpriority="high" decoding="async">
+  <div class="wrap tr-grid">
+    <div class="tr-copy">
+      <p class="eyebrow" data-hero-item>Training + internship<% if (offer.registrationOpen) { %> &middot; <%= BATCH_LABEL %><% } %></p>
+      <h1 id="tr-h1" class="hero-title tr-title">Industry training + internship, <em>inside a working software company.</em></h1>
+      <p class="lede" data-hero-item>Learn on the kind of CRM, website and automation projects we deliver for clients. Live online classes with mentors, then a supervised internship with Goforge Digital, an MSME-registered software company in Faridabad. For BTech, BCA, MCA and similar students and recent graduates.</p>
+      <ul class="tr-fees" data-hero-item aria-label="Programmes and fees">
+        <% CAREER_TRACKS.forEach(t => { %>
+        <li><strong><%= inr(offer.priceOf(t)) %></strong><span><b><%= t.name %></b><%= mo(t.trainingMonths) %> training + <%= mo(t.internshipMonths) %> internship</span></li>
+        <% }) %>
+        <li class="tr-fees-note"><%- include('icon', { name: 'check' }) %>All-inclusive fees</li>
+      </ul>
+      <% if (offer.registrationOpen) { %>
+      <p class="tr-batch" data-hero-item><%- include('icon', { name: 'calendar' }) %><span><strong><%= BATCH_LABEL.replace(/^./, c => c.toUpperCase()) %></strong> &middot; starts <%= BATCH_STARTS_FULL %> &middot; registration closes <%= REGISTRATION.closesFull %></span><%- include('seat-mini') %> <a href="#batch">Schedules</a></p>
+      <% } else { %>
+      <p class="tr-batch" data-hero-item><%- include('icon', { name: 'calendar' }) %><span><strong>Next batch</strong> &middot; dates shared on your free counselling call</span></p>
+      <% } %>
+      <div class="hero-actions" data-hero-item>
+        <a class="btn btn-cta btn-lg" href="#apply" data-dialog="dlg-apply" data-fallback-form="apply">Apply now <%- include('icon', { name: 'arrow' }) %></a>
+        <a class="btn btn-ghost btn-ghost-light btn-lg" href="/counselling" data-dialog="dlg-counsel" data-fallback-form="counsel">Book a free counselling call</a>
+      </div>
+    </div>
+
+    <aside class="tr-proof" aria-label="Proof you can check" data-hero-item>
+      <p class="tr-proof-k">Proof you can check</p>
+      <% if (s.show_google_badge !== '0') { %><div class="tr-proof-badge"><%- include('gr-badge') %></div><% } %>
+      <% if (st.length && s.show_home_stats !== '0') { %>
+      <dl class="tr-stats">
+        <% st.slice(0, 4).forEach(x => { %><div><dt><%= x.value %><%= x.suffix || '' %></dt><dd><%= x.label %></dd></div><% }) %>
+      </dl>
+      <% const notes = st.filter(x => x.note); if (notes.length) { %>
+      <details class="tr-notes"><summary>How we count these</summary><ul><% notes.forEach(x => { %><li><strong><%= x.label %>:</strong> <%= x.note %></li><% }) %></ul></details>
+      <% } %>
+      <% } %>
+      <ul class="tr-checks">
+        <% if (msmeC) { %><li><%- include('icon', { name: 'check' }) %><span><strong><%= msmeC.title %></strong><% if (msmeC.number) { %> &middot; <%= msmeC.number %><% } %><% if (msmeC.link_url) { %> &middot; <a href="<%= msmeC.link_url %>" target="_blank" rel="noopener">Verify on Udyam</a><% } %></span></li><% } %>
+        <li><%- include('icon', { name: 'key' }) %><span>Every certificate and letter has an ID you can <a href="/verify">verify online</a></span></li>
+        <li><%- include('icon', { name: 'briefcase' }) %><span>Live client work, such as the <a href="/work/vaishnavi-associates">Vaishnavi Associates</a> real estate website. <a href="/work">See our work</a></span></li>
+      </ul>
+    </aside>
+  </div>
+</section>

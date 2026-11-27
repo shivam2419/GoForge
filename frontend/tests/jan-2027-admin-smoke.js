@@ -88,8 +88,10 @@ async function run() {
 
     assert.strictEqual((homeHtml.match(/class="gr-badge"/g) || []).length, 1, 'Google rating badge must appear once on /');
     assert.strictEqual((homeHtml.match(/kpi-pills trust-stats/g) || []).length, 1, 'Stats block must appear once on /');
+    // /internship hero proof card shows the Google badge once (same Settings toggle as Home); other pages show none.
+    assert.strictEqual((internHtml.match(/class="gr-badge"/g) || []).length, 1, 'Google rating badge once on /internship hero');
     for (const [name, html] of [['/internship', internHtml], ['/program', progHtml], ['/colleges', collegesHtml], ['/about', aboutHtml]]) {
-      assert.strictEqual((html.match(/class="gr-badge"/g) || []).length, 0, `No Google rating badge on ${name}`);
+      if (name !== '/internship') assert.strictEqual((html.match(/class="gr-badge"/g) || []).length, 0, `No Google rating badge on ${name}`);
       assert.strictEqual((html.match(/kpi-pills trust-stats/g) || []).length, 0, `No trust-stats on ${name}`);
       assert.strictEqual((html.match(/class="kpi-row"/g) || []).length, 0, `No kpi-row on ${name}`);
     }

@@ -7,7 +7,7 @@
     <h1 class="h1 hero-title-sm"><span class="line"><span><%= p.name %></span></span> <span class="line"><span><em>Training with Internship</em></span></span></h1>
     <p class="lede" data-hero-item><%= p.summary %></p>
     <div class="hero-actions" data-hero-item>
-      <a class="btn btn-primary btn-lg" href="#apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
+      <a class="btn btn-cta btn-lg" href="#apply">Apply now <%- include('partials/icon', { name: 'arrow' }) %></a>
       <a class="btn btn-ghost btn-lg" href="/counselling?program=<%= encodeURIComponent(p.name) %>" data-dialog="dlg-counsel" data-fallback-form="counsel" data-prefill-name="program" data-prefill-value="<%= p.name %>">Book a free counselling call</a>
     </div>
     <div class="prog-links" data-hero-item>
@@ -99,6 +99,7 @@
       <h2 id="price-h" class="h2" data-reveal><%= p.name %>: <em>3 or 6 months.</em></h2>
       <p class="section-intro" data-reveal><%= s.fee_note %></p>
     </div>
+    <%- include('partials/fee-pill') %>
     <ul class="track-grid track-grid-2" data-reveal-group>
       <% CAREER_TRACKS.forEach(t => { const tw = Math.round(100 * t.trainingMonths / t.months); %>
       <li data-reveal>
@@ -111,7 +112,7 @@
           <svg class="track-split" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="<%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> of training, then <%= t.internshipMonths %> months of internship"><rect class="seg-train" x="0" y="0" width="<%= tw - 1 %>" height="10"/><rect class="seg-intern" x="<%= tw + 1 %>" y="0" width="<%= 99 - tw %>" height="10"/></svg>
           <p class="track-legend"><span class="lg lg-train"><%= t.trainingMonths %> month<%= t.trainingMonths > 1 ? 's' : '' %> training</span><span class="lg lg-intern"><%= t.internshipMonths %> months internship</span></p>
           <p class="track-who"><%= t.who %></p>
-          <a class="btn btn-primary track-cta" href="#apply">Apply for <%= t.name %> <%- include('partials/icon', { name: 'arrow' }) %></a>
+          <a class="btn btn-cta track-cta" href="#apply">Apply for <%= t.name %> <%- include('partials/icon', { name: 'arrow' }) %></a>
         </article>
       </li>
       <% }) %>
