@@ -487,7 +487,7 @@ app.get('/', async (req, res) => {
   // Show the 100+/150+/98%/10+ stats block on the home page only.
   const stats = getSettings().show_home_stats === '0' ? [] : t.stats;
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Goforge Digital builds custom software, CRM & ERP systems, web apps and AI automation for businesses in Faridabad & Delhi NCR. MSME registered. Book a free consultation.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Faridabad' }), heroPhoto: true, scrollBanner: true });
+    'Custom software, websites, CRM & ERP for businesses across Delhi NCR: Delhi, Noida, Gurugram, Ghaziabad and Faridabad. MSME registered, Sector 81 Faridabad.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Delhi NCR | Faridabad' }), heroPhoto: true, scrollBanner: true });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);

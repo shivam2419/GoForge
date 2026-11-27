@@ -106,7 +106,8 @@ async function run() {
     assert.strictEqual((internHtml.match(/Paid once, no instalments/g) || []).length, 1, 'Paid once appears once on /internship');
     assert.strictEqual((progHtml.match(/Paid once, no instalments/g) || []).length, 1, 'Paid once appears once on programme page');
     assert(!/<h[1-3][^>]*>[^<]*paid[^<]*<\/h[1-3]>/i.test(internHtml + progHtml), 'No "paid" in any heading');
-    assert(homeHtml.includes('from ₹2,999') && homeHtml.includes('₹2,999 (3 months) or ₹4,999 (6 months)'), 'Home shows ₹2,999 and ₹4,999');
+    // Home hero "For students" path carries both fees with the training + internship split (replaces the old 'from ₹2,999' student band).
+    assert(homeHtml.includes('<strong>₹2,999</strong><span><b>3-Month Programme</b> &middot; 1 month training + 2 months internship') && homeHtml.includes('<strong>₹4,999</strong><span><b>6-Month Programme</b> &middot; 3 months training + 3 months internship') && homeHtml.includes('₹2,999 (3 months) or ₹4,999 (6 months)'), 'Home shows ₹2,999 and ₹4,999');
     assert(internHtml.includes('From ₹2,999') && internHtml.includes('₹2,999') && internHtml.includes('₹4,999'), '/internship shows ₹2,999 and ₹4,999');
     assert(progHtml.includes('"price":"2999"') && progHtml.includes('"price":"4999"'), 'Course JSON-LD shows 2999 and 4999');
     assert(progHtml.includes('<small>All-inclusive fee</small>'), 'Default tax_note empty -> All-inclusive fee');

@@ -111,7 +111,9 @@ chk "no unprovable recognition claim" 0 $(echo "$IN" | grep -ci 'recognised by i
 chk "student work hidden when empty" 0 $(echo "$IN" | grep -c 'id="work-h"')
 chk "gallery hidden when empty" 0 $(echo "$IN" | grep -c 'id="gal-h"')
 chk "all student & parent questions link" 1 $(echo "$IN" | grep -c 'All student &amp; parent questions')
-chk "home student band" 1 $(curl -s $B/ | grep -c 'class="student-band"')
+# Home student band replaced by the hero's "For students" path (fees, batch dates, Apply link).
+chk "home student band" 0 $(curl -s $B/ | grep -c 'class="student-band"')
+chk "home hero student path" 1 $(curl -s $B/ | grep -c 'id="hb-stu"')
 chk "careers & training nav" 1 $(curl -s $B/ | grep -c 'data-nav-group>Careers &amp; Training</a>')
 for e in projects gallery samples; do chk "admin new $e" 200 $(curl -s -b ck -o /dev/null -w %{http_code} $B/admin/$e/new); done
 rm -f ck3
