@@ -18,7 +18,7 @@ function programmeContent({ settings = {}, brand, tracks = [], lengths = [], bat
   const open = !!batch.open;
   return {
     title: 'Training + Internship Programme Overview',
-    lead: 'A one-page summary for students and college training cells. Every training certificate and internship letter carries an ID that colleges and employers can verify online.',
+    lead: 'A short summary for students and college training cells. Every training certificate and internship letter carries an ID that colleges and employers can verify online.',
     lengths,
     how: [
       'Training is live online. The internship is supervised and follows the training.',

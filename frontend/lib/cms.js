@@ -223,6 +223,7 @@ async function seed() {
   stmts.push([`UPDATE instructors SET bio = REPLACE(bio, 'I have worked on', 'He has worked on'), updated_at = ${NOW} WHERE LOWER(name) LIKE '%shivam sharma%' AND bio GLOB '*I have worked on*'`]);
   stmts.push([`UPDATE instructors SET skills = REPLACE(skills, 'Data Bricks', 'Databricks'), updated_at = ${NOW} WHERE skills GLOB '*Data Bricks*'`]);
   stmts.push([`UPDATE instructors SET skills = REPLACE(skills, 'Mysql', 'MySQL'), updated_at = ${NOW} WHERE skills GLOB '*Mysql*'`]);
+  stmts.push([`UPDATE faqs SET question = REPLACE(question, 'Goforge', 'GoForge'), answer = REPLACE(answer, 'Goforge', 'GoForge'), updated_at = ${NOW} WHERE question GLOB '*Goforge*' OR answer GLOB '*Goforge*'`]);
   stmts.push([`UPDATE stats SET note = REPLACE(note, 'Goforge', 'GoForge'), updated_at = ${NOW} WHERE note GLOB '*Goforge*'`]);
   if (stmts.length) await db.batch(stmts);
   await seedProgramsV2();
