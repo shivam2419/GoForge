@@ -804,7 +804,11 @@ app.get('/internship/overview.pdf', async (req, res, next) => {
     res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
     res.set('Cache-Control', 'public, max-age=300');
     res.send(buf);
-  } catch (err) { next(err); }
+  } catch (err) {
+    console.error('[overview.pdf]', err);
+    res.set('X-Pdf-Error', String(err && err.message || err).replace(/[^\x20-\x7e]/g, ' ').slice(0, 160));
+    next(err);
+  }
 });
 
 // Mentors (from Admin > Mentors) and a short blog (lib/blog.js).
