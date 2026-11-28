@@ -52,8 +52,9 @@ function programmeContent({ settings = {}, brand, tracks = [], lengths = [], bat
   };
 }
 
-function render(c) {
-  const PDFDocument = require('pdfkit'); // loaded on first use, so the PDF route can never take the rest of the site down
+async function render(c) {
+  // pdfkit 0.21 is ESM-only below Node 22.12, so load it with import() (works on every Node 20+), on first use.
+  const PDFDocument = (await import('pdfkit')).default;
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({
       size: 'A4', margins: { top: M, bottom: 58, left: M, right: M }, bufferPages: true, autoFirstPage: true, font: path.join(FONT_DIR, 'Inter-Regular.ttf'),
