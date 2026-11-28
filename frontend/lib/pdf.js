@@ -3,10 +3,9 @@
 // Built with pdfkit and bundled fonts (assets/fonts: Inter for text and the rupee sign, Cormorant for headings),
 // so the output is the same everywhere, including Vercel. Content comes from the same data as /internship/overview.
 const path = require('path');
-const PDFDocument = require('pdfkit');
 
 const FONT_DIR = path.join(__dirname, '..', 'assets', 'fonts');
-const LOGO = path.join(__dirname, '..', 'public', 'img', 'gf-logo-256.png');
+const LOGO = path.join(__dirname, '..', 'assets', 'gf-logo-256.png');
 const C = { navy: '#1B2744', navyDeep: '#141C30', gold: '#CAA465', goldDeep: '#7C5C20', ink2: '#47526C', paper: '#F0ECE3', sheet: '#FBF8F2', line: '#DDD5C4', goldWash: '#F6EEDD' };
 const M = 48; // page margin (pt)
 const W = 595.28 - M * 2; // text width on A4
@@ -54,6 +53,7 @@ function programmeContent({ settings = {}, brand, tracks = [], lengths = [], bat
 }
 
 function render(c) {
+  const PDFDocument = require('pdfkit'); // loaded on first use, so the PDF route can never take the rest of the site down
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({
       size: 'A4', margins: { top: M, bottom: 58, left: M, right: M }, bufferPages: true, autoFirstPage: true, font: path.join(FONT_DIR, 'Inter-Regular.ttf'),
