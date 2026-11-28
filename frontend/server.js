@@ -806,7 +806,6 @@ app.get('/internship/overview.pdf', async (req, res, next) => {
     res.send(buf);
   } catch (err) {
     console.error('[overview.pdf]', err);
-    res.set('X-Pdf-Error', String(err && err.message || err).replace(/[^\x20-\x7e]/g, ' ').slice(0, 160));
     next(err);
   }
 });
