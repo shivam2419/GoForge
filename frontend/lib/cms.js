@@ -179,7 +179,7 @@ async function seed() {
   }
   if (!statCount) {
     [
-      [100, '+', 'Students trained', 'Students who completed a Goforge Digital training programme.'],
+      [100, '+', 'Students trained', 'Students who completed a GoForge Digital training programme.'],
       [150, '+', 'Projects completed', 'Projects completed by our students during training and internships.'],
       [98, '%', 'Success rate', 'Share of students who finished training and went on to complete their internship project.'],
       [10, '+', 'Instructors', 'Trainers and mentors who teach or review student work.']
@@ -217,6 +217,13 @@ async function seed() {
   stmts.push(["UPDATE instructors SET title = REPLACE(title, 'Scenior Data Analyst', 'Senior Data Analyst'), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE title LIKE '%Scenior Data Analyst%'"]);
   stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/shivam-sharma.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%shivam sharma%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
   stmts.push(["UPDATE instructors SET photo_url = '/img/mentors/ishant-hingorani.webp', updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE LOWER(name) LIKE '%ishant hingorani%' AND photo_url LIKE 'https://%' AND photo_url NOT LIKE 'https://www.goforgedigital.com%'"]);
+  // Site review clean-up (Nov 2026): mentor bios in one third-person voice, product names spelled correctly,
+  // and the GoForge brand spelling in the seeded stat note. Each statement only matches the old wording, so reruns change nothing.
+  const NOW = "strftime('%Y-%m-%dT%H:%M:%SZ','now')";
+  stmts.push([`UPDATE instructors SET bio = REPLACE(bio, 'I have worked on', 'He has worked on'), updated_at = ${NOW} WHERE LOWER(name) LIKE '%shivam sharma%' AND bio GLOB '*I have worked on*'`]);
+  stmts.push([`UPDATE instructors SET skills = REPLACE(skills, 'Data Bricks', 'Databricks'), updated_at = ${NOW} WHERE skills GLOB '*Data Bricks*'`]);
+  stmts.push([`UPDATE instructors SET skills = REPLACE(skills, 'Mysql', 'MySQL'), updated_at = ${NOW} WHERE skills GLOB '*Mysql*'`]);
+  stmts.push([`UPDATE stats SET note = REPLACE(note, 'Goforge', 'GoForge'), updated_at = ${NOW} WHERE note GLOB '*Goforge*'`]);
   if (stmts.length) await db.batch(stmts);
   await seedProgramsV2();
 }

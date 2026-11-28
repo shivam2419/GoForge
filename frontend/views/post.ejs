@@ -1,0 +1,19 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<article class="section post">
+  <div class="wrap">
+    <p class="blog-meta"><a href="/blog">Blog</a><span><%= post.topic %></span><span><%= post.read %> min read</span></p>
+    <h1 class="h2"><%= post.title %></h1>
+    <div class="prose post-body">
+      <p class="prose-lead"><%= post.summary %></p>
+      <% post.body.forEach(b => { %>
+      <% if (b.h) { %><h2 class="h3"><%= b.h %></h2>
+      <% } else if (b.p) { %><p><%= b.p %></p>
+      <% } else if (b.ul) { %><ul><% b.ul.forEach(li => { %><li><%= li %></li><% }) %></ul>
+      <% } else if (b.code) { %><pre class="post-code"><code><%= b.code %></code></pre><% } %>
+      <% }) %>
+    </div>
+    <p class="faq-more"><a class="text-link" href="/counselling">Book a free counselling call <%- include('partials/icon', { name: 'arrow' }) %></a> <a class="text-link" href="/blog">More articles <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+  </div>
+</article>
+<%- include('partials/footer') %>

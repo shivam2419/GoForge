@@ -1,5 +1,5 @@
 'use strict';
-// Long-form service pages (/services/:slug). Plain, honest copy: Goforge Digital is an early-stage,
+// Long-form service pages (/services/:slug). Plain, honest copy: GoForge Digital is an early-stage,
 // MSME-registered studio in Faridabad. No fee figures, no invented stats, clients or certifications.
 // `contact` must be one of CONTACT_SERVICES so the enquiry form accepts it.
 
@@ -8,13 +8,13 @@ const PAGES = [
     slug: 'custom-software-development', icon: 'code', contact: 'Custom Software & Web Apps',
     name: 'Custom Software Development',
     nav: 'Custom software',
-    seoTitle: 'Custom Software Development Services in Faridabad | Goforge Digital',
+    seoTitle: 'Custom Software Development Services in Faridabad | GoForge Digital',
     desc: 'Custom software development in Faridabad: web apps, portals, dashboards and internal tools built around how your business works. Scoped on a free call, with source code handed over.',
     h1: 'Custom Software Development in Faridabad',
     lede: 'Web applications, portals, dashboards and internal tools designed around the way your team already works, built by a small MSME-registered studio in Sector 81, Faridabad.',
     intro: [
       'Most growing businesses reach a point where spreadsheets, paper registers and three different apps stop keeping up. Orders get missed, the same data is typed twice, and only one person knows how the process really runs. Custom software development fixes that by giving your team one tool that does the exact job you need, in your words, with the screens and permissions your people actually use.',
-      'Goforge Digital is an early-stage software company in Faridabad. We keep projects focused: one clear first version, delivered in visible milestones, then improved once your team has used it. You work directly with the people building it, and you own the code, the data and the accounts at the end.'
+      'GoForge Digital is an early-stage software company in Faridabad. We keep projects focused: one clear first version, delivered in visible milestones, then improved once your team has used it. You work directly with the people building it, and you own the code, the data and the accounts at the end.'
     ],
     problems: [
       ['Work lives in spreadsheets', 'Records are copied between sheets, versions clash, and nobody is sure which file is current. We turn the sheet into a proper app with one source of truth.'],
@@ -66,13 +66,13 @@ const PAGES = [
     slug: 'crm-development', icon: 'database', contact: 'CRM, ERP & Integrations',
     name: 'CRM Development',
     nav: 'CRM development',
-    seoTitle: 'CRM Development Company in Faridabad | Custom CRM | Goforge Digital',
+    seoTitle: 'CRM Development Company in Faridabad | Custom CRM | GoForge Digital',
     desc: 'Custom CRM development in Faridabad for sales teams, real estate firms and schools: lead capture, follow-ups, pipelines and reports in one system your team will actually open.',
     h1: 'Custom CRM Development Company in Faridabad',
     lede: 'A customer relationship management system shaped around your sales stages, so every enquiry is captured, followed up and measured in one place.',
     intro: [
       'Leads arrive from your website, phone calls, social media and walk-ins. When they are scattered across notebooks, inboxes and personal phones, follow-ups slip and good enquiries go cold. A custom CRM brings every lead into one list, assigns it to the right person and reminds them when to call back.',
-      'Unlike a generic CRM with hundreds of unused settings, a custom CRM uses your stages, your fields and your reports. Goforge Digital builds CRM systems for small and growing businesses in Faridabad and Delhi NCR, and can also connect or tidy up a CRM you already pay for.'
+      'Unlike a generic CRM with hundreds of unused settings, a custom CRM uses your stages, your fields and your reports. GoForge Digital builds CRM systems for small and growing businesses in Faridabad and Delhi NCR, and can also connect or tidy up a CRM you already pay for.'
     ],
     problems: [
       ['Leads get lost', 'Enquiries from forms, calls and ads land in different places. The CRM collects them automatically into one pipeline.'],
@@ -124,13 +124,13 @@ const PAGES = [
     slug: 'erp-development', short: 'ERP Development', icon: 'database', contact: 'CRM, ERP & Integrations',
     name: 'ERP Development',
     nav: 'ERP development',
-    seoTitle: 'ERP Software Development in Faridabad | Custom ERP | Goforge Digital',
+    seoTitle: 'ERP Software Development in Faridabad | Custom ERP | GoForge Digital',
     desc: 'Custom ERP software development in Faridabad for MSMEs: inventory, purchase, sales, billing, production and reports connected in one system, built in phases around your operations.',
     h1: 'Custom ERP Software Development in Faridabad',
     lede: 'Inventory, purchase, sales, billing and operations connected in one system, built in sensible phases for small and mid-sized businesses.',
     intro: [
       'Faridabad is home to thousands of MSMEs in manufacturing, trading and services. Many of them run operations on a mix of accounting software, Excel sheets and paper slips. As orders grow, that mix makes it hard to know stock levels, pending dispatches or the real margin on a job. An ERP, or enterprise resource planning system, connects these departments so information flows from one to the next automatically.',
-      'Large ERP suites can be expensive and slow to roll out. Goforge Digital builds custom ERP software in phases, starting with the module that hurts most today, such as inventory or order management, then adding purchase, production or reporting once the first part is working well for your team.'
+      'Large ERP suites can be expensive and slow to roll out. GoForge Digital builds custom ERP software in phases, starting with the module that hurts most today, such as inventory or order management, then adding purchase, production or reporting once the first part is working well for your team.'
     ],
     problems: [
       ['Stock numbers never match', 'Physical stock and records drift apart. Real-time inventory updates with every inward, outward and transfer.'],
@@ -182,13 +182,13 @@ const PAGES = [
     slug: 'ai-automation', icon: 'gear', contact: 'AI Automation & Workflows',
     name: 'AI Automation',
     nav: 'AI automation',
-    seoTitle: 'AI Automation Services in Faridabad | Workflow Automation | Goforge Digital',
+    seoTitle: 'AI Automation Services in Faridabad | Workflow Automation | GoForge Digital',
     desc: 'AI and workflow automation in Faridabad: instant enquiry alerts, automatic follow-ups, AI-drafted replies and document processing, with a person approving what goes out.',
     h1: 'AI Automation and Workflow Services in Faridabad',
     lede: 'Practical automation for repeated tasks, from instant enquiry alerts to AI-drafted replies, always with a person in control of what goes out.',
     intro: [
       'A large part of every working day goes on small, repeated tasks: copying form entries into a sheet, sending the same reply, reminding a customer, renaming files or preparing a weekly summary. Workflow automation handles these steps reliably, and modern AI tools can now read, sort and draft text well enough to take on work that once needed a person for every message.',
-      'Goforge Digital builds focused automations for small businesses. We start with one workflow that saves real time, measure it, and keep a human approval step wherever a mistake would matter. The goal is fewer manual steps and faster responses, not a pile of tools nobody maintains.'
+      'GoForge Digital builds focused automations for small businesses. We start with one workflow that saves real time, measure it, and keep a human approval step wherever a mistake would matter. The goal is fewer manual steps and faster responses, not a pile of tools nobody maintains.'
     ],
     problems: [
       ['Slow response to enquiries', 'Leads wait hours for a reply. Instant alerts and acknowledgements reach the customer and your team within seconds.'],
@@ -240,13 +240,13 @@ const PAGES = [
     slug: 'website-development', short: 'Web Development', icon: 'browser', contact: 'Custom Software & Web Apps',
     name: 'Website Development',
     nav: 'Website development',
-    seoTitle: 'Website Development Company in Faridabad | Business Websites | Goforge Digital',
+    seoTitle: 'Website Development Company in Faridabad | Business Websites | GoForge Digital',
     desc: 'Website design and development in Faridabad: fast, mobile-friendly, SEO-ready business websites with enquiry forms and an easy admin panel. Built by an MSME-registered studio.',
     h1: 'Website Design and Development Company in Faridabad',
     lede: 'Fast, mobile-friendly business websites that explain what you do clearly, appear in search and turn visitors into enquiries.',
     intro: [
       'Your website is often the first place a customer checks before calling you. If it loads slowly, looks broken on a phone or does not explain your services clearly, people move on to a competitor. A well-built website does three jobs: it builds trust, it helps Google understand your business, and it makes contacting you effortless.',
-      'Goforge Digital designs and develops business websites in Faridabad for companies, schools, clinics and professionals. Every site is built for speed, written in plain language, set up with search basics from day one and handed over with an admin panel so you can update content yourself.'
+      'GoForge Digital designs and develops business websites in Faridabad for companies, schools, clinics and professionals. Every site is built for speed, written in plain language, set up with search basics from day one and handed over with an admin panel so you can update content yourself.'
     ],
     problems: [
       ['The site looks outdated', 'An old design makes a good business look small. A clean, modern layout builds trust in seconds.'],
@@ -298,13 +298,13 @@ const PAGES = [
     slug: 'digital-marketing', icon: 'megaphone', contact: 'Digital Marketing, SEO & Ads',
     name: 'Digital Marketing',
     nav: 'Digital marketing',
-    seoTitle: 'Digital Marketing Agency in Faridabad | SEO, Social & Ads | Goforge Digital',
+    seoTitle: 'Digital Marketing Agency in Faridabad | SEO, Social & Ads | GoForge Digital',
     desc: 'Digital marketing in Faridabad: local SEO, Google Business Profile, social media and performance ads with budgets you control and plain monthly reports.',
     h1: 'Digital Marketing, SEO and Ads in Faridabad',
     lede: 'Local SEO, Google Business Profile, social media and performance ads planned around real enquiries, with your ad budget visible in your own account.',
     intro: [
       'Customers in Faridabad and Delhi NCR search on Google and Maps, scroll social media and click ads before they pick a business. Digital marketing puts you in front of them at the right moment. Done well, it is measurable: you can see where enquiries come from and what each one costs.',
-      'Goforge Digital offers straightforward digital marketing for small and growing businesses. We start with the foundations, a complete Business Profile, a website Google can understand and consistent listings, then add social content and paid campaigns with budgets you approve. Reports are short and plain, focused on enquiries rather than vanity numbers.'
+      'GoForge Digital offers straightforward digital marketing for small and growing businesses. We start with the foundations, a complete Business Profile, a website Google can understand and consistent listings, then add social content and paid campaigns with budgets you approve. Reports are short and plain, focused on enquiries rather than vanity numbers.'
     ],
     problems: [
       ['Invisible on Google Maps', 'Incomplete or unverified profiles rarely show. We complete and optimise your Business Profile for local searches.'],
@@ -356,13 +356,13 @@ const PAGES = [
     slug: 'real-estate-crm', short: 'Real Estate CRM', icon: 'briefcase', contact: 'CRM, ERP & Integrations',
     name: 'Real Estate CRM Software',
     nav: 'Real estate CRM',
-    seoTitle: 'Real Estate CRM Software in Faridabad & Delhi NCR | Goforge Digital',
+    seoTitle: 'Real Estate CRM Software in Faridabad & Delhi NCR | GoForge Digital',
     desc: 'Real estate CRM software for builders, brokers and channel partners in Faridabad and Delhi NCR: project-wise leads, site visits, follow-ups, inventory and booking tracking.',
     h1: 'Real Estate CRM Software for Builders and Brokers',
     lede: 'A CRM made for property sales: project-wise leads, site visit scheduling, unit inventory and booking follow-ups in one system for your sales team.',
     intro: [
       'Property sales in Faridabad and Delhi NCR depend on speed. A buyer who enquires about a project today may visit three other sites this weekend. Builders and brokers receive leads from portals, ads, hoardings, channel partners and walk-ins, and the team that responds first and follows up best usually wins the booking.',
-      'Goforge Digital builds real estate CRM software that follows the real sales cycle: enquiry, call, site visit, negotiation, booking and payment follow-up. It can be a fully custom system or a configured CRM connected to your lead sources, depending on your size and budget.'
+      'GoForge Digital builds real estate CRM software that follows the real sales cycle: enquiry, call, site visit, negotiation, booking and payment follow-up. It can be a fully custom system or a configured CRM connected to your lead sources, depending on your size and budget.'
     ],
     problems: [
       ['Portal leads are scattered', 'Leads from property portals, ads and calls arrive in different inboxes. The CRM collects them into one project-wise list.'],
@@ -414,13 +414,13 @@ const PAGES = [
     slug: 'school-management-software', short: 'School ERP', icon: 'flask', contact: 'CRM, ERP & Integrations',
     name: 'School Management Software',
     nav: 'School software',
-    seoTitle: 'School Management Software & ERP in Faridabad | Goforge Digital',
+    seoTitle: 'School Management Software & ERP in Faridabad | GoForge Digital',
     desc: 'School management software and school ERP in Faridabad: admission enquiries, student records, fees, attendance and parent updates, set up around how your school runs.',
     h1: 'School Management Software and School ERP',
     lede: 'Admission enquiries, student records, fees, attendance and parent communication brought together in one system your office staff can use with ease.',
     intro: [
       'School offices handle a heavy load of administration: admission enquiries during the season, student records, fee collection and receipts, attendance, timetables, notices and a steady flow of parent questions. When this runs on registers and separate spreadsheets, staff spend long hours on paperwork and parents wait for answers.',
-      'Goforge Digital builds and sets up school management software for schools in Faridabad and Delhi NCR. We start with the area that matters most to your school, often admission enquiries or fees, and add further modules as your staff grow comfortable. The system is shaped around your classes, fee structure and processes.'
+      'GoForge Digital builds and sets up school management software for schools in Faridabad and Delhi NCR. We start with the area that matters most to your school, often admission enquiries or fees, and add further modules as your staff grow comfortable. The system is shaped around your classes, fee structure and processes.'
     ],
     problems: [
       ['Admission enquiries get lost', 'Calls and walk-ins during admission season are noted on paper. An enquiry system tracks each family from first call to admission.'],

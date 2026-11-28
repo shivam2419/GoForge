@@ -119,7 +119,15 @@ async function run() {
       assert(!/1,?499|1,?999/.test(h), 'No stale 1499 or 1999 on ' + n);
     }
     const overviewPdfBuf = Buffer.from(await (await jar.fetch('/internship/overview.pdf')).arrayBuffer());
-    assert(overviewPdfBuf.toString('latin1').includes('2,999') && overviewPdfBuf.toString('latin1').includes('4,999'), 'overview.pdf uses 2,999 and 4,999');
+    assert(overviewPdfBuf.slice(0, 5).toString() === '%PDF-' && overviewPdfBuf.length > 20000, 'overview.pdf is a real PDF');
+    // Text is stored in embedded fonts, so read it back with pdftotext when it is installed.
+    try {
+      const pdfFile = path.join(TMP_DIR, 'overview.pdf');
+      fs.writeFileSync(pdfFile, overviewPdfBuf);
+      const pdfText = require('child_process').execFileSync('pdftotext', ['-layout', pdfFile, '-'], { encoding: 'utf8' });
+      assert(pdfText.includes('2,999') && pdfText.includes('4,999'), 'overview.pdf uses 2,999 and 4,999');
+      assert(/1 month training \+ 2 months internship/.test(pdfText) && /3 months training \+ 3 months internship/.test(pdfText), 'overview.pdf shows 1+2 and 3+3');
+    } catch (e) { if (e.code !== 'ENOENT') throw e; }
 
     // Direct PDF downloads (no form gate)
     for (const pdfPath of ['/internship/guide.pdf', '/colleges/pack.pdf']) {
@@ -133,7 +141,7 @@ async function run() {
     assert(schoolsHtml.includes('name="robots" content="noindex, follow"'), '/schools is noindex, follow');
     assert(!schoolsHtml.includes('noindex, nofollow') || schoolsHtml.includes('noindex, follow'), '/schools robots is follow');
     assert(!/school-stats|Students trained|Partner schools|NEP 2020|Classes 5|data-form="school"/.test(schoolsHtml), '/schools has no stats, programmes or form');
-    assert(schoolsHtml.includes('Goforge Digital builds websites and school software for school offices.'), '/schools has short description');
+    assert(schoolsHtml.includes('GoForge Digital builds websites and school software for school offices.'), '/schools has short description');
     assert((schoolsHtml.match(/href="\/contact"/g) || []).length >= 1, '/schools has a contact link');
     for (const [n, h] of [['/', homeHtml], ['/internship', internHtml], ['/program', progHtml], ['/colleges', collegesHtml], ['/about', aboutHtml], ['/faq', faqHtml]]) {
       assert(!h.includes('href="/schools"'), 'No /schools promo link on ' + n);

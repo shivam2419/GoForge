@@ -4,7 +4,7 @@
   <div class="login-card">
     <%- include('../partials/corners') %>
     <%- include('../partials/mark', { cls: 'login-mark', decorative: true, uid: 'login', sizes: '120px' }) %>
-    <h1 class="login-title"><span class="wordmark">Goforge Digital</span><span class="login-sub">Admin sign in</span></h1>
+    <h1 class="login-title"><span class="wordmark">GoForge Digital</span><span class="login-sub">Admin sign in</span></h1>
     <% if (error) { %><div class="form-alert" role="alert"><%= error %></div><% } %>
     <form method="post" action="/admin/login" class="form">
       <input type="hidden" name="_csrf" value="<%= csrf %>">

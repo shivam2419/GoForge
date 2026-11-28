@@ -152,7 +152,7 @@ const CAREER_TRACKS = [
     slug: '3-month', name: '3-Month Programme', short: '3 Months', months: 3, iso: 'P3M', price: 2999,
     trainingMonths: 1, internshipMonths: 2,
     bestFor: 'A semester or summer internship requirement',
-    who: 'Students who need a 4 to 8-week internship letter, or want a first real project alongside college.',
+    who: 'Students whose college asks for a short internship, or who want a first real project alongside college. Training for 1 month, then a 2-month internship.',
     includes: ['1 month of live online training', '2-month supervised internship on a project', 'Training certificate + internship letter with dates and hours']
   },
   {
@@ -180,7 +180,7 @@ const PROCESS = [
 const STATUSES = ['New', 'Contacted', 'Closed'];
 
 const BRAND = {
-  name: 'Goforge Digital',
+  name: 'GoForge Digital',
   tagline: 'Digital Solutions & Growth',
   founder: 'Rohit Sharma',
   founderRole: 'Founder & Director',
@@ -191,7 +191,7 @@ const BRAND = {
   instagram: 'https://www.instagram.com/goforgedigital/',
   linkedin: 'https://www.linkedin.com/in/rohit-sharma-bb9983258/',
   linkedinCompany: 'https://www.linkedin.com/company/143989208',
-  mapQuery: 'Puri Highstreet, Sector 81, Faridabad, Haryana',
+  mapQuery: 'D125b, 1st Floor, Puri Highstreet, Sector 81, Faridabad, Haryana 121001',
   hours: [
     ['Monday to Saturday', '10:00 to 18:30'],
     ['Sunday', 'Closed']
@@ -215,7 +215,7 @@ const FAQ = [
     title: 'For students',
     items: [
       {
-        q: 'What makes Goforge Digital different from other learning platforms?',
+        q: 'What makes GoForge Digital different from other learning platforms?',
         a: 'You learn in live online classes from working professionals, then use those skills on real studio work during a supervised internship. Every assignment is reviewed by a mentor, batches stay small, and you finish with projects you can confidently explain in an interview.'
       },
       {
@@ -230,7 +230,7 @@ const FAQ = [
       },
       {
         q: 'Are the internship certificates verified?',
-        a: 'Yes. Every training certificate and internship letter carries a unique certificate ID that colleges and employers can check with us. Goforge Digital is an MSME (Udyam) registered company.',
+        a: 'Yes. Every training certificate and internship letter carries a unique certificate ID that colleges and employers can check with us. GoForge Digital is an MSME (Udyam) registered company.',
         link: ['/verify', 'Verify a certificate']
       },
       {
@@ -264,7 +264,7 @@ const FAQ = [
       },
       {
         q: 'Is the programme AICTE approved?',
-        a: 'No. This is private industry training and an internship with Goforge Digital, an MSME (Udyam) registered software company. It is not an AICTE-approved course, and we do not claim it is. Your internship letter is issued by Goforge Digital. Only your college can confirm whether it accepts the internship, so please check its rules before you enrol.'
+        a: 'No. This is private industry training and an internship with GoForge Digital, an MSME (Udyam) registered software company. It is not an AICTE-approved course, and we do not claim it is. Your internship letter is issued by GoForge Digital. Only your college can confirm whether it accepts the internship, so please check its rules before you enrol.'
       },
       {
         q: 'How does the referral offer work?',
@@ -276,7 +276,7 @@ const FAQ = [
       },
       {
         q: 'Will my college accept this and what does the letter include?',
-        a: 'Only your college can decide whether it accepts an external internship, so please check its rules (weeks or hours, dates, and whether it needs an NOC or its own format) before you choose a programme. When you complete the internship, you receive a separate training certificate and an internship letter naming Goforge Digital (an MSME Udyam registered company), your name, college and course, role, exact start and end dates, online format, hours if your college counts credit in hours, and a summary of the work you delivered — signed by Rohit Sharma, Founder & Director, with a phone number, email and certificate ID for verification. Tell us your requirement and deadline on the counselling call and we will suggest the matching programme, or tell you honestly if neither does.', top: true
+        a: 'Only your college can decide whether it accepts an external internship, so please check its rules (weeks or hours, dates, and whether it needs an NOC or its own format) before you choose a programme. When you complete the internship, you receive a separate training certificate and an internship letter naming GoForge Digital (an MSME Udyam registered company), your name, college and course, role, exact start and end dates, online format, hours if your college counts credit in hours, and a summary of the work you delivered — signed by Rohit Sharma, Founder & Director, with a phone number, email and certificate ID for verification. Tell us your requirement and deadline on the counselling call and we will suggest the matching programme, or tell you honestly if neither does.', top: true
       },
       {
         q: 'How is my project chosen?',
