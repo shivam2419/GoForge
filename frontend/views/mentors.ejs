@@ -1,0 +1,32 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" data-hero-item>Mentors</p>
+    <h1 class="h1 hero-title-sm"><span class="line"><span>Learn from people</span></span> <span class="line"><span><em>who do the work.</em></span></span></h1>
+    <p class="lede" data-hero-item>Classes are live and online, taught and reviewed by our instructors and mentors. Meet the mentors behind the training and internship programmes.</p>
+  </div>
+</section>
+<section class="section section-tight" aria-labelledby="mentors-h">
+  <div class="wrap">
+    <h2 id="mentors-h" class="visually-hidden">Our mentors</h2>
+    <% if (instructors.length) { %>
+    <ul class="people-grid" data-reveal-group>
+      <% instructors.forEach(p => { %>
+      <li class="person-card" data-reveal>
+        <% if (p.photo_url) { %><img class="person-photo" src="<%= p.photo_url %>" alt="<%= p.name %>" loading="lazy" width="96" height="96"><% } else { %><span class="person-photo person-initials" aria-hidden="true"><%= p.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() %></span><% } %>
+        <h3><%= p.name %></h3>
+        <% if (p.title || p.company) { %><p class="person-title"><%= [p.title, p.company].filter(Boolean).join(' · ') %></p><% } %>
+        <% if (p.bio) { %><p><%= p.bio %></p><% } %>
+        <% if (p.skills) { %><ul class="chips"><% p.skills.split(',').map(x => x.trim()).filter(Boolean).forEach(k => { %><li><%= k %></li><% }) %></ul><% } %>
+        <% if (p.linkedin) { %><a class="person-link" href="<%= p.linkedin %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'linkedin' }) %> LinkedIn</a><% } %>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p class="section-intro">Our mentor profiles are being updated. In the meantime, you can read about the programmes or book a free counselling call.</p>
+    <% } %>
+    <p class="faq-more"><a class="text-link" href="/internship">Training + internship programmes <%- include('partials/icon', { name: 'arrow' }) %></a> <a class="text-link" href="/counselling">Book a free counselling call <%- include('partials/icon', { name: 'arrow' }) %></a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

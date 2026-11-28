@@ -9,7 +9,7 @@
     <div class="tr-copy">
       <p class="eyebrow" data-hero-item>Training + internship<% if (offer.registrationOpen) { %> &middot; <%= BATCH_LABEL %><% } %></p>
       <h1 id="tr-h1" class="hero-title tr-title">Industry training + internship, <em>inside a working software company.</em></h1>
-      <p class="lede" data-hero-item>Learn on the kind of CRM, website and automation projects we deliver for clients. Live online classes with mentors, then a supervised internship with Goforge Digital, an MSME-registered software company in Faridabad. For BTech, BCA, MCA and similar students and recent graduates.</p>
+      <p class="lede" data-hero-item>Learn on the kind of CRM, website and automation projects we deliver for clients. Live online classes with mentors, then a supervised internship with GoForge Digital, an MSME-registered software company in Faridabad. For BTech, BCA, MCA and similar students and recent graduates.</p>
       <ul class="tr-fees" data-hero-item aria-label="Programmes and fees">
         <% CAREER_TRACKS.forEach(t => { %>
         <li><strong><%= inr(offer.priceOf(t)) %></strong><span><b><%= t.name %></b><%= mo(t.trainingMonths) %> training + <%= mo(t.internshipMonths) %> internship</span></li>

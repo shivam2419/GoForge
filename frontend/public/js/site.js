@@ -442,6 +442,31 @@
     }
   }
 
+  /* ---------- phones: step the sticky bar / Enquire button aside while fees, dates and stats pass behind it ---------- */
+  (function () {
+    var bar = doc.querySelector('.sticky-cta') || doc.querySelector('.float-wa');
+    if (!bar || !('IntersectionObserver' in window) || !window.matchMedia) return;
+    var mq = window.matchMedia('(max-width: 760px)');
+    var targets = doc.querySelectorAll('[data-keep-clear], .trust-stats, .trust-notes, .hb-stat, .fee-pill, .track-top, .next-batch, .batch-panel li, .tl-list');
+    if (!targets.length) return;
+    var live = new Set(), io = null;
+    function apply() { doc.body.classList.toggle('cta-away', mq.matches && live.size > 0); }
+    function build() {
+      if (io) io.disconnect();
+      live.clear(); apply();
+      if (!mq.matches) return;
+      var band = Math.min(Math.round(bar.getBoundingClientRect().height) + 12, 140);
+      var top = -Math.max(window.innerHeight - band, 0);
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) live.add(en.target); else live.delete(en.target); });
+        apply();
+      }, { rootMargin: top + 'px 0px 0px 0px', threshold: 0 });
+      targets.forEach(function (t) { io.observe(t); });
+    }
+    build();
+    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(build, 200); });
+  })();
+
   /* ---------- one control to pause all looping motion (WCAG 2.2.2) ---------- */
   var mt = doc.querySelector('[data-motion-toggle]');
   function setMotion(paused) {

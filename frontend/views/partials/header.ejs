@@ -1,14 +1,14 @@
 <body class="<%= locals.bodyClass || '' %>">
 <a class="skip-link" href="#main">Skip to content</a>
 <%- include('ann-bar') %>
-<% const careers = [['/internship','Internship'],['/colleges','Colleges']];
+<% const careers = [['/internship','Internship'],['/mentors','Mentors'],['/blog','Blog'],['/colleges','Colleges']];
    const nav = [['/services','Services', SERVICE_PAGES.map(x => ['/services/' + x.slug, x.name])],['/work','Work'],['/about','About'],[null,'Careers & Training', careers],['/contact','Contact']];
    const isCur = href => href && (path === href || path.startsWith(href + '/')); %>
 <header class="site-header" data-header>
   <div class="wrap header-row">
-    <a class="brand" href="/" aria-label="Goforge Digital home">
+    <a class="brand" href="/" aria-label="GoForge Digital home">
       <%- include('mark', { cls: 'brand-mark', decorative: true, uid: 'h' }) %>
-      <span class="brand-text"><span class="wordmark">Goforge Digital</span><span class="brand-tag"><%= BRAND.tagline %></span></span>
+      <span class="brand-text"><span class="wordmark">GoForge Digital</span><span class="brand-tag"><%= BRAND.tagline %></span></span>
     </a>
     <nav class="nav-desktop" aria-label="Main">
       <ul>

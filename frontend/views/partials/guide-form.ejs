@@ -8,7 +8,7 @@
     <%- include('field', { f: { id: px + '-phone', name: 'phone', label: 'Phone', type: 'tel', required: true, max: 20, autocomplete: 'tel', inputmode: 'tel' }, values: {}, errors: {} }) %>
     <%- include('field', { f: { id: px + '-email', name: 'email', label: 'Email', type: 'email', max: 120, autocomplete: 'email', wide: true }, values: {}, errors: {} }) %>
     <div class="field field-wide field-check">
-      <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required aria-describedby="<%= px %>-consent-err"> Goforge Digital may call or email me about the guide and the programmes. <span class="req" aria-hidden="true">*</span></label>
+      <label for="<%= px %>-consent"><input id="<%= px %>-consent" type="checkbox" name="consent" value="yes" required aria-describedby="<%= px %>-consent-err"> GoForge Digital may call or email me about the guide and the programmes. <span class="req" aria-hidden="true">*</span></label>
       <p class="field-error" id="<%= px %>-consent-err" data-error-for="consent"></p>
     </div>
   </div>

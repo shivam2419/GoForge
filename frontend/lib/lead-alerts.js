@@ -19,7 +19,7 @@ function config() {
   return {
     key,
     to: (process.env.LEAD_ALERT_TO || 'info@goforgedigital.com').split(',').map(s => s.trim()).filter(Boolean),
-    from: (process.env.LEAD_ALERT_FROM || 'Goforge Digital Website <alerts@goforgedigital.com>').trim()
+    from: (process.env.LEAD_ALERT_FROM || 'GoForge Digital Website <alerts@goforgedigital.com>').trim()
   };
 }
 
@@ -28,12 +28,12 @@ function buildEmail({ title, name, fields, adminUrl, replyTo }) {
   const rows = fields.filter(([, v]) => v != null && String(v).trim() !== '');
   const subject = oneLine(`New ${title}: ${name || 'website lead'}`);
   const text = [
-    `New ${title} from the Goforge Digital website.`, '',
+    `New ${title} from the GoForge Digital website.`, '',
     ...rows.map(([k, v]) => `${k}: ${String(v)}`), '',
     `Open the admin inbox: ${adminUrl}`
   ].join('\n');
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#141C30;max-width:560px">
-<p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7C5C20">Goforge Digital website</p>
+<p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7C5C20">GoForge Digital website</p>
 <h2 style="margin:0 0 16px;font-size:20px">New ${esc(title)}</h2>
 <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:14px">
 ${rows.map(([k, v]) => `<tr><td style="padding:8px 12px 8px 0;border-bottom:1px solid #e6e0d4;color:#47526C;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:8px 0;border-bottom:1px solid #e6e0d4;white-space:pre-wrap">${esc(v)}</td></tr>`).join('\n')}

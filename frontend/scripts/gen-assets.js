@@ -8,7 +8,7 @@ const markPaths = mark('').match(/<g[\s\S]*<\/g>/)[0];
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="gfg" x1="0" y1="0" x2="152" y2="102" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#D9BC7C"/><stop offset=".5" stop-color="#C6A15B"/><stop offset="1" stop-color="#A57F3C"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#1B2744"/><g transform="translate(7 15) scale(.33)">${markPaths}</g></svg>`;
 fs.writeFileSync(pub('favicon.svg'), fav);
 fs.mkdirSync(pub('img'), { recursive: true });
-fs.writeFileSync(pub('site.webmanifest'), JSON.stringify({ name: 'Goforge Digital', short_name: 'Goforge', icons: [{ src: '/img/gf-192.png', sizes: '192x192', type: 'image/png' }, { src: '/img/gf-512.png', sizes: '512x512', type: 'image/png' }], theme_color: '#F4EFE6', background_color: '#F4EFE6', display: 'browser' }));
+fs.writeFileSync(pub('site.webmanifest'), JSON.stringify({ name: 'GoForge Digital', short_name: 'GoForge', icons: [{ src: '/img/gf-192.png', sizes: '192x192', type: 'image/png' }, { src: '/img/gf-512.png', sizes: '512x512', type: 'image/png' }], theme_color: '#F4EFE6', background_color: '#F4EFE6', display: 'browser' }));
 const b64 = f => 'data:font/woff2;base64,' + fs.readFileSync(pub('fonts/' + f)).toString('base64');
 const fontCss = `@font-face{font-family:C;src:url(${b64('cormorant-700.woff2')})}@font-face{font-family:M;src:url(${b64('manrope.woff2')});font-weight:200 800}`;
 const corner = `<svg viewBox="0 0 64 64" fill="none" stroke="#C6A15B" stroke-width="1"><path d="M0 26 26 0M0 38 38 0M0 50 50 0"/></svg>`;

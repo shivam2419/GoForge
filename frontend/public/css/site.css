@@ -900,6 +900,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   body:has(.sticky-cta) .site-footer { padding-bottom: 76px; }
 }
 
+/* phones: tighter bottom bar; it and the Enquire button slide away while fees, dates or stats are behind them (see site.js) */
+@media (max-width: 760px) {
+  .sticky-cta, .float-wa { transition: transform .25s var(--ease), opacity .25s; }
+  body.cta-away .sticky-cta { transform: translateY(110%); }
+  body.cta-away .float-wa { transform: translateY(90px); opacity: 0; pointer-events: none; }
+  html { scroll-padding-bottom: 96px; }
+  .float-wa { width: 46px; min-height: 46px; right: 12px; bottom: 12px; }
+}
+
 /* verify page */
 .numbered { counter-reset: n; }
 .numbered li { counter-increment: n; }
@@ -1597,7 +1606,13 @@ p.seat-line { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 
 .sticky-note { grid-column: 1 / -1; margin: 0 0 2px; text-align: center; font-size: 12.5px; color: var(--ink-2); }
 .sticky-note strong { color: var(--ink); }
-@media (max-width: 760px) { body:has(.sticky-cta) .site-footer { padding-bottom: 104px; } }
+@media (max-width: 760px) {
+  body:has(.sticky-cta) .site-footer { padding-bottom: 96px; }
+  .sticky-cta { gap: 8px; padding: 8px 14px calc(8px + env(safe-area-inset-bottom)); }
+  .sticky-cta .btn-sm { --h: 42px; }
+  .sticky-note { margin: 0; font-size: 12px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sticky-note .sn-seats { display: none; }
+}
 .free-webinar .free-title, .free-webinar .free-when span { color: var(--paper); }
 
 /* ===== Polish: programme nav, tools, fit check, comparison, kit, timeline, refund note, final CTA, 404 ===== */
@@ -2237,3 +2252,20 @@ main:has(.tr-hero) .tr-fold-body > section { padding: 8px 0 18px; }
   .hb-path .hb-btn { grid-column: 1 / -1; justify-self: stretch; justify-content: center; }
   .hb-path .hb-more { grid-column: 1 / -1; justify-self: center; margin-top: 8px; }
 }
+
+/* Blog */
+.blog-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.blog-card { display: flex; flex-direction: column; gap: 10px; background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.blog-card h3 { font-family: var(--serif); font-size: 24px; line-height: 1.2; font-weight: 700; margin: 0; }
+.blog-card h3 a { color: var(--ink); text-decoration: none; }
+.blog-card h3 a:hover { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+.blog-card p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+.blog-card .text-link { margin-top: auto; align-self: flex-start; }
+.blog-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); }
+.blog-meta a { color: inherit; }
+.post .h2 { max-width: 24ch; }
+.post-body { margin: 20px 0 8px; }
+.post-body .h3 { margin: 26px 0 8px; }
+.post-body ul { padding-left: 20px; }
+.post-code { margin: 10px 0; padding: 14px 16px; background: var(--ink); color: var(--paper); border-radius: var(--radius-sm); overflow-x: auto; font-size: 13.5px; line-height: 1.6; }
+.post-code code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }

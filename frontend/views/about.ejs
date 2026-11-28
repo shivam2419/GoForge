@@ -2,9 +2,9 @@
 <%- include('partials/header') %>
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow" data-hero-item>About Goforge Digital</p>
+    <p class="eyebrow" data-hero-item>About GoForge Digital</p>
     <h1 class="h1 hero-title-sm"><span class="line"><span>Software, systems</span></span> <span class="line"><span><em>and the people who build them.</em></span></span></h1>
-    <p class="lede" data-hero-item>Goforge Digital is an MSME-registered company in Faridabad. We build software, CRM, ERP and marketing for businesses, and train students on the same kind of work through industry training and internships.</p>
+    <p class="lede" data-hero-item>GoForge Digital is an MSME-registered company in Faridabad. We build software, CRM, ERP and marketing for businesses, and train students on the same kind of work through industry training and internships.</p>
   </div>
 </section>
 <section class="section section-tight">
@@ -66,7 +66,7 @@
       <address class="about-address" data-reveal><%= BRAND.address.line1 %>, <%= BRAND.address.line2 %>, <%= BRAND.address.region %> <%= BRAND.address.postalCode %></address>
       <div class="hero-actions" data-reveal>
         <a class="btn btn-primary" href="/contact" data-dialog="dlg-contact" data-fallback-form="contact">Talk about a project <%- include('partials/icon', { name: 'upright' }) %></a>
-        <% if (s.linkedin_company) { %><a class="btn btn-ghost li-btn" href="<%= s.linkedin_company %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'linkedin' }) %> Follow Goforge Digital on LinkedIn</a><% } %>
+        <% if (s.linkedin_company) { %><a class="btn btn-ghost li-btn" href="<%= s.linkedin_company %>" target="_blank" rel="noopener"><%- include('partials/icon', { name: 'linkedin' }) %> Follow GoForge Digital on LinkedIn</a><% } %>
         <a class="btn btn-ghost" href="/services">See services</a>
       </div>
     </div>
@@ -83,7 +83,7 @@
 <section class="section section-alt benefits-sec" aria-labelledby="benefit-h">
   <div class="wrap">
     <div class="section-head center">
-      <p class="eyebrow" data-reveal>Why Goforge Digital</p>
+      <p class="eyebrow" data-reveal>Why GoForge Digital</p>
       <h2 id="benefit-h" class="h2" data-reveal>Everything you need <em>to grow.</em></h2>
     </div>
     <div class="benefits">
@@ -127,7 +127,7 @@
     <div class="section-head">
       <p class="eyebrow" data-reveal>Recognitions</p>
       <h2 id="ach-h" class="h2" data-reveal>Our <em>achievements.</em></h2>
-      <p class="section-intro" data-reveal>Goforge Digital is a Government of India registered enterprise. Our registration is public and can be checked on the official Udyam portal.</p>
+      <p class="section-intro" data-reveal>GoForge Digital is a Government of India registered enterprise. Our registration is public and can be checked on the official Udyam portal.</p>
       <% if (certs.length === 1) { const c = certs[0]; %>
       <ul class="ach-facts" data-reveal-group>
         <li data-reveal><span>Registration</span><strong><%= c.title %></strong></li>
@@ -141,7 +141,7 @@
       <% certs.forEach((c, i) => { %>
       <li data-reveal>
         <a class="cert-card" href="<%= c.full %>" data-dialog="dlg-cert-<%= i %>">
-          <span class="cert-img"><img src="<%= c.img %>" alt="<%= c.title %> certificate of Goforge Digital" loading="lazy" width="919" height="652"><span class="cert-zoom"><%- include('partials/icon', { name: 'eye' }) %> View</span></span>
+          <span class="cert-img"><img src="<%= c.img %>" alt="<%= c.title %> certificate of GoForge Digital" loading="lazy" width="919" height="652"><span class="cert-zoom"><%- include('partials/icon', { name: 'eye' }) %> View</span></span>
           <span class="cert-cap"><strong><%= c.title %></strong><span><%= c.issuer || '' %></span></span>
         </a>
       </li>
@@ -152,7 +152,7 @@
 <% certs.forEach((c, i) => { %>
 <%- include('partials/dialog-open', { id: 'dlg-cert-' + i, wide: true }) %>
     <h2 class="modal-title" id="dlg-cert-<%= i %>-title"><%= c.title %></h2>
-    <img class="cert-full" src="<%= c.full %>" alt="<%= c.title %> certificate of Goforge Digital, full view" loading="lazy">
+    <img class="cert-full" src="<%= c.full %>" alt="<%= c.title %> certificate of GoForge Digital, full view" loading="lazy">
     <p class="modal-note">Personal address and contact details are hidden for privacy.<% if (c.link_url) { %> <a href="<%= c.link_url %>" target="_blank" rel="noopener">Verify on the official portal</a>.<% } %></p>
 <%- include('partials/dialog-close') %>
 <% }) %>

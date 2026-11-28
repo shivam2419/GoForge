@@ -15,7 +15,8 @@ const batch = require('./lib/batch');
 const GREVIEWS = require('./lib/reviews');
 const { toolChips } = require('./lib/tools');
 const { SERVICE_PAGES, SERVICE_REDIRECTS } = require('./lib/service-pages');
-const { programmePdf, programmeLines } = require('./lib/pdf');
+const { programmePdf } = require('./lib/pdf');
+const blog = require('./lib/blog');
 const cms = require('./lib/cms');
 const { storeImage, storePdf, UPLOAD_DIR, MAX_BYTES, MAX_PDF_BYTES, uploadMode } = require('./lib/uploads');
 const multer = require('multer');
@@ -65,7 +66,7 @@ async function seedAdmin() {
   if (!process.env.ADMIN_INITIAL_PASSWORD) {
     const file = process.env.ADMIN_PASSWORD_FILE || path.join(DATA_DIR, 'ADMIN_INITIAL_PASSWORD.txt');
     try {
-      fs.writeFileSync(file, `Goforge Digital admin\nLogin: /admin/login\nEmail: ${ADMIN_EMAIL}\nInitial password: ${password}\n\nChange it after first login (Admin > Password), then delete this file.\n`, { mode: 0o600 });
+      fs.writeFileSync(file, `GoForge Digital admin\nLogin: /admin/login\nEmail: ${ADMIN_EMAIL}\nInitial password: ${password}\n\nChange it after first login (Admin > Password), then delete this file.\n`, { mode: 0o600 });
       console.log(`[goforge] Admin account created for ${ADMIN_EMAIL}. Initial password written to ${file}`);
     } catch (err) {
       console.log(`[goforge] Admin account created for ${ADMIN_EMAIL}. Password file was not written (${err.message}). Set ADMIN_INITIAL_PASSWORD to choose it.`);
@@ -279,7 +280,7 @@ app.use(async (req, res, next) => {
     CAREER_TRACKS: tracks, CAREER_TRACK_OPTIONS: trackOptions, TRACK_RANGE, careerTrackLabel,
     WHY_SMALL, FAQ: faqList, OFFERS, TECH_STACK, COUNSEL_TIMES: ['Morning (10 AM to 1 PM)', 'Afternoon (1 PM to 4 PM)', 'Evening (4 PM to 6:30 PM)', 'Any time'],
     analytics: { ga: GA_ID, plausibleDomain: PLAUSIBLE_DOMAIN, plausibleSrc: PLAUSIBLE_SRC, vercel: VERCEL_ANALYTICS },
-    mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=16&output=embed',
+    mapEmbed: 'https://maps.google.com/maps?q=' + encodeURIComponent(BRAND.mapQuery) + '&z=17&output=embed',
     siteUrl: SITE_URL, assetV: ASSET_V, path: req.path, year: new Date().getFullYear(),
     telHref, digits, fmtTime, errors: {}, values: {}
   });
@@ -346,8 +347,8 @@ function pageMeta(req, title, desc, extra = {}) {
   return {
     breadcrumbLd,
     pageTitle: seoTitle || (title === 'Home'
-      ? 'Custom software and marketing studio in Faridabad | Goforge Digital'
-      : `${title} | Goforge Digital`),
+      ? 'Custom software and marketing studio in Faridabad | GoForge Digital'
+      : `${title} | GoForge Digital`),
     pageDesc: desc,
     canonicalPath: req.path === '/' ? '/' : req.path.replace(/\/+$/, ''),
     ogImage: ogImageFor(canonicalPath),
@@ -487,18 +488,18 @@ app.get('/', async (req, res) => {
   // Show the 100+/150+/98%/10+ stats block on the home page only.
   const stats = getSettings().show_home_stats === '0' ? [] : t.stats;
   res.render('home', { ...t, stats, ...pageMeta(req, 'Home',
-    'Custom software, websites, CRM & ERP for businesses across Delhi NCR: Delhi, Noida, Gurugram, Ghaziabad and Faridabad. MSME registered, Sector 81 Faridabad.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'Goforge Digital – Custom Software Development Company in Delhi NCR | Faridabad' }), heroPhoto: true, scrollBanner: true });
+    'Custom software, websites, CRM & ERP for businesses across Delhi NCR: Delhi, Noida, Gurugram, Ghaziabad and Faridabad. MSME registered, Sector 81 Faridabad.', { jsonld: jsonLd(), websiteLd: websiteJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, seoTitle: 'GoForge Digital – Custom Software Development Company in Delhi NCR | Faridabad' }), heroPhoto: true, scrollBanner: true });
 });
 app.get('/verify', async (req, res) => {
   const id = text(req.query.id).toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 40);
   const { sampleDocs } = await trustData();
   res.render('verify', { certId: id, sampleDocs, ...pageMeta(req, 'Verify a certificate',
-    'Verify a Goforge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: Boolean(id), seoTitle: 'Verify a Certificate or Internship Letter | Goforge Digital' }) });
+    'Verify a GoForge Digital training certificate or internship letter using the certificate ID printed on it.', { noindex: Boolean(id), seoTitle: 'Verify a Certificate or Internship Letter | GoForge Digital' }) });
 });
 
 app.get('/services', (req, res) => res.render('services', pageMeta(req, 'Services',
   'Software development services in Faridabad and Delhi NCR: custom software, CRM and ERP development, AI automation, website development, digital marketing, real estate CRM and school software.',
-  { seoTitle: 'Software Development Services in Faridabad | CRM, ERP & Web | Goforge Digital' })));
+  { seoTitle: 'Software Development Services in Faridabad | CRM, ERP & Web | GoForge Digital' })));
 
 app.get('/services/:slug', (req, res, next) => {
   const to = SERVICE_REDIRECTS[req.params.slug];
@@ -515,23 +516,23 @@ function caseStudyJsonLd() {
   return JSON.stringify({
     '@context': 'https://schema.org', '@type': 'CreativeWork', '@id': url + '#work', url,
     name: 'Vaishnavi Associates website', headline: 'Vaishnavi Associates website: case study',
-    description: 'Goforge Digital designed and built the website for Vaishnavi Associates, a real estate advisory in Faridabad.',
+    description: 'GoForge Digital designed and built the website for Vaishnavi Associates, a real estate advisory in Faridabad.',
     image: SITE_URL + '/img/work/vaishnavi-associates.webp', inLanguage: 'en-IN', dateModified: '2026-10-18',
     creator: { '@id': SITE_URL + '/#organization' },
     about: { '@type': 'RealEstateAgent', name: 'Vaishnavi Associates', url: 'https://vaishnaviassociates.com/' }
   }).replace(/</g, '\\u003c');
 }
 app.get('/work/vaishnavi-associates', (req, res) => res.render('case-study', pageMeta(req, 'Vaishnavi Associates',
-  'Case study: Goforge Digital designed and built the Vaishnavi Associates real estate website, with property pages, filters, an enquiry form and a responsive layout.',
-  { seoTitle: 'Vaishnavi Associates Website: Case Study | Goforge Digital', jsonld: caseStudyJsonLd(), crumbs: [['Home', '/'], ['Work', '/work'], ['Vaishnavi Associates', '/work/vaishnavi-associates']] })));
+  'Case study: GoForge Digital designed and built the Vaishnavi Associates real estate website, with property pages, filters, an enquiry form and a responsive layout.',
+  { seoTitle: 'Vaishnavi Associates Website: Case Study | GoForge Digital', jsonld: caseStudyJsonLd(), crumbs: [['Home', '/'], ['Work', '/work'], ['Vaishnavi Associates', '/work/vaishnavi-associates']] })));
 app.get('/work', (req, res) => res.render('work', pageMeta(req, 'Work',
-  'Portfolio of software, CRM, website and marketing projects delivered by Goforge Digital, Faridabad.',
-  { seoTitle: 'Software & Website Projects | Goforge Digital, Faridabad' })));
+  'Portfolio of software, CRM, website and marketing projects delivered by GoForge Digital, Faridabad.',
+  { seoTitle: 'Software & Website Projects | GoForge Digital, Faridabad' })));
 
 const COLLEGES_DESC = 'Campus tie-ups and MoUs, workshops and bootcamps, faculty development programmes, bulk training and internship programmes for colleges in Faridabad, Delhi NCR and across India.';
 app.get('/colleges', async (req, res) => res.render('colleges', {
   ...(await trustData()), values: {}, COLLEGE_INTERESTS, COLLEGE_SIZES,
-  ...pageMeta(req, 'For colleges', COLLEGES_DESC, { seoTitle: 'College Partnerships: MoU, FDP & Internships | Goforge Digital' })
+  ...pageMeta(req, 'For colleges', COLLEGES_DESC, { seoTitle: 'College Partnerships: MoU, FDP & Internships | GoForge Digital' })
 }));
 app.post('/colleges', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'college', 'Thanks. Your enquiry has been sent.');
@@ -589,7 +590,7 @@ function validateCounsel(body, programs, { batchPrefs = batch.BATCH_PREFS, track
 }
 const trackFromQuery = slug => { const t = CAREER_TRACKS.find(x => x.slug === slug); return t ? careerTrackLabel(t) : ''; };
 const interestFromQuery = (q, res) => q === 'webinar' && res.locals.offer.webinar ? batch.WEBINAR.interest : '';
-app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track), interest: interestFromQuery(req.query.interest, res) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with Goforge Digital about the training and internship programmes.', { noindex: true }) }));
+app.get('/counselling', (req, res) => res.render('counselling', { values: { program: res.locals.TRACKS.includes(req.query.program) ? req.query.program : '', track: trackFromQuery(req.query.track), interest: interestFromQuery(req.query.interest, res) }, errors: {}, ...pageMeta(req, 'Book a free counselling call', 'Book a free counselling call with GoForge Digital about the training and internship programmes.') }));
 app.post('/counselling', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'counselling', 'Thanks. Your request has been sent.');
   const { errors, values } = validateCounsel(req.body, res.locals.TRACKS, { batchPrefs: res.locals.BATCH_PREFS, trackOptions: res.locals.CAREER_TRACK_OPTIONS, interests: ['Joining the ' + res.locals.BATCH_LABEL, batch.WEBINAR.interest, 'Joining a later batch', 'Just exploring'] });
@@ -636,16 +637,16 @@ function webinarIcs() {
   const esc = v => String(v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
   const fold = line => { const out = []; let rest = line; while (Buffer.byteLength(rest) > 74) { let n = 74; while (Buffer.byteLength(rest.slice(0, n)) > 74) n--; out.push(rest.slice(0, n)); rest = ' ' + rest.slice(n); } out.push(rest); return out.join('\r\n'); };
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Goforge Digital//Webinar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//GoForge Digital//Webinar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
     'UID:webinar-' + W.startUtc + '@goforgedigital.com', 'DTSTAMP:' + stamp, 'DTSTART:' + W.startUtc, 'DTEND:' + W.endUtc,
     'SUMMARY:' + esc(W.title), 'DESCRIPTION:' + esc(webinarDetails()), 'LOCATION:' + esc(W.meetUrl), 'URL:' + W.meetUrl,
-    'ORGANIZER;CN=Goforge Digital:mailto:info@goforgedigital.com', 'STATUS:CONFIRMED', 'TRANSP:OPAQUE',
+    'ORGANIZER;CN=GoForge Digital:mailto:info@goforgedigital.com', 'STATUS:CONFIRMED', 'TRANSP:OPAQUE',
     'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(W.title + ' starts in 30 minutes'), 'TRIGGER:-PT30M', 'END:VALARM',
     'END:VEVENT', 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
 }
-const WEBINAR_DESC = 'Free live webinar for college students, Sat 24 Oct 2026, 11 AM–12 PM IST on Google Meet: how to get an internship your college accepts, a live mini-project demo with AI tools, and Q&A. Hosted by Rohit Sharma, Founder, Goforge Digital.';
+const WEBINAR_DESC = 'Free live webinar for college students, Sat 24 Oct 2026, 11 AM–12 PM IST on Google Meet: how to get an internship your college accepts, a live mini-project demo with AI tools, and Q&A. Hosted by Rohit Sharma, Founder, GoForge Digital.';
 app.get('/webinar', (req, res) => res.render('webinar', { values: {}, errors: {}, ...pageMeta(req, 'Free webinar', WEBINAR_DESC, {
-  seoTitle: 'Free Webinar: College-Accepted Internship + AI Tools for Your Career | Goforge Digital',
+  seoTitle: 'Free Webinar: College-Accepted Internship + AI Tools for Your Career | GoForge Digital',
   eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, noindex: !res.locals.offer.webinar,
   crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Free webinar', '/webinar']] }) }));
 app.get('/webinar.ics', (req, res) => {
@@ -727,8 +728,8 @@ app.get('/internship/guide.pdf', async (req, res) => {
   res.sendFile(GUIDE_FILE);
 });
 
-const SCHOOLS_DESC = 'Goforge Digital builds websites and school software for school offices.';
-const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For schools | Goforge Digital', noindex: true, robots: 'noindex, follow' });
+const SCHOOLS_DESC = 'GoForge Digital builds websites and school software for school offices.';
+const schoolsMeta = req => pageMeta(req, 'For schools', SCHOOLS_DESC, { seoTitle: 'For schools | GoForge Digital', noindex: true, robots: 'noindex, follow' });
 app.get('/schools', (req, res) => res.render('schools', { ...schoolsMeta(req) }));
 app.post('/schools', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'school', 'Thanks. Your enquiry has been sent.');
@@ -763,7 +764,7 @@ app.get('/internship', async (req, res) => res.render('internship', {
   heroPhoto: true,
   values: { track: (t => res.locals.TRACKS.includes(t) ? t : '')(req.query.track === 'Web Developer' ? 'Full Stack Web Development' : req.query.track) },
   ...(await trustData()),
-  ...pageMeta(req, 'Training & internship', res.locals.CAREER_TRACKS[0].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[0].price) + ') and ' + res.locals.CAREER_TRACKS[1].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[1].price) + ') training + internship programmes, live online. ' + res.locals.BATCH_SUMMARY + '. Verifiable certificates.', { seoTitle: 'Internship with Training for Students — ' + res.locals.BATCH_LABEL.replace(/^./, c => c.toUpperCase()) + ' | Goforge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
+  ...pageMeta(req, 'Training & internship', res.locals.CAREER_TRACKS[0].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[0].price) + ') and ' + res.locals.CAREER_TRACKS[1].name + ' (' + batch.inr(res.locals.CAREER_TRACKS[1].price) + ') training + internship programmes, live online. ' + res.locals.BATCH_SUMMARY + '. Verifiable certificates.', { seoTitle: 'Internship with Training for Students — ' + res.locals.BATCH_LABEL.replace(/^./, c => c.toUpperCase()) + ' | GoForge Digital', jsonld: eduJsonLd(), eventLd: res.locals.offer.webinar ? webinarJsonLd() : null, training: true })
 }));
 
 app.get('/internship/programs/web-developer', (req, res) => res.redirect(301, '/internship/programs/full-stack-web-development'));
@@ -776,58 +777,89 @@ app.get('/internship/programs/:slug', async (req, res, next) => {
     program, instructors, credentials, stats, counselProgram: program.name,
     values: { track: program.name },
     ...pageMeta(req, program.name + ' training + internship',
-      program.name + ' training + internship at Goforge Digital: ' + t0.name + ' (' + batch.inr(t0.price) + ') or ' + t1.name + ' (' + batch.inr(t1.price) + '), live online. Curriculum, tools, projects and the ' + res.locals.BATCH_SUMMARY + '.',
-      { seoTitle: program.name + ' Training with Internship — ' + res.locals.BATCH_LABEL + ' | Goforge Digital', jsonld: courseJsonLd(program, res.locals.offer, res.locals.CAREER_TRACKS), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
+      program.name + ' training + internship at GoForge Digital: ' + t0.name + ' (' + batch.inr(t0.price) + ') or ' + t1.name + ' (' + batch.inr(t1.price) + '), live online. Curriculum, tools, projects and the ' + res.locals.BATCH_SUMMARY + '.',
+      { seoTitle: program.name + ' Training with Internship — ' + res.locals.BATCH_LABEL + ' | GoForge Digital', jsonld: courseJsonLd(program, res.locals.offer, res.locals.CAREER_TRACKS), crumbs: [['Home', '/'], ['Training & internship', '/internship'], [program.name, '/internship/programs/' + program.slug]] })
   });
 });
 // Old role pages moved to programme pages.
 app.get('/internship/roles/:slug', (req, res) => res.redirect(301, '/internship/programs/' + encodeURIComponent(req.params.slug)));
 
 app.get('/internship/overview', (req, res) => res.render('overview', pageMeta(req, 'Programme overview',
-  'Printable overview of the Goforge Digital training + internship programme for students and college training cells.',
-  { seoTitle: 'Training + Internship Programme Overview | Goforge Digital', crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Programme overview', '/internship/overview']] })));
+  'Printable overview of the GoForge Digital training + internship programme for students and college training cells.',
+  { seoTitle: 'Training + Internship Programme Overview | GoForge Digital', crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Programme overview', '/internship/overview']] })));
 
-app.get('/internship/overview.pdf', (req, res) => {
-  res.set('Content-Type', 'application/pdf');
-  res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
-  res.send(programmePdf(programmeLines({ settings: getSettings(), brand: BRAND, lengths: res.locals.CAREER_TRACKS, batchLines: res.locals.offer.registrationOpen
-    ? [res.locals.BATCH_SUMMARY + '.', ...res.locals.BATCHES.map(b => '- ' + b.name + ': ' + b.days + ', ' + b.time + ' (' + b.startsLabel + ').'), 'Only ' + res.locals.SEAT_CAP + ' seats per schedule.']
-    : ['Next batch: dates shared on a free counselling call.'], tracks: res.locals.PROGRAMS.map(p => ({ name: p.name, tools: p.toolsList, project: p.project || '' })) })));
+app.get('/internship/overview.pdf', async (req, res, next) => {
+  try {
+    const L = res.locals;
+    const creds = await cms.listPublished('credentials');
+    const msme = creds.find(c => /msme|udyam/i.test(c.title + ' ' + (c.issuer || '')) && c.number);
+    const buf = await programmePdf({
+      settings: getSettings(),
+      brand: { ...BRAND, email: getSettings().email, udyam: msme ? msme.number : '' },
+      lengths: L.CAREER_TRACKS,
+      batch: { open: !!L.offer.registrationOpen, summary: L.BATCH_SUMMARY, schedules: L.BATCHES, seatCap: L.SEAT_CAP },
+      tracks: L.PROGRAMS.map(p => ({ name: p.name, summary: p.summary, tools: p.toolsList, project: p.project || '' }))
+    });
+    res.set('Content-Type', 'application/pdf');
+    res.set('Content-Disposition', 'inline; filename="goforge-internship-overview.pdf"');
+    res.set('Cache-Control', 'public, max-age=300');
+    res.send(buf);
+  } catch (err) { next(err); }
+});
+
+// Mentors (from Admin > Mentors) and a short blog (lib/blog.js).
+app.get('/mentors', async (req, res) => res.render('mentors', {
+  instructors: await cms.listPublished('instructors'),
+  ...pageMeta(req, 'Mentors', 'Meet the mentors who teach and review student work in the GoForge Digital training and internship programmes.',
+    { seoTitle: 'Mentors: Learn from People Who Do the Work | GoForge Digital', crumbs: [['Home', '/'], ['Training & internship', '/internship'], ['Mentors', '/mentors']] })
+}));
+app.get('/blog', (req, res) => res.render('blog', {
+  POSTS: blog.POSTS,
+  ...pageMeta(req, 'Blog', 'Short, practical guides for students and colleges: Git basics, verifiable internship letters, and choosing a programme or track.',
+    { seoTitle: 'Blog: Guides for Students and Colleges | GoForge Digital' })
+}));
+app.get('/blog/:slug', (req, res, next) => {
+  const post = blog.bySlug(req.params.slug);
+  if (!post) return next();
+  res.render('post', {
+    post,
+    ...pageMeta(req, post.title, post.summary, { seoTitle: post.title + ' | GoForge Digital', crumbs: [['Home', '/'], ['Blog', '/blog'], [post.title, '/blog/' + post.slug]] })
+  });
 });
 
 app.get('/faq', (req, res) => res.render('faq', pageMeta(req, 'FAQ',
   'Answers for students and clients: how the internship works, certificates and college recognition, the letter, how projects are chosen, and how client work is priced.',
-  { seoTitle: 'FAQ: Training, Internship & Projects | Goforge Digital', jsonld: faqJsonLd(res.locals.FAQ) })));
+  { seoTitle: 'FAQ: Training, Internship & Projects | GoForge Digital', jsonld: faqJsonLd(res.locals.FAQ) })));
 
 app.get('/about', async (req, res) => {
   const { credentials, aboutGallery } = await trustData();
   res.render('about', { credentials, gallery: aboutGallery, ...pageMeta(req, 'About',
-    'Goforge Digital is an MSME-registered custom software development company in Sector 81, Faridabad, building software, CRM, ERP and websites, led by Rohit Sharma, Founder & Director.',
-    { seoTitle: 'About Goforge Digital | Software Development Company, Faridabad', jsonld: jsonLd() }) });
+    'GoForge Digital is an MSME-registered custom software development company in Sector 81, Faridabad, building software, CRM, ERP and websites, led by Rohit Sharma, Founder & Director.',
+    { seoTitle: 'About GoForge Digital | Software Development Company, Faridabad', jsonld: jsonLd() }) });
 });
 
 app.get('/contact', (req, res) => res.render('contact', { values: { service: CONTACT_SERVICES.includes(req.query.service) ? req.query.service : '' }, ...pageMeta(req, 'Contact',
-  'Call, email or visit Goforge Digital at Puri Highstreet, Sector 81, Faridabad. Office hours Monday to Saturday.',
-  { seoTitle: 'Contact Goforge Digital | Sector 81, Faridabad, Haryana', jsonld: jsonLd() }) }));
+  'Call, email or visit GoForge Digital at Puri Highstreet, Sector 81, Faridabad. Office hours Monday to Saturday.',
+  { seoTitle: 'Contact GoForge Digital | Sector 81, Faridabad, Haryana', jsonld: jsonLd() }) }));
 
 app.get('/privacy', (req, res) => res.render('legal', pageMeta(req, 'Privacy',
-  'Privacy notice for Goforge Digital: what the enquiry and internship forms collect, why, and how to ask for a correction or deletion.',
-  { seoTitle: 'Privacy notice | Goforge Digital', kind: 'privacy' })));
+  'Privacy notice for GoForge Digital: what the enquiry and internship forms collect, why, and how to ask for a correction or deletion.',
+  { seoTitle: 'Privacy notice | GoForge Digital', kind: 'privacy' })));
 
 app.get('/terms', (req, res) => res.render('legal', pageMeta(req, 'Terms',
-  'Terms for using the Goforge Digital website, asking for a project, and applying to the internship.',
-  { seoTitle: 'Terms of use | Goforge Digital', kind: 'terms' })));
+  'Terms for using the GoForge Digital website, asking for a project, and applying to the internship.',
+  { seoTitle: 'Terms of use | GoForge Digital', kind: 'terms' })));
 
 app.get('/refund', (req, res) => res.render('legal', pageMeta(req, 'Refunds',
-  'Refund policy for Goforge Digital training programmes and client projects.',
-  { seoTitle: 'Refund policy | Goforge Digital', kind: 'refund' })));
+  'Refund policy for GoForge Digital training programmes and client projects.',
+  { seoTitle: 'Refund policy | GoForge Digital', kind: 'refund' })));
 
 app.post('/contact', formLimiter, async (req, res) => {
   if (text(req.body.website)) return respondOk(req, res, 'contact', 'Thanks. Your message has been sent.');
   const { errors, values } = validateContact(req.body);
   if (Object.keys(errors).length) {
     if (wantsJson(req)) return res.status(422).json({ ok: false, errors, message: 'Please check the highlighted fields.' });
-    return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact Goforge Digital'), errors, values });
+    return res.status(422).render('contact', { ...pageMeta(req, 'Contact', 'Contact GoForge Digital'), errors, values });
   }
   (await db.run('INSERT INTO contacts (name, business, phone, service, message) VALUES (?, ?, ?, ?, ?)', values.name, values.business || null, values.phone, values.service || null, values.message));
   notifyLead({ title: 'project enquiry', name: values.name, adminUrl: SITE_URL + '/admin/contacts',
@@ -866,19 +898,20 @@ function respondOk(req, res, kind, message, group = null, opts = {}) {
 app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /uploads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
 // Priorities put the business pages first. lastmod is the date the page content last changed
 // (SITE_UPDATED, bump when copy changes) rather than the request date.
-const SITE_UPDATED = '2026-10-18';
+const SITE_UPDATED = '2026-11-28';
 // The January 2027 batch update changed training pages, home, FAQ, colleges and verify on 2026-11-25.
 // Every page changed on 2026-10-18 (address PIN in the footer, new work section), so unchanged pages share SITE_UPDATED.
 // Add a path here when only that page changes later, e.g. { '/faq': '2026-12-01' }.
-const PAGE_UPDATED = { '/': '2026-11-25', '/internship': '2026-11-25', '/faq': '2026-11-25', '/colleges': '2026-11-25', '/about': '2026-10-19', '/internship/overview': '2026-11-25', '/verify': '2026-11-25' };
+const PAGE_UPDATED = { '/counselling': '2026-11-28', '/mentors': '2026-11-28', '/blog': '2026-11-28', '/contact': '2026-11-28', '/': '2026-11-25', '/internship': '2026-11-25', '/faq': '2026-11-25', '/colleges': '2026-11-25', '/about': '2026-10-19', '/internship/overview': '2026-11-25', '/verify': '2026-11-25' };
 app.get('/sitemap.xml', (req, res) => {
   const pages = [['/', '1.0'], ['/services', '0.9']]
     .concat(SERVICE_PAGES.map(item => ['/services/' + item.slug, '0.9']))
-    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/internship', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
+    .concat([['/work', '0.8'], ['/work/vaishnavi-associates', '0.6'], ['/about', '0.7'], ['/contact', '0.7'], ['/counselling', '0.7'], ['/mentors', '0.5'], ['/blog', '0.5'], ['/internship', '0.6'], ['/colleges', '0.6'], ['/faq', '0.5'], ['/verify', '0.5'], ['/internship/overview', '0.4']])
+    .concat(blog.POSTS.map(item => ['/blog/' + item.slug, '0.4']))
     .concat(res.locals.PROGRAMS.map(item => ['/internship/programs/' + item.slug, '0.5']))
     .concat(res.locals.offer.webinar ? [['/webinar', '0.6']] : [])
     .concat([['/privacy', '0.3'], ['/terms', '0.3'], ['/refund', '0.3']]);
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/internship/programs/') ? '2026-11-25' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(([p, pr]) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${PAGE_UPDATED[p] || (p.startsWith('/blog/') ? '2026-11-28' : p.startsWith('/internship/programs/') ? '2026-11-25' : SITE_UPDATED)}</lastmod><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
 });
 app.get('/js/analytics.js', (req, res) => {
   if (!GA_ID) return res.status(404).type('text').send('');

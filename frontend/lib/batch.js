@@ -28,7 +28,7 @@ const WEBINAR = {
   mode: 'Live on Google Meet',
   startIso: '2026-10-24T11:00:00+05:30', endIso: '2026-10-24T12:00:00+05:30',
   startUtc: '20261024T053000Z', endUtc: '20261024T063000Z', // for Google Calendar and .ics
-  host: 'Rohit Sharma', hostRole: 'Founder, Goforge Digital',
+  host: 'Rohit Sharma', hostRole: 'Founder, GoForge Digital',
   interest: 'Free webinar (Sat 24 Oct, 11 AM)',
   points: ['The internship problem students face', 'How to pick a track your college accepts', 'Live mini-project demo', 'Q&A + batch details'],
   poster: { base: '/img/webinar/webinar-poster', w: 1080, h: 1350 },
